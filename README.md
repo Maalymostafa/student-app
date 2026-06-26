@@ -22,6 +22,7 @@ Key pages:
 - Students: `http://localhost:3000/students`
 - Assistant grading: `http://localhost:3000/grading`
 - Student results: `http://localhost:3000/my-results`
+- Parent portal: `http://localhost:3000/parent-portal`
 
 ## Demo login
 

@@ -844,6 +844,40 @@ h2 {
   font-weight: 700;
 }
 
+.child-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.child-tabs button {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid #b7cbd2;
+  border-radius: 999px;
+  color: #344653;
+  background: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.child-tabs button.selected {
+  color: #ffffff;
+  border-color: #24706f;
+  background: #24706f;
+}
+
+.parent-child-results {
+  padding: 16px;
+}
+
+.parent-child-card {
+  padding: 18px;
+  border: 1px solid #d7e1e6;
+  border-radius: 8px;
+  background: #f8fbfb;
+}
+
 @media (max-width: 860px) {
   .auth-panel,
   .management-layout,

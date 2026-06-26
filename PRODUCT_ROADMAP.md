@@ -152,6 +152,9 @@ Parent data should include:
 - Children
 - Balance summary
 
+Parents should have a portal where they can see all linked children.
+If a parent has more than one child, they should switch between children and view each child’s grades, correction feedback, attendance, homework, and payment balance.
+
 ## Communication And Support
 
 Miss Hoda Ismail is the main teacher and conducts the sessions.

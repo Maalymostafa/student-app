@@ -4,6 +4,7 @@ const path = require("path");
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const gradingRoutes = require("./routes/gradingRoutes");
+const parentRoutes = require("./routes/parentRoutes");
 const registrationRoutes = require("./routes/registrationRoutes");
 const studentRoutes = require("./routes/studentRoutes");
 
@@ -28,6 +29,7 @@ app.use(
 app.use("/", authRoutes);
 app.use("/", dashboardRoutes);
 app.use("/", gradingRoutes);
+app.use("/", parentRoutes);
 app.use("/", registrationRoutes);
 app.use("/", studentRoutes);
 

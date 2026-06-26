@@ -13,9 +13,11 @@
   "type": "commonjs",
   "dependencies": {
     "better-sqlite3": "^12.11.1",
+    "connect-pg-simple": "^10.0.0",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "multer": "^2.2.0",
+    "pg": "^8.22.0",
     "three": "^0.185.0"
   }
 }

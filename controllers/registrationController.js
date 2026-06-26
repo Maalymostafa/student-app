@@ -3,6 +3,8 @@ const {
   getRegistrations,
   confirmRegistration,
   buildConfirmationMessage,
+  createPublicRegistration,
+  getRegistrationWindowStatus,
   rejectRegistration,
   updatePaymentReview,
   updatePaymentProof,
@@ -10,6 +12,14 @@ const {
 
 function showRegistrationsPage(req, res) {
   return res.sendFile(path.join(__dirname, "..", "views", "registrations.html"));
+}
+
+function showPublicRegistrationPage(req, res) {
+  return res.sendFile(path.join(__dirname, "..", "views", "register.html"));
+}
+
+function getPublicRegistrationStatus(req, res) {
+  return res.json({ windowStatus: getRegistrationWindowStatus() });
 }
 
 function listRegistrations(req, res) {
@@ -35,6 +45,32 @@ function confirm(req, res) {
   }
 
   return res.json(result);
+}
+
+function createPublic(req, res) {
+  const requiredFields = [
+    "studentName",
+    "parentName",
+    "phone",
+    "email",
+    "schoolGrade",
+  ];
+  const windowStatus = getRegistrationWindowStatus();
+  const missingFields = requiredFields.filter((field) => !req.body[field]);
+
+  if (!windowStatus.isOpen && !req.body.refundPhone) {
+    missingFields.push("refundPhone");
+  }
+
+  if (missingFields.length > 0) {
+    return res.status(400).json({
+      message: "Missing required registration information",
+      missingFields,
+      windowStatus,
+    });
+  }
+
+  return res.status(201).json(createPublicRegistration(req.body));
 }
 
 function reviewPayment(req, res) {
@@ -77,9 +113,12 @@ function uploadPaymentProof(req, res) {
 
 module.exports = {
   confirm,
+  createPublic,
+  getPublicRegistrationStatus,
   listRegistrations,
   reject,
   reviewPayment,
+  showPublicRegistrationPage,
   showRegistrationsPage,
   uploadPaymentProof,
 };

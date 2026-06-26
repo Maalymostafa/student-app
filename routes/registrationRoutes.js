@@ -5,6 +5,9 @@ const upload = require("../middleware/uploadMiddleware");
 
 const router = express.Router();
 
+router.get("/register", registrationController.showPublicRegistrationPage);
+router.get("/api/public/registration-window", registrationController.getPublicRegistrationStatus);
+router.post("/api/public/registrations", registrationController.createPublic);
 router.get(
   "/registrations",
   requireAuth,

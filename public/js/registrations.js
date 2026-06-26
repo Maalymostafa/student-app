@@ -48,6 +48,14 @@ function renderRegistrations(registrations) {
               <dt>Student code</dt>
               <dd>${registration.studentCode || "Not generated"}</dd>
             </div>
+            <div>
+              <dt>Intake</dt>
+              <dd>${registration.intakeStatus || "Open window"}</dd>
+            </div>
+            <div>
+              <dt>Refund phone</dt>
+              <dd>${registration.refundPhone || "Not needed"}</dd>
+            </div>
           </dl>
           <div class="payment-proof-viewer">
             ${
@@ -61,7 +69,7 @@ function renderRegistrations(registrations) {
             </label>
           </div>
           <p class="student-note">
-            ${registration.confirmationMessage || "Confirm this registration to generate the student code and message."}
+            ${renderRegistrationNote(registration)}
           </p>
           <div class="payment-review-panel">
             <p>Payment photo criteria</p>
@@ -80,14 +88,38 @@ function renderRegistrations(registrations) {
             class="archive-button confirm-button"
             type="button"
             data-registration-id="${registration.id}"
-            ${registration.reservationStatus === "Confirmed" || !isPaymentReady(registration) ? "disabled" : ""}
+            ${["Confirmed", "Rejected"].includes(registration.reservationStatus) || !isPaymentReady(registration) ? "disabled" : ""}
           >
             Confirm payment and reservation
+          </button>
+          <button
+            class="archive-button"
+            type="button"
+            data-reject-registration="${registration.id}"
+            ${["Confirmed", "Rejected"].includes(registration.reservationStatus) ? "disabled" : ""}
+          >
+            Reject and prepare refund
           </button>
         </article>
       `
     )
     .join("");
+}
+
+function renderRegistrationNote(registration) {
+  if (registration.rejectionReason) {
+    return `Rejected: ${registration.rejectionReason}. Refund phone: ${registration.refundPhone || "not provided"}.`;
+  }
+
+  if (registration.confirmationMessage) {
+    return registration.confirmationMessage;
+  }
+
+  if (registration.reservationStatus === "Waiting List") {
+    return "This registration is outside the booking window. Approve only as an exception. If rejected, use the refund phone.";
+  }
+
+  return "Confirm this registration to generate the student code and message.";
 }
 
 function renderPaymentCheck(registration, key, label) {
@@ -117,6 +149,7 @@ function isPaymentReady(registration) {
 registrationList.addEventListener("click", async (event) => {
   const confirmButton = event.target.closest("[data-registration-id]");
   const reviewButton = event.target.closest("[data-save-payment-review]");
+  const rejectButton = event.target.closest("[data-reject-registration]");
 
   if (reviewButton) {
     const registrationId = reviewButton.dataset.savePaymentReview;
@@ -138,6 +171,19 @@ registrationList.addEventListener("click", async (event) => {
   }
 
   if (!confirmButton) {
+    if (!rejectButton) {
+      return;
+    }
+
+    const reason = window.prompt("Reason for rejection/refund note") || "Registration rejected by academy";
+    await fetch(`/api/registrations/${rejectButton.dataset.rejectRegistration}/reject`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ reason }),
+    });
+    await fetchRegistrations();
     return;
   }
 

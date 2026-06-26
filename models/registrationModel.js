@@ -81,6 +81,55 @@ function getRegistrations() {
   return registrations;
 }
 
+function getRegistrationWindowStatus(date = new Date()) {
+  const dayOfMonth = date.getDate();
+  const isOpen = dayOfMonth >= 1 && dayOfMonth <= 10;
+
+  return {
+    isOpen,
+    opensDay: 1,
+    closesDay: 10,
+    message: isOpen
+      ? "Registration is open. Your request will be reviewed after payment verification."
+      : "Registration is currently outside the official booking window. Your request will join the waiting list.",
+  };
+}
+
+function createPublicRegistration(registrationData) {
+  const windowStatus = getRegistrationWindowStatus();
+  const registration = {
+    id: `REG-${2000 + registrations.length + 1}`,
+    submittedAt: new Date().toISOString().slice(0, 10),
+    applicantType: registrationData.applicantType || "Parent",
+    studentName: registrationData.studentName,
+    parentName: registrationData.parentName,
+    phone: registrationData.phone,
+    whatsapp: registrationData.whatsapp || registrationData.phone,
+    email: registrationData.email,
+    schoolGrade: registrationData.schoolGrade,
+    course: registrationData.course || "Academy session",
+    paymentMethod: registrationData.paymentMethod || "Pending",
+    paymentProof: registrationData.paymentProof || "Will be reviewed later",
+    paymentProofUrl: "",
+    refundPhone: windowStatus.isOpen ? "" : registrationData.refundPhone,
+    intakeStatus: windowStatus.isOpen ? "Open window" : "Waiting list",
+    paymentReview: {
+      recipientMatches: false,
+      dateWithinRange: false,
+      timePresent: false,
+    },
+    paymentStatus: windowStatus.isOpen ? "Needs review" : "Waiting list",
+    reservationStatus: windowStatus.isOpen ? "Pending" : "Waiting List",
+    studentCode: "",
+  };
+
+  registrations.unshift(registration);
+  return {
+    registration,
+    windowStatus,
+  };
+}
+
 function confirmRegistration(registrationId) {
   const registration = registrations.find((item) => item.id === registrationId);
 
@@ -119,6 +168,7 @@ function rejectRegistration(registrationId, reason = "") {
   registration.paymentStatus = "Rejected";
   registration.reservationStatus = "Rejected";
   registration.rejectionReason = reason;
+  registration.rejectedAt = new Date().toISOString();
 
   return registration;
 }
@@ -186,8 +236,10 @@ function isPaymentReviewComplete(registration) {
 module.exports = {
   buildConfirmationMessage,
   confirmRegistration,
+  createPublicRegistration,
   generateStudentCode,
   getRegistrations,
+  getRegistrationWindowStatus,
   rejectRegistration,
   updatePaymentReview,
   updatePaymentProof,

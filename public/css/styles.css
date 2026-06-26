@@ -145,6 +145,16 @@ h2 {
   background: #ffffff;
 }
 
+.auth-register-link {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.registration-public-panel {
+  width: min(1060px, 100%);
+  grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
+}
+
 .login-form button:hover,
 .secondary-button:hover {
   filter: brightness(0.95);

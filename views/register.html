@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Registration | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script defer src="/js/register.js"></script>
+  </head>
+  <body>
+    <main class="auth-layout">
+      <section class="auth-panel registration-public-panel" aria-labelledby="register-title">
+        <div>
+          <p class="eyebrow">New registration</p>
+          <h1 id="register-title">Join the academy.</h1>
+          <p class="summary compact" id="registration-window-message">
+            Checking registration window.
+          </p>
+          <a class="secondary-link" href="/login">Back to login</a>
+        </div>
+
+        <form class="login-form" id="public-registration-form">
+          <div class="alert" id="public-registration-alert" hidden></div>
+
+          <label for="applicantType">Registering as</label>
+          <select id="applicantType" name="applicantType">
+            <option>Parent</option>
+            <option>Student</option>
+          </select>
+
+          <label for="studentName">Student name</label>
+          <input id="studentName" name="studentName" required />
+
+          <label for="parentName">Parent name</label>
+          <input id="parentName" name="parentName" required />
+
+          <label for="phone">Phone</label>
+          <input id="phone" name="phone" required />
+
+          <label for="whatsapp">WhatsApp</label>
+          <input id="whatsapp" name="whatsapp" />
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required />
+
+          <label for="schoolGrade">Grade</label>
+          <select id="schoolGrade" name="schoolGrade">
+            <option>Grade 4</option>
+            <option>Grade 5</option>
+            <option>Grade 6</option>
+            <option>Prep 1</option>
+            <option>Prep 2</option>
+          </select>
+
+          <label for="course">Course / group</label>
+          <input id="course" name="course" placeholder="English session" />
+
+          <label for="paymentMethod">Payment method</label>
+          <input id="paymentMethod" name="paymentMethod" placeholder="Instapay / Vodafone Cash / Bank transfer" />
+
+          <label class="refund-field" for="refundPhone" hidden>
+            Refund phone if not accepted
+          </label>
+          <input class="refund-field" id="refundPhone" name="refundPhone" placeholder="Phone number to refund payment" hidden />
+
+          <button type="submit">Submit registration</button>
+          <p class="form-message" id="public-registration-message"></p>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

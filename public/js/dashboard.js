@@ -1,3 +1,4 @@
+async function loadDashboard() {
   const response = await fetch("/api/dashboard");
 
   if (!response.ok) {
@@ -29,8 +30,8 @@
     .map((action) => `<a href="${action.href}">${action.label}</a>`)
     .join("");
 
-  if (i18n && typeof i18n.applyLanguage === 'function') {
-    i18n.applyLanguage();
+  if (window.amsI18n) {
+    window.amsI18n.apply();
   }
 }
 
@@ -58,49 +59,8 @@ function configureSupportLinks(role) {
   supportModule.hidden = true;
 }
 
-// Initialize i18n first
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApp);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", loadDashboard);
 } else {
-  initializeApp();
-}
-
-function initializeApp() {
-  // Initialize language system
-  i18n.init();
-  
-  const currentLang = localStorage.getItem('language') || 'en';
-  
-  // Set active button
-  const langButtons = document.querySelectorAll('.lang-btn');
-  if (langButtons.length > 0) {
-    langButtons.forEach(btn => {
-      btn.classList.remove('active');
-      if (btn.dataset.lang === currentLang) {
-        btn.classList.add('active');
-      }
-    });
-
-    // Add click handlers
-    langButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const lang = btn.dataset.lang;
-        
-        // Update buttons
-        langButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        
-        // Set language
-        i18n.currentLang = lang;
-        localStorage.setItem('language', lang);
-        i18n.applyLanguage();
-      });
-    });
-  }
-  
-  // Continue with dashboard loading
   loadDashboard();
 }
-
-async function loadDashboard() {

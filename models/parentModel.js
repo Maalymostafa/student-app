@@ -1,20 +1,7 @@
-const parentChildren = {
-  "usr_parent_001": [
-    {
-      studentCode: "STU-2026-001",
-      studentName: "Lina Ahmed",
-      grade: "Grade 7",
-    },
-    {
-      studentCode: "STU-2026-002",
-      studentName: "Omar Hassan",
-      grade: "Grade 7",
-    },
-  ],
-};
+const db = require("../database/db");
 
 function getChildrenForParent(parentId) {
-  return parentChildren[parentId] || [];
+  return db.prepare("SELECT studentCode, studentName, grade FROM parent_children WHERE parentId = ? ORDER BY studentName").all(parentId);
 }
 
 module.exports = {

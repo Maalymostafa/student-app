@@ -1,71 +1,18 @@
-const submissions = [
-  {
-    id: "SUB-3001",
-    sessionTitle: "Zoom Webinar - Session 1",
-    grade: "Grade 7",
-    studentCode: "STU-2026-001",
-    studentName: "Lina Ahmed",
-    assistantTeacher: "Mona Teacher",
-    attendance: "Present",
-    q1Image: "Handwriting photo: Q1 answer about past simple verbs",
-    q2Image: "Handwriting photo: Q2 answer about sentence correction",
-    q1Score: null,
-    q2Score: null,
-    q1Feedback: "",
-    q2Feedback: "",
-    q1CorrectionPhoto: "",
-    q2CorrectionPhoto: "",
-  },
-  {
-    id: "SUB-3002",
-    sessionTitle: "Zoom Webinar - Session 1",
-    grade: "Grade 7",
-    studentCode: "STU-2026-002",
-    studentName: "Omar Hassan",
-    assistantTeacher: "Mona Teacher",
-    attendance: "Present",
-    q1Image: "Handwriting photo: Q1 short answer",
-    q2Image: "Handwriting photo: Q2 grammar correction",
-    q1Score: 1,
-    q2Score: null,
-    q1Feedback: "Good idea, but the verb ending needs correction.",
-    q2Feedback: "",
-    q1CorrectionPhoto: "omar-q1-corrected.jpg",
-    q2CorrectionPhoto: "",
-  },
-  {
-    id: "SUB-3003",
-    sessionTitle: "Zoom Webinar - Session 1",
-    grade: "Grade 6",
-    studentCode: "STU-2026-003",
-    studentName: "Nour Mostafa",
-    assistantTeacher: "Mona Teacher",
-    attendance: "Absent",
-    q1Image: "No uploaded answer",
-    q2Image: "No uploaded answer",
-    q1Score: 0,
-    q2Score: 0,
-    q1Feedback: "No answer uploaded.",
-    q2Feedback: "No answer uploaded.",
-    q1CorrectionPhoto: "",
-    q2CorrectionPhoto: "",
-  },
-];
+const db = require("../database/db");
 
 function getSubmissions() {
-  return submissions.map(addPerformance);
+  return db.prepare("SELECT * FROM grading_submissions ORDER BY rowid").all().map(addPerformance);
 }
 
 function getStudentResults(studentCode) {
-  return submissions
-    .filter((submission) => submission.studentCode === studentCode)
+  return db.prepare("SELECT * FROM grading_submissions WHERE studentCode = ? ORDER BY rowid DESC").all(studentCode)
     .map(addPerformance)
     .map(addKidMessage);
 }
 
 function updateSubmissionScore(submissionId, question, score) {
   const parsedScore = Number(score);
-  const submission = submissions.find((item) => item.id === submissionId);
+  const submission = getSubmission(submissionId);
   const allowedQuestions = ["q1Score", "q2Score"];
   const allowedScores = [0, 1, 2];
 
@@ -73,22 +20,29 @@ function updateSubmissionScore(submissionId, question, score) {
     return null;
   }
 
-  submission[question] = parsedScore;
-  return addPerformance(submission);
+  db.prepare(`UPDATE grading_submissions SET ${question} = ? WHERE id = ?`).run(parsedScore, submissionId);
+  return addPerformance(getSubmission(submissionId));
 }
 
 function updateQuestionNotes(submissionId, question, feedback, correctionPhoto) {
-  const submission = submissions.find((item) => item.id === submissionId);
+  const submission = getSubmission(submissionId);
   const allowedQuestions = ["q1", "q2"];
 
   if (!submission || !allowedQuestions.includes(question)) {
     return null;
   }
 
-  submission[`${question}Feedback`] = feedback || "";
-  submission[`${question}CorrectionPhoto`] = correctionPhoto || "";
+  db.prepare(`
+    UPDATE grading_submissions
+    SET ${question}Feedback = ?, ${question}CorrectionPhoto = ?
+    WHERE id = ?
+  `).run(feedback || "", correctionPhoto || "", submissionId);
 
-  return addPerformance(submission);
+  return addPerformance(getSubmission(submissionId));
+}
+
+function getSubmission(submissionId) {
+  return db.prepare("SELECT * FROM grading_submissions WHERE id = ?").get(submissionId) || null;
 }
 
 function addPerformance(submission) {

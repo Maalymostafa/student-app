@@ -1,43 +1,7 @@
-const fs = require("fs");
-const path = require("path");
-
-const usersFile = path.join(__dirname, "..", "database", "users.json");
-
-const seedUsers = [
-  {
-    id: "usr_admin_001",
-    email: "admin@academy.test",
-    password: "password123",
-    name: "Academy Admin",
-    role: "Administrator",
-  },
-  {
-    id: "usr_teacher_001",
-    email: "teacher@academy.test",
-    password: "password123",
-    name: "Mona Teacher",
-    role: "Teacher",
-  },
-  {
-    id: "usr_parent_001",
-    email: "parent@academy.test",
-    password: "password123",
-    name: "Ahmed Parent",
-    role: "Parent",
-  },
-  {
-    id: "usr_student_001",
-    email: "student@academy.test",
-    password: "password123",
-    name: "Lina Student",
-    role: "Student",
-  },
-];
-
-let users = loadUsers();
+const db = require("../database/db");
 
 function findUserByCredentials(email, password) {
-  return users.find((user) => user.email === email && user.password === password);
+  return db.prepare("SELECT * FROM users WHERE email = ? AND password = ?").get(email, password);
 }
 
 function getPublicUser(user) {
@@ -50,11 +14,11 @@ function getPublicUser(user) {
 }
 
 function getDemoAccounts() {
-  return users.map(({ email, name, role }) => ({ email, name, role }));
+  return db.prepare("SELECT email, name, role FROM users ORDER BY rowid").all();
 }
 
 function findUserById(userId) {
-  return users.find((user) => user.id === userId) || null;
+  return db.prepare("SELECT * FROM users WHERE id = ?").get(userId) || null;
 }
 
 function updateUserPassword(userId, currentPassword, newPassword) {
@@ -72,39 +36,9 @@ function updateUserPassword(userId, currentPassword, newPassword) {
     return { error: "New password must be at least 6 characters" };
   }
 
-  user.password = newPassword;
-  saveUsers();
+  db.prepare("UPDATE users SET password = ? WHERE id = ?").run(newPassword, userId);
 
-  return { user: getPublicUser(user) };
-}
-
-function loadUsers() {
-  ensureUsersFile();
-
-  try {
-    const fileContent = fs.readFileSync(usersFile, "utf8");
-    const parsedUsers = JSON.parse(fileContent);
-    return Array.isArray(parsedUsers) ? parsedUsers : seedUsers;
-  } catch (error) {
-    return seedUsers;
-  }
-}
-
-function saveUsers() {
-  ensureUsersFile();
-  fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
-}
-
-function ensureUsersFile() {
-  const databaseDir = path.dirname(usersFile);
-
-  if (!fs.existsSync(databaseDir)) {
-    fs.mkdirSync(databaseDir, { recursive: true });
-  }
-
-  if (!fs.existsSync(usersFile)) {
-    fs.writeFileSync(usersFile, JSON.stringify(seedUsers, null, 2));
-  }
+  return { user: getPublicUser({ ...user, password: newPassword }) };
 }
 
 module.exports = {

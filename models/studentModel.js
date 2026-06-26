@@ -1,88 +1,43 @@
-let students = [
-  {
-    id: "STU-1001",
-    fullName: "Lina Ahmed",
-    dateOfBirth: "2012-04-18",
-    gender: "Female",
-    schoolGrade: "Grade 7",
-    parentName: "Ahmed Parent",
-    phone: "+20 100 555 1201",
-    whatsapp: "+20 100 555 1201",
-    email: "lina.student@example.com",
-    address: "Nasr City, Cairo",
-    registrationDate: "2026-06-01",
-    status: "Active",
-    medicalNotes: "None",
-    emergencyContact: "+20 100 555 1210",
-    notes: "Strong reading skills. Needs speaking practice.",
-  },
-  {
-    id: "STU-1002",
-    fullName: "Omar Hassan",
-    dateOfBirth: "2011-09-07",
-    gender: "Male",
-    schoolGrade: "Grade 8",
-    parentName: "Mariam Hassan",
-    phone: "+20 111 222 3344",
-    whatsapp: "+20 111 222 3344",
-    email: "omar.hassan@example.com",
-    address: "Heliopolis, Cairo",
-    registrationDate: "2026-05-20",
-    status: "Active",
-    medicalNotes: "Dust allergy",
-    emergencyContact: "+20 111 222 3355",
-    notes: "Excellent attendance.",
-  },
-  {
-    id: "STU-1003",
-    fullName: "Nour Mostafa",
-    dateOfBirth: "2013-01-12",
-    gender: "Female",
-    schoolGrade: "Grade 6",
-    parentName: "Hany Mostafa",
-    phone: "+20 122 444 7788",
-    whatsapp: "+20 122 444 7788",
-    email: "nour.mostafa@example.com",
-    address: "Maadi, Cairo",
-    registrationDate: "2026-04-11",
-    status: "Archived",
-    medicalNotes: "None",
-    emergencyContact: "+20 122 444 7799",
-    notes: "Archived after course completion.",
-  },
+const db = require("../database/db");
+
+const editableFields = [
+  "fullName",
+  "dateOfBirth",
+  "gender",
+  "schoolGrade",
+  "parentName",
+  "phone",
+  "whatsapp",
+  "email",
+  "address",
+  "status",
+  "medicalNotes",
+  "emergencyContact",
+  "notes",
 ];
 
 function getStudents(search = "") {
-  const normalizedSearch = search.trim().toLowerCase();
+  const normalizedSearch = `%${search.trim().toLowerCase()}%`;
 
-  if (!normalizedSearch) {
-    return students;
+  if (!search.trim()) {
+    return db.prepare("SELECT * FROM students ORDER BY registrationDate DESC, rowid DESC").all();
   }
 
-  return students.filter((student) => {
-    const searchableText = [
-      student.id,
-      student.fullName,
-      student.parentName,
-      student.phone,
-      student.whatsapp,
-      student.email,
-      student.schoolGrade,
-      student.status,
-    ]
-      .join(" ")
-      .toLowerCase();
-
-    return searchableText.includes(normalizedSearch);
-  });
+  return db.prepare(`
+    SELECT * FROM students
+    WHERE lower(id || ' ' || fullName || ' ' || parentName || ' ' || phone || ' ' || whatsapp || ' ' || email || ' ' || schoolGrade || ' ' || status)
+    LIKE ?
+    ORDER BY registrationDate DESC, rowid DESC
+  `).all(normalizedSearch);
 }
 
 function getStudent(studentId) {
-  return students.find((student) => student.id === studentId) || null;
+  return db.prepare("SELECT * FROM students WHERE id = ?").get(studentId) || null;
 }
 
 function createStudent(studentData) {
-  const nextNumber = students.length + 1001;
+  const highestNumber = db.prepare("SELECT id FROM students WHERE id LIKE 'STU-%' ORDER BY id DESC LIMIT 1").get();
+  const nextNumber = highestNumber ? Number(highestNumber.id.replace("STU-", "")) + 1 : 1001;
   const student = {
     id: `STU-${nextNumber}`,
     fullName: studentData.fullName,
@@ -101,19 +56,29 @@ function createStudent(studentData) {
     notes: studentData.notes || "",
   };
 
-  students = [student, ...students];
+  db.prepare(`
+    INSERT INTO students (
+      id, fullName, dateOfBirth, gender, schoolGrade, parentName, phone, whatsapp, email,
+      address, registrationDate, status, medicalNotes, emergencyContact, notes
+    )
+    VALUES (
+      @id, @fullName, @dateOfBirth, @gender, @schoolGrade, @parentName, @phone, @whatsapp, @email,
+      @address, @registrationDate, @status, @medicalNotes, @emergencyContact, @notes
+    )
+  `).run(student);
+
   return student;
 }
 
 function archiveStudent(studentId) {
-  const student = students.find((item) => item.id === studentId);
+  const student = getStudent(studentId);
 
   if (!student) {
     return null;
   }
 
-  student.status = "Archived";
-  return student;
+  db.prepare("UPDATE students SET status = 'Archived' WHERE id = ?").run(studentId);
+  return getStudent(studentId);
 }
 
 function updateStudent(studentId, updates) {
@@ -123,29 +88,16 @@ function updateStudent(studentId, updates) {
     return null;
   }
 
-  const editableFields = [
-    "fullName",
-    "dateOfBirth",
-    "gender",
-    "schoolGrade",
-    "parentName",
-    "phone",
-    "whatsapp",
-    "email",
-    "address",
-    "status",
-    "medicalNotes",
-    "emergencyContact",
-    "notes",
-  ];
+  const fieldsToUpdate = editableFields.filter((field) => updates[field] !== undefined);
 
-  editableFields.forEach((field) => {
-    if (updates[field] !== undefined) {
-      student[field] = updates[field];
-    }
-  });
+  if (!fieldsToUpdate.length) {
+    return student;
+  }
 
-  return student;
+  const assignments = fieldsToUpdate.map((field) => `${field} = @${field}`).join(", ");
+  db.prepare(`UPDATE students SET ${assignments} WHERE id = @id`).run({ id: studentId, ...updates });
+
+  return getStudent(studentId);
 }
 
 function deleteStudent(studentId) {
@@ -155,7 +107,7 @@ function deleteStudent(studentId) {
     return null;
   }
 
-  students = students.filter((item) => item.id !== studentId);
+  db.prepare("DELETE FROM students WHERE id = ?").run(studentId);
   return student;
 }
 

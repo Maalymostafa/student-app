@@ -26,7 +26,7 @@ async function loadDashboard() {
 
   const actionList = document.querySelector("#action-list");
   actionList.innerHTML = dashboard.actions
-    .map((action) => `<button type="button">${action}</button>`)
+    .map((action) => `<a href="${action.href}">${action.label}</a>`)
     .join("");
 }
 

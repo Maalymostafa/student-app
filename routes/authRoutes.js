@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get("/login", authController.showLogin);
 router.post("/login", authController.login);
+router.get("/api/demo-accounts", authController.showDemoAccounts);
 router.get("/dashboard", authController.showDashboard);
 router.post("/logout", authController.logout);
 

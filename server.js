@@ -2,11 +2,13 @@ const express = require("express");
 const session = require("express-session");
 const path = require("path");
 const authRoutes = require("./routes/authRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
@@ -21,6 +23,7 @@ app.use(
 );
 
 app.use("/", authRoutes);
+app.use("/", dashboardRoutes);
 
 app.get("/", (req, res) => {
   res.redirect("/login");

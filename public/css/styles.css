@@ -118,6 +118,31 @@ h2 {
   background: #24706f;
 }
 
+.demo-users {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #d7e1e6;
+}
+
+.demo-users p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #52626e;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.demo-users button {
+  min-height: 36px;
+  margin: 0;
+  color: #1f4d58;
+  border: 1px solid #b7cbd2;
+  background: #ffffff;
+}
+
 .login-form button:hover,
 .secondary-button:hover {
   filter: brightness(0.95);
@@ -151,6 +176,14 @@ h2 {
   font-size: clamp(30px, 4vw, 46px);
 }
 
+.page-intro {
+  max-width: 680px;
+  margin: 12px 0 0;
+  color: #52626e;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
 .secondary-button {
   padding: 0 18px;
   color: #1f4d58;
@@ -162,6 +195,69 @@ h2 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.metric-card {
+  min-height: 112px;
+  padding: 18px;
+  border: 1px solid #d7e1e6;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.metric-card span {
+  display: block;
+  margin-bottom: 14px;
+  color: #52626e;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.metric-card strong {
+  color: #17212b;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.action-panel {
+  display: flex;
+  justify-content: space-between;
+  gap: 22px;
+  align-items: center;
+  margin-bottom: 18px;
+  padding: 22px;
+  border: 1px solid #d7e1e6;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.action-panel h2 {
+  margin-bottom: 0;
+}
+
+.action-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.action-list button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid #b7d7d4;
+  border-radius: 6px;
+  color: #1d605f;
+  background: #edf8f7;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .module-card {
@@ -192,12 +288,22 @@ h2 {
 
 @media (max-width: 860px) {
   .auth-panel,
+  .metric-grid,
   .module-grid {
     grid-template-columns: 1fr;
   }
 
   .auth-panel {
     gap: 28px;
+  }
+
+  .action-panel {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .action-list {
+    justify-content: flex-start;
   }
 }
 
@@ -215,5 +321,9 @@ h2 {
   .topbar {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .demo-users {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

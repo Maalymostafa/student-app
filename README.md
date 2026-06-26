@@ -14,6 +14,9 @@ Open `http://localhost:3000` in your browser.
 
 ## Demo login
 
-Email: `admin@academy.test`
+All demo accounts use the password `password123`.
 
-Password: `password123`
+- Administrator: `admin@academy.test`
+- Teacher: `teacher@academy.test`
+- Parent: `parent@academy.test`
+- Student: `student@academy.test`

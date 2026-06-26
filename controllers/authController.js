@@ -1,11 +1,6 @@
 const path = require("path");
-
-const demoUser = {
-  email: "admin@academy.test",
-  password: "password123",
-  name: "Academy Admin",
-  role: "Administrator",
-};
+const { findUserByCredentials, getPublicUser, getDemoAccounts } = require("../models/userModel");
+const { requireAuth } = require("../middleware/authMiddleware");
 
 function showLogin(req, res) {
   if (req.session.user) {
@@ -17,27 +12,26 @@ function showLogin(req, res) {
 
 function login(req, res) {
   const { email, password } = req.body;
-  const isValidUser = email === demoUser.email && password === demoUser.password;
+  const user = findUserByCredentials(email, password);
 
-  if (!isValidUser) {
+  if (!user) {
     return res.redirect("/login?error=invalid");
   }
 
-  req.session.user = {
-    name: demoUser.name,
-    email: demoUser.email,
-    role: demoUser.role,
-  };
+  req.session.user = getPublicUser(user);
 
   return res.redirect("/dashboard");
 }
 
-function showDashboard(req, res) {
-  if (!req.session.user) {
-    return res.redirect("/login");
-  }
-
+const showDashboard = [
+  requireAuth,
+  (req, res) => {
   return res.sendFile(path.join(__dirname, "..", "views", "dashboard.html"));
+  },
+];
+
+function showDemoAccounts(req, res) {
+  return res.json(getDemoAccounts());
 }
 
 function logout(req, res) {
@@ -50,5 +44,6 @@ module.exports = {
   showLogin,
   login,
   showDashboard,
+  showDemoAccounts,
   logout,
 };

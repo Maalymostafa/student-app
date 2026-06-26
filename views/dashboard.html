@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard | Academy Management System</title>
     <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/i18n.css" />
+    <script defer src="/js/i18n.js"></script>
     <script defer src="/js/dashboard.js"></script>
     <script defer src="/js/theme.js"></script>
   </head>
@@ -13,15 +15,19 @@
       <header class="topbar">
         <div>
           <p class="eyebrow" id="user-role">Loading</p>
-          <h1 id="dashboard-title">Academy Dashboard</h1>
-          <p class="page-intro" id="dashboard-intro">
+          <h1 id="dashboard-title" data-i18n="dashboard.welcome">Academy Dashboard</h1>
+          <p class="page-intro" id="dashboard-intro" data-i18n="dashboard.sessions">
             Preparing your workspace.
           </p>
         </div>
         <div class="toolbar-actions">
-          <a class="secondary-link" href="/account">Account</a>
+          <div class="language-toggle" id="languageToggle">
+            <button class="lang-btn" data-lang="en" id="langEn" data-i18n="common.english">English</button>
+            <button class="lang-btn" data-lang="ar" id="langAr" data-i18n="common.arabic">العربية</button>
+          </div>
+          <a class="secondary-link" href="/account" data-i18n="nav.account">Account</a>
           <form action="/logout" method="post">
-            <button class="secondary-button" type="submit">Logout</button>
+            <button class="secondary-button" type="submit" data-i18n="nav.logout">Logout</button>
           </form>
         </div>
       </header>
@@ -30,32 +36,32 @@
 
       <section class="action-panel" aria-labelledby="quick-actions-title">
         <div>
-          <p class="eyebrow">Quick actions</p>
-          <h2 id="quick-actions-title">What needs attention</h2>
+          <p class="eyebrow" data-i18n="common.quickActions">Quick actions</p>
+          <h2 id="quick-actions-title" data-i18n="common.attention">What needs attention</h2>
         </div>
         <div class="action-list" id="action-list"></div>
       </section>
 
       <section class="action-panel" aria-labelledby="style-preview-title">
         <div>
-          <p class="eyebrow">Visual design</p>
-          <h2 id="style-preview-title">Choose a better look</h2>
+          <p class="eyebrow" data-i18n="common.design">Visual design</p>
+          <h2 id="style-preview-title" data-i18n="common.chooseLook">Choose a better look</h2>
         </div>
         <a class="secondary-link" href="/style-preview">Open style preview</a>
       </section>
 
       <section class="action-panel" aria-labelledby="registration-workflow-title">
         <div>
-          <p class="eyebrow">Registration workflow</p>
-          <h2 id="registration-workflow-title">Review payment proofs</h2>
+          <p class="eyebrow" data-i18n="common.registration">Registration workflow</p>
+          <h2 id="registration-workflow-title" data-i18n="common.reviewPayment">Review payment proofs</h2>
         </div>
         <a class="secondary-link" href="/registrations">Open registrations</a>
       </section>
 
       <section class="action-panel" aria-labelledby="grading-workflow-title">
         <div>
-          <p class="eyebrow">Zoom webinar grading</p>
-          <h2 id="grading-workflow-title">Attendance, quizzes, and correction</h2>
+          <p class="eyebrow" data-i18n="common.grading">Zoom webinar grading</p>
+          <h2 id="grading-workflow-title" data-i18n="common.attendanceQuizzes">Attendance, quizzes, and correction</h2>
         </div>
         <div class="toolbar-actions">
           <a class="secondary-link" href="/attendance">Upload attendance</a>
@@ -67,8 +73,8 @@
 
       <section class="action-panel" id="support-workflow-panel" aria-labelledby="support-workflow-title">
         <div>
-          <p class="eyebrow">Support workflow</p>
-          <h2 id="support-workflow-title">Review repeated questions</h2>
+          <p class="eyebrow" data-i18n="common.support">Support workflow</p>
+          <h2 id="support-workflow-title" data-i18n="common.reviewQuestions">Review repeated questions</h2>
         </div>
         <a class="secondary-link" id="support-workflow-link" href="/support-inbox">Open support inbox</a>
       </section>

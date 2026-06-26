@@ -1,0 +1,41 @@
+<!-- Add this to all HTML files in the <head> section -->
+<link rel="stylesheet" href="/css/i18n.css" />
+<script src="/js/i18n.js"></script>
+
+<!-- Add this to the toolbar/navbar section -->
+<div class="language-toggle" id="languageToggle">
+  <button class="lang-btn" data-lang="en" id="langEn">English</button>
+  <button class="lang-btn" data-lang="ar" id="langAr">العربية</button>
+</div>
+
+<!-- Add this script at the end of your page before closing body -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const currentLang = localStorage.getItem('language') || 'en';
+  
+  // Set active button
+  const langButtons = document.querySelectorAll('.lang-btn');
+  if (langButtons.length > 0) {
+    langButtons.forEach(btn => {
+      if (btn.dataset.lang === currentLang) {
+        btn.classList.add('active');
+      }
+    });
+
+    // Add click handlers
+    langButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const lang = btn.dataset.lang;
+        i18n.setLanguage(lang);
+      });
+    });
+  }
+});
+</script>
+
+<!-- Then use data-i18n attribute on any element you want translated -->
+<!-- Example: -->
+<h1 data-i18n="students.title">Student Management</h1>
+<button data-i18n="common.save">Save</button>
+<input data-i18n-placeholder="students.search" placeholder="Search students..." />

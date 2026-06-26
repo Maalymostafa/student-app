@@ -1,0 +1,249 @@
+/* Internationalization & RTL Support */
+
+:root {
+  --text-direction: ltr;
+}
+
+html[dir="rtl"] {
+  --text-direction: rtl;
+}
+
+/* Language Toggle Component */
+.language-toggle {
+  display: inline-flex;
+  gap: 0;
+  background: #f0f0f0;
+  border-radius: 6px;
+  padding: 4px;
+  border: 1px solid #ddd;
+  margin-right: 16px;
+}
+
+.language-toggle .lang-btn {
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 13px;
+  color: #666;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.language-toggle .lang-btn:hover {
+  background: #e8e8e8;
+  color: #333;
+}
+
+.language-toggle .lang-btn.active {
+  background: #007bff;
+  color: white;
+  font-weight: 600;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .language-toggle {
+    background: #2a2a2a;
+    border-color: #444;
+  }
+
+  .language-toggle .lang-btn {
+    color: #aaa;
+  }
+
+  .language-toggle .lang-btn:hover {
+    background: #3a3a3a;
+    color: #fff;
+  }
+
+  .language-toggle .lang-btn.active {
+    background: #0056cc;
+    color: #fff;
+  }
+}
+
+/* RTL Adjustments */
+html[dir="rtl"] {
+  text-align: right;
+}
+
+html[dir="rtl"] body {
+  direction: rtl;
+}
+
+html[dir="rtl"] input,
+html[dir="rtl"] textarea,
+html[dir="rtl"] select {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="rtl"] .search-box {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="rtl"] .flex-between {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .action-buttons {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] button svg {
+  margin-right: 0;
+  margin-left: 6px;
+}
+
+html[dir="rtl"] .status-badge {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+html[dir="rtl"] .card {
+  border-right: 4px solid var(--accent-color);
+  border-left: none;
+}
+
+html[dir="rtl"] table {
+  text-align: right;
+}
+
+html[dir="rtl"] th:first-child,
+html[dir="rtl"] td:first-child {
+  text-align: right;
+}
+
+/* Arabic Font */
+html[lang="ar"] {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Arial', 'traditional Arabic';
+}
+
+html[lang="ar"] body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Arial', 'traditional Arabic';
+}
+
+/* Margin/Padding Flipping for RTL */
+html[dir="rtl"] .ml-auto {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+
+html[dir="rtl"] .mr-auto {
+  margin-right: auto !important;
+  margin-left: 0 !important;
+}
+
+html[dir="rtl"] .pl-16 {
+  padding-left: 0 !important;
+  padding-right: 16px !important;
+}
+
+html[dir="rtl"] .pr-16 {
+  padding-right: 0 !important;
+  padding-left: 16px !important;
+}
+
+/* Forms RTL */
+html[dir="rtl"] .form-group {
+  text-align: right;
+}
+
+html[dir="rtl"] label {
+  text-align: right;
+  display: block;
+}
+
+html[dir="rtl"] .checkbox-group,
+html[dir="rtl"] .radio-group {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .checkbox-group input,
+html[dir="rtl"] .radio-group input {
+  margin-right: 8px;
+  margin-left: 0;
+}
+
+/* Navigation RTL */
+html[dir="rtl"] nav {
+  direction: rtl;
+}
+
+html[dir="rtl"] .nav-links {
+  flex-direction: row-reverse;
+}
+
+/* Sidebar RTL */
+html[dir="rtl"] .sidebar {
+  left: auto;
+  right: 0;
+  border-right: none;
+  border-left: 1px solid var(--border-color);
+}
+
+html[dir="rtl"] .content {
+  margin-left: 0;
+  margin-right: var(--sidebar-width);
+}
+
+/* Icons RTL */
+html[dir="rtl"] .icon-left {
+  margin-left: 0;
+  margin-right: 8px;
+}
+
+html[dir="rtl"] .icon-right {
+  margin-right: 0;
+  margin-left: 8px;
+}
+
+/* Animations RTL */
+html[dir="rtl"] .slide-in-left {
+  animation: slideInRight 0.3s ease;
+}
+
+html[dir="rtl"] .slide-in-right {
+  animation: slideInLeft 0.3s ease;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive RTL */
+@media (max-width: 768px) {
+  html[dir="rtl"] .sidebar {
+    transform: translateX(-100%);
+  }
+
+  html[dir="rtl"] .sidebar.active {
+    transform: translateX(0);
+  }
+
+  html[dir="rtl"] .content {
+    margin-right: 0;
+  }
+}

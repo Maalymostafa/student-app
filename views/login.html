@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script defer src="/js/login.js"></script>
+  </head>
+  <body>
+    <main class="auth-layout">
+      <section class="auth-panel" aria-labelledby="login-title">
+        <div>
+          <p class="eyebrow">Academy Management System</p>
+          <h1 id="login-title">Sign in to your workspace.</h1>
+          <p class="summary compact">
+            Manage students, sessions, payments, and notifications from one place.
+          </p>
+        </div>
+
+        <form class="login-form" action="/login" method="post">
+          <div class="alert" id="login-error" hidden>
+            The email or password is incorrect.
+          </div>
+
+          <label for="email">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            value="admin@academy.test"
+            required
+          />
+
+          <label for="password">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            value="password123"
+            required
+          />
+
+          <button type="submit">Sign in</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

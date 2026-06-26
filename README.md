@@ -9,3 +9,9 @@ npm start
 ```
 
 Open `http://localhost:3000` in your browser.
+
+## Demo login
+
+Email: `admin@academy.test`
+
+Password: `password123`

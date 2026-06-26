@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Administrator</p>
+          <h1>Academy Dashboard</h1>
+        </div>
+        <form action="/logout" method="post">
+          <button class="secondary-button" type="submit">Logout</button>
+        </form>
+      </header>
+
+      <section class="module-grid" aria-label="Application modules">
+        <article class="module-card active">
+          <span>Module 1</span>
+          <h2>Authentication</h2>
+          <p>Login, logout, and user roles are now underway.</p>
+        </article>
+        <article class="module-card">
+          <span>Module 2</span>
+          <h2>Students</h2>
+          <p>Add, edit, search, and archive student records.</p>
+        </article>
+        <article class="module-card">
+          <span>Module 3</span>
+          <h2>Parents</h2>
+          <p>Parent accounts, contact details, and linked children.</p>
+        </article>
+        <article class="module-card">
+          <span>Module 4</span>
+          <h2>Sessions</h2>
+          <p>Schedules, attendance, and classroom assignments.</p>
+        </article>
+        <article class="module-card">
+          <span>Module 5</span>
+          <h2>Payments</h2>
+          <p>Installments, balances, and payment reminders.</p>
+        </article>
+        <article class="module-card">
+          <span>Module 6</span>
+          <h2>Notifications</h2>
+          <p>Manual, automatic, and scheduled messages.</p>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

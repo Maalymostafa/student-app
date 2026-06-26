@@ -11,6 +11,7 @@ async function loadDashboard() {
   document.querySelector("#user-role").textContent = `${user.role} - ${user.name}`;
   document.querySelector("#dashboard-title").textContent = dashboard.headline;
   document.querySelector("#dashboard-intro").textContent = dashboard.intro;
+  configureSupportLinks(user.role);
 
   const metricGrid = document.querySelector("#metric-grid");
   metricGrid.innerHTML = dashboard.metrics
@@ -28,6 +29,30 @@ async function loadDashboard() {
   actionList.innerHTML = dashboard.actions
     .map((action) => `<a href="${action.href}">${action.label}</a>`)
     .join("");
+}
+
+function configureSupportLinks(role) {
+  const supportPanel = document.querySelector("#support-workflow-panel");
+  const supportTitle = document.querySelector("#support-workflow-title");
+  const supportLink = document.querySelector("#support-workflow-link");
+  const supportModule = document.querySelector("#support-module-card");
+  const supportModuleLink = document.querySelector("#support-module-link");
+
+  if (["Administrator", "Teacher"].includes(role)) {
+    return;
+  }
+
+  if (role === "Parent") {
+    supportTitle.textContent = "Message archive and support";
+    supportLink.textContent = "Open parent messages";
+    supportLink.href = "/parent-portal";
+    supportModuleLink.textContent = "Open messages";
+    supportModuleLink.href = "/parent-portal";
+    return;
+  }
+
+  supportPanel.hidden = true;
+  supportModule.hidden = true;
 }
 
 loadDashboard();

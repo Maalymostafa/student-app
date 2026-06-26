@@ -2,6 +2,7 @@ const childTabs = document.querySelector("#child-tabs");
 const childResults = document.querySelector("#parent-child-results");
 const supportForm = document.querySelector("#parent-support-form");
 const supportMessage = document.querySelector("#parent-support-message");
+const messageArchive = document.querySelector("#parent-message-archive");
 
 let portalChildren = [];
 let activeStudentCode = "";
@@ -18,6 +19,18 @@ async function fetchParentOverview() {
   portalChildren = children;
   activeStudentCode = children[0] ? children[0].studentCode : "";
   renderPortal();
+}
+
+async function fetchParentMessages() {
+  const response = await fetch("/api/parent/messages");
+
+  if (!response.ok) {
+    messageArchive.innerHTML = `<p class="empty-state">We could not load old messages.</p>`;
+    return;
+  }
+
+  const { messages } = await response.json();
+  renderMessageArchive(messages);
 }
 
 function renderPortal() {
@@ -94,6 +107,47 @@ function renderQuestion(label, score, correctionPhoto, feedback) {
   `;
 }
 
+function renderMessageArchive(messages) {
+  if (!messages.length) {
+    messageArchive.innerHTML = `<p class="empty-state">No previous messages yet.</p>`;
+    return;
+  }
+
+  messageArchive.innerHTML = messages
+    .map(
+      (message) => `
+        <article class="support-card">
+          <div class="student-main">
+            <div>
+              <span class="record-id">${message.id} - ${formatDate(message.createdAt)}</span>
+              <h3>${message.category}</h3>
+              <p>${message.studentName || "General academy message"}</p>
+            </div>
+            <span class="status-badge ${message.status.toLowerCase().replaceAll(" ", "-")}">${message.status}</span>
+          </div>
+          <div class="support-message-box">
+            <span>Your message</span>
+            <p>${message.message}</p>
+          </div>
+          <div class="ai-reply-panel">
+            <span>Academy reply</span>
+            <p>${message.finalReply || "The academy team has not replied yet."}</p>
+          </div>
+          <p class="student-note">Assigned to: ${message.assignedTo}. Last update: ${formatDate(message.updatedAt)}</p>
+        </article>
+      `
+    )
+    .join("");
+}
+
+function formatDate(value) {
+  if (!value) {
+    return "Not recorded";
+  }
+
+  return new Date(value).toLocaleString();
+}
+
 childTabs.addEventListener("click", (event) => {
   const button = event.target.closest("[data-child-code]");
 
@@ -125,7 +179,9 @@ supportForm.addEventListener("submit", async (event) => {
 
   if (response.ok) {
     supportForm.reset();
+    await fetchParentMessages();
   }
 });
 
 fetchParentOverview();
+fetchParentMessages();

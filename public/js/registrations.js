@@ -37,6 +37,10 @@ function renderRegistrations(registrations) {
               <dd>${registration.paymentMethod}</dd>
             </div>
             <div>
+              <dt>Grade</dt>
+              <dd>${registration.schoolGrade || "Not set"}</dd>
+            </div>
+            <div>
               <dt>Proof</dt>
               <dd>${registration.paymentProof}</dd>
             </div>

@@ -25,6 +25,10 @@ Key pages:
 - Parent portal: `http://localhost:3000/parent-portal`
 - Support inbox: `http://localhost:3000/support-inbox`
 
+Student codes are generated from the school grade plus a hexadecimal sequence:
+`g4`, `g5`, `g6`, `p1`, or `p2` + four hex digits + `h`.
+Example: `p20064h`.
+
 ## Demo login
 
 All demo accounts use the password `password123`.

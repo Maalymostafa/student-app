@@ -7,6 +7,7 @@ let registrations = [
     phone: "+20 100 300 4500",
     whatsapp: "+20 100 300 4500",
     email: "sara.ali@example.com",
+    schoolGrade: "Grade 4",
     course: "English Conversation - Level 1",
     paymentMethod: "Vodafone Cash",
     paymentProof: "payment-youssef-ali.jpg",
@@ -28,6 +29,7 @@ let registrations = [
     phone: "+20 111 909 7711",
     whatsapp: "+20 111 909 7711",
     email: "samir.nabil@example.com",
+    schoolGrade: "Prep 2",
     course: "English Grammar - Level 2",
     paymentMethod: "Instapay",
     paymentProof: "payment-farida-samir.png",
@@ -49,6 +51,7 @@ let registrations = [
     phone: "+20 122 707 8811",
     whatsapp: "+20 122 707 8811",
     email: "tarek.mahmoud@example.com",
+    schoolGrade: "Prep 2",
     course: "Placement Test",
     paymentMethod: "Bank transfer",
     paymentProof: "payment-karim-tarek.pdf",
@@ -60,9 +63,19 @@ let registrations = [
     },
     paymentStatus: "Verified",
     reservationStatus: "Confirmed",
-    studentCode: "STU-2026-001",
+    studentCode: "p20064h",
   },
 ];
+
+const CODE_START_NUMBER = 100;
+
+const gradeCodePrefixes = {
+  "Grade 4": "g4",
+  "Grade 5": "g5",
+  "Grade 6": "g6",
+  "Prep 1": "p1",
+  "Prep 2": "p2",
+};
 
 function getRegistrations() {
   return registrations;
@@ -84,8 +97,7 @@ function confirmRegistration(registrationId) {
   }
 
   if (!registration.studentCode) {
-    const nextNumber = registrations.filter((item) => item.studentCode).length + 1;
-    registration.studentCode = `STU-2026-${String(nextNumber).padStart(3, "0")}`;
+    registration.studentCode = generateStudentCode(registration);
   }
 
   registration.paymentStatus = "Verified";
@@ -95,6 +107,17 @@ function confirmRegistration(registrationId) {
     registration,
     message: buildConfirmationMessage(registration),
   };
+}
+
+function generateStudentCode(registration) {
+  const prefix = gradeCodePrefixes[registration.schoolGrade] || "g";
+  const existingCodesForGrade = registrations.filter((item) =>
+    item.studentCode && item.studentCode.toLowerCase().startsWith(prefix)
+  );
+  const nextNumber = CODE_START_NUMBER + existingCodesForGrade.length;
+  const hexadecimalNumber = nextNumber.toString(16).padStart(4, "0");
+
+  return `${prefix}${hexadecimalNumber}h`;
 }
 
 function buildConfirmationMessage(registration) {
@@ -150,6 +173,7 @@ module.exports = {
   getRegistrations,
   confirmRegistration,
   buildConfirmationMessage,
+  generateStudentCode,
   updatePaymentReview,
   updatePaymentProof,
 };

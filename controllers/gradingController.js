@@ -1,5 +1,9 @@
 const path = require("path");
-const { getSubmissions, updateSubmissionScore } = require("../models/gradingModel");
+const {
+  getSubmissions,
+  updateQuestionNotes,
+  updateSubmissionScore,
+} = require("../models/gradingModel");
 
 function showGradingPage(req, res) {
   return res.sendFile(path.join(__dirname, "..", "views", "grading.html"));
@@ -19,8 +23,24 @@ function updateScore(req, res) {
   return res.json({ submission });
 }
 
+function updateNotes(req, res) {
+  const submission = updateQuestionNotes(
+    req.params.id,
+    req.body.question,
+    req.body.feedback,
+    req.body.correctionPhoto
+  );
+
+  if (!submission) {
+    return res.status(400).json({ message: "Invalid submission or question" });
+  }
+
+  return res.json({ submission });
+}
+
 module.exports = {
   showGradingPage,
   listSubmissions,
   updateScore,
+  updateNotes,
 };

@@ -11,6 +11,10 @@ const submissions = [
     q2Image: "Handwriting photo: Q2 answer about sentence correction",
     q1Score: null,
     q2Score: null,
+    q1Feedback: "",
+    q2Feedback: "",
+    q1CorrectionPhoto: "",
+    q2CorrectionPhoto: "",
   },
   {
     id: "SUB-3002",
@@ -24,6 +28,10 @@ const submissions = [
     q2Image: "Handwriting photo: Q2 grammar correction",
     q1Score: 1,
     q2Score: null,
+    q1Feedback: "Good idea, but the verb ending needs correction.",
+    q2Feedback: "",
+    q1CorrectionPhoto: "omar-q1-corrected.jpg",
+    q2CorrectionPhoto: "",
   },
   {
     id: "SUB-3003",
@@ -37,6 +45,10 @@ const submissions = [
     q2Image: "No uploaded answer",
     q1Score: 0,
     q2Score: 0,
+    q1Feedback: "No answer uploaded.",
+    q2Feedback: "No answer uploaded.",
+    q1CorrectionPhoto: "",
+    q2CorrectionPhoto: "",
   },
 ];
 
@@ -55,6 +67,20 @@ function updateSubmissionScore(submissionId, question, score) {
   }
 
   submission[question] = parsedScore;
+  return addPerformance(submission);
+}
+
+function updateQuestionNotes(submissionId, question, feedback, correctionPhoto) {
+  const submission = submissions.find((item) => item.id === submissionId);
+  const allowedQuestions = ["q1", "q2"];
+
+  if (!submission || !allowedQuestions.includes(question)) {
+    return null;
+  }
+
+  submission[`${question}Feedback`] = feedback || "";
+  submission[`${question}CorrectionPhoto`] = correctionPhoto || "";
+
   return addPerformance(submission);
 }
 
@@ -78,4 +104,5 @@ function addPerformance(submission) {
 module.exports = {
   getSubmissions,
   updateSubmissionScore,
+  updateQuestionNotes,
 };

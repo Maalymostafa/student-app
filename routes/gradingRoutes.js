@@ -22,5 +22,11 @@ router.patch(
   requireRole(["Administrator", "Teacher"]),
   gradingController.updateScore
 );
+router.patch(
+  "/api/grading/submissions/:id/notes",
+  requireApiAuth,
+  requireRole(["Administrator", "Teacher"]),
+  gradingController.updateNotes
+);
 
 module.exports = router;

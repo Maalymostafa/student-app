@@ -88,6 +88,8 @@ Build a session grading page with:
 - Performance calculation.
 - Assistant teacher correction interface for webinar photo submissions.
 - Separate photo review areas for Q1 and Q2.
+- Optional assistant feedback for each question.
+- Optional corrected-photo upload/reference for each question.
 
 Then build Zoom chat import:
 

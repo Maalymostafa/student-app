@@ -151,6 +151,23 @@ Parent data should include:
 - Children
 - Balance summary
 
+## Communication And Support
+
+Miss Hoda Ismail is the main teacher and conducts the sessions.
+Assistant teachers are assigned by grade to help with grading, student questions during sessions, and student questions after sessions.
+Miss Hoda's manager is responsible for communication access control, including letting people into or out of groups/channels.
+
+AMS should eventually include an internal communication channel instead of relying only on WhatsApp groups.
+Parents and students should be able to communicate with:
+
+- Technical support
+- Assistant teachers
+- Miss Hoda Ismail
+- Miss Hoda's manager
+
+AI should help respond to repeated questions by suggesting or sending approved answers.
+Unclear, sensitive, or personal questions should be routed to the correct human role.
+
 ## Notifications
 
 Notifications are the heart of the application.
@@ -165,6 +182,7 @@ Every notification should eventually support:
 
 Channels:
 
+- Internal AMS channel
 - WhatsApp
 - Email
 - SMS later

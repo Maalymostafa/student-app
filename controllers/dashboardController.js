@@ -73,11 +73,11 @@ const roleDashboards = {
   },
 };
 
-function getDashboard(req, res) {
+async function getDashboard(req, res) {
   const user = req.session.user;
   const dashboard = {
     ...(roleDashboards[user.role] || roleDashboards.Student),
-    metrics: buildMetrics(user.role),
+    metrics: await buildMetrics(user.role),
   };
 
   return res.json({
@@ -86,14 +86,14 @@ function getDashboard(req, res) {
   });
 }
 
-function buildMetrics(role) {
-  const students = getStudents();
-  const registrations = getRegistrations();
-  const attendanceRuns = getAttendanceRuns();
-  const submissions = getSubmissions();
-  const quizzes = getQuizzes();
-  const lateRequests = getLateRequests();
-  const supportMessages = getSupportMessages();
+async function buildMetrics(role) {
+  const students = await getStudents();
+  const registrations = await getRegistrations();
+  const attendanceRuns = await getAttendanceRuns();
+  const submissions = await getSubmissions();
+  const quizzes = await getQuizzes();
+  const lateRequests = await getLateRequests();
+  const supportMessages = await getSupportMessages();
 
   if (role === "Administrator") {
     return [

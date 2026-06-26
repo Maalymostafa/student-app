@@ -7,11 +7,11 @@ function showParentPortal(req, res) {
   return res.sendFile(path.join(__dirname, "..", "views", "parent-portal.html"));
 }
 
-function getParentOverview(req, res) {
-  const children = getChildrenForParent(req.session.user.id).map((child) => ({
+async function getParentOverview(req, res) {
+  const children = await Promise.all((await getChildrenForParent(req.session.user.id)).map(async (child) => ({
     ...child,
-    results: getStudentResults(child.studentCode),
-  }));
+    results: await getStudentResults(child.studentCode),
+  })));
 
   return res.json({
     parent: req.session.user,
@@ -19,18 +19,18 @@ function getParentOverview(req, res) {
   });
 }
 
-function listParentMessages(req, res) {
+async function listParentMessages(req, res) {
   return res.json({
-    messages: getMessagesForUser(req.session.user.id),
+    messages: await getMessagesForUser(req.session.user.id),
   });
 }
 
-function createParentMessage(req, res) {
+async function createParentMessage(req, res) {
   if (!req.body.message) {
     return res.status(400).json({ message: "Message is required" });
   }
 
-  const supportMessage = createSupportMessage({
+  const supportMessage = await createSupportMessage({
     senderName: req.body.senderName || req.session.user.name,
     senderRole: "Parent",
     studentName: req.body.studentName || "",

@@ -1,33 +1,34 @@
-const db = require("../database/db");
+const db = require("../database/client");
 
-function getQuizzes() {
-  return db.prepare("SELECT * FROM quizzes ORDER BY rowid DESC").all().map(hydrateQuiz).map(addQuizState);
+async function getQuizzes() {
+  const rows = await db.all("SELECT * FROM quizzes ORDER BY rowid DESC");
+  return Promise.all(rows.map(async (quiz) => addQuizState(await hydrateQuiz(quiz))));
 }
 
-function getQuiz(quizId) {
-  const quiz = db.prepare("SELECT * FROM quizzes WHERE id = ?").get(quizId);
-  return quiz ? addQuizState(hydrateQuiz(quiz)) : null;
+async function getQuiz(quizId) {
+  const quiz = await db.get("SELECT * FROM quizzes WHERE id = ?", [quizId]);
+  return quiz ? addQuizState(await hydrateQuiz(quiz)) : null;
 }
 
-function createQuiz(data) {
+async function createQuiz(data) {
   const quiz = {
-    id: getNextId("QUIZ", "quizzes", 5000),
+    id: await getNextId("QUIZ", "quizzes", 5000),
     title: data.title,
     sessionTitle: data.sessionTitle,
     schoolGrade: data.schoolGrade,
     closesAt: data.closesAt,
   };
 
-  db.prepare(`
+  await db.run(`
     INSERT INTO quizzes (id, title, sessionTitle, schoolGrade, closesAt)
     VALUES (@id, @title, @sessionTitle, @schoolGrade, @closesAt)
-  `).run(quiz);
+  `, quiz);
 
   return getQuiz(quiz.id);
 }
 
-function updateQuiz(quizId, updates) {
-  const quiz = getQuiz(quizId);
+async function updateQuiz(quizId, updates) {
+  const quiz = await getQuiz(quizId);
 
   if (!quiz) {
     return null;
@@ -41,40 +42,40 @@ function updateQuiz(quizId, updates) {
     closesAt: updates.closesAt !== undefined ? updates.closesAt : quiz.closesAt,
   };
 
-  db.prepare(`
+  await db.run(`
     UPDATE quizzes
     SET title = @title, sessionTitle = @sessionTitle, schoolGrade = @schoolGrade, closesAt = @closesAt
     WHERE id = @id
-  `).run(nextQuiz);
+  `, nextQuiz);
 
   return getQuiz(quizId);
 }
 
-function deleteQuiz(quizId) {
-  const quiz = getQuiz(quizId);
+async function deleteQuiz(quizId) {
+  const quiz = await getQuiz(quizId);
 
   if (!quiz) {
     return null;
   }
 
-  db.prepare("DELETE FROM quiz_submissions WHERE quizId = ?").run(quizId);
-  db.prepare("DELETE FROM quiz_late_requests WHERE quizId = ?").run(quizId);
-  db.prepare("DELETE FROM quizzes WHERE id = ?").run(quizId);
+  await db.run("DELETE FROM quiz_submissions WHERE quizId = ?", [quizId]);
+  await db.run("DELETE FROM quiz_late_requests WHERE quizId = ?", [quizId]);
+  await db.run("DELETE FROM quizzes WHERE id = ?", [quizId]);
   return quiz;
 }
 
-function addQuestion(quizId, data) {
-  const quiz = getQuiz(quizId);
+async function addQuestion(quizId, data) {
+  const quiz = await getQuiz(quizId);
 
   if (!quiz) {
     return null;
   }
 
   const question = buildQuestion(data, quiz.questions.length + 1);
-  db.prepare(`
+  await db.run(`
     INSERT INTO quiz_questions (id, quizId, type, prompt, choicesJson, correctAnswer, modelAnswer, position)
     VALUES (@id, @quizId, @type, @prompt, @choicesJson, @correctAnswer, @modelAnswer, @position)
-  `).run({
+  `, {
     id: question.id,
     quizId,
     type: question.type,
@@ -88,8 +89,8 @@ function addQuestion(quizId, data) {
   return getQuiz(quizId);
 }
 
-function updateQuestion(quizId, questionId, data) {
-  const quiz = getQuiz(quizId);
+async function updateQuestion(quizId, questionId, data) {
+  const quiz = await getQuiz(quizId);
 
   if (!quiz) {
     return null;
@@ -107,11 +108,11 @@ function updateQuestion(quizId, questionId, data) {
     id: questionId,
   };
 
-  db.prepare(`
+  await db.run(`
     UPDATE quiz_questions
     SET type = @type, prompt = @prompt, choicesJson = @choicesJson, correctAnswer = @correctAnswer, modelAnswer = @modelAnswer
     WHERE id = @id AND quizId = @quizId
-  `).run({
+  `, {
     id: questionId,
     quizId,
     type: question.type,
@@ -124,25 +125,25 @@ function updateQuestion(quizId, questionId, data) {
   return getQuiz(quizId);
 }
 
-function deleteQuestion(quizId, questionId) {
-  const quiz = getQuiz(quizId);
+async function deleteQuestion(quizId, questionId) {
+  const quiz = await getQuiz(quizId);
 
   if (!quiz || !quiz.questions.some((question) => question.id === questionId)) {
     return null;
   }
 
-  db.prepare("DELETE FROM quiz_questions WHERE quizId = ? AND id = ?").run(quizId, questionId);
+  await db.run("DELETE FROM quiz_questions WHERE quizId = ? AND id = ?", [quizId, questionId]);
   return getQuiz(quizId);
 }
 
-function submitQuiz(quizId, studentCode, answers) {
-  const quiz = getQuiz(quizId);
+async function submitQuiz(quizId, studentCode, answers) {
+  const quiz = await getQuiz(quizId);
 
   if (!quiz) {
     return { error: "Quiz not found" };
   }
 
-  if (quiz.closed && !hasApprovedLateRequest(quizId, studentCode)) {
+  if (quiz.closed && !(await hasApprovedLateRequest(quizId, studentCode))) {
     return { error: "Quiz is closed. Send a late permission request first." };
   }
 
@@ -150,7 +151,7 @@ function submitQuiz(quizId, studentCode, answers) {
   const score = gradedAnswers.reduce((sum, answer) => sum + answer.score, 0);
   const maxScore = quiz.questions.length;
   const submission = {
-    id: getNextId("QSUB", "quiz_submissions", 0, 4),
+    id: await getNextId("QSUB", "quiz_submissions", 0, 4),
     quizId,
     quizTitle: quiz.title,
     sessionTitle: quiz.sessionTitle,
@@ -163,27 +164,27 @@ function submitQuiz(quizId, studentCode, answers) {
     answersJson: JSON.stringify(gradedAnswers),
   };
 
-  db.prepare(`
+  await db.run(`
     INSERT INTO quiz_submissions (
       id, quizId, quizTitle, sessionTitle, schoolGrade, studentCode, submittedAt, score, maxScore, percentage, answersJson
     )
     VALUES (
       @id, @quizId, @quizTitle, @sessionTitle, @schoolGrade, @studentCode, @submittedAt, @score, @maxScore, @percentage, @answersJson
     )
-  `).run(submission);
+  `, submission);
 
   return { submission: mapSubmission(submission) };
 }
 
-function createLateRequest(quizId, studentCode, reason) {
-  const quiz = getQuiz(quizId);
+async function createLateRequest(quizId, studentCode, reason) {
+  const quiz = await getQuiz(quizId);
 
   if (!quiz) {
     return null;
   }
 
   const request = {
-    id: getNextId("LATE", "quiz_late_requests", 0, 4),
+    id: await getNextId("LATE", "quiz_late_requests", 0, 4),
     quizId,
     quizTitle: quiz.title,
     studentCode,
@@ -192,36 +193,38 @@ function createLateRequest(quizId, studentCode, reason) {
     requestedAt: new Date().toISOString(),
   };
 
-  db.prepare(`
+  await db.run(`
     INSERT INTO quiz_late_requests (id, quizId, quizTitle, studentCode, reason, status, requestedAt)
     VALUES (@id, @quizId, @quizTitle, @studentCode, @reason, @status, @requestedAt)
-  `).run(request);
+  `, request);
 
   return request;
 }
 
-function updateLateRequest(requestId, status) {
-  const request = db.prepare("SELECT * FROM quiz_late_requests WHERE id = ?").get(requestId);
+async function updateLateRequest(requestId, status) {
+  const request = await db.get("SELECT * FROM quiz_late_requests WHERE id = ?", [requestId]);
   const allowedStatuses = ["Approved", "Rejected"];
 
   if (!request || !allowedStatuses.includes(status)) {
     return null;
   }
 
-  db.prepare("UPDATE quiz_late_requests SET status = ? WHERE id = ?").run(status, requestId);
-  return db.prepare("SELECT * FROM quiz_late_requests WHERE id = ?").get(requestId);
+  await db.run("UPDATE quiz_late_requests SET status = ? WHERE id = ?", [status, requestId]);
+  return db.get("SELECT * FROM quiz_late_requests WHERE id = ?", [requestId]);
 }
 
-function getLateRequests() {
-  return db.prepare("SELECT * FROM quiz_late_requests ORDER BY requestedAt DESC, rowid DESC").all();
+async function getLateRequests() {
+  return db.all("SELECT * FROM quiz_late_requests ORDER BY requestedAt DESC, rowid DESC");
 }
 
-function getQuizResults(studentCode) {
-  return db.prepare("SELECT * FROM quiz_submissions WHERE studentCode = ? ORDER BY submittedAt DESC, rowid DESC").all(studentCode).map(mapSubmission);
+async function getQuizResults(studentCode) {
+  const rows = await db.all("SELECT * FROM quiz_submissions WHERE studentCode = ? ORDER BY submittedAt DESC, rowid DESC", [studentCode]);
+  return rows.map(mapSubmission);
 }
 
-function hydrateQuiz(quiz) {
-  const questions = db.prepare("SELECT * FROM quiz_questions WHERE quizId = ? ORDER BY position, rowid").all(quiz.id).map(mapQuestion);
+async function hydrateQuiz(quiz) {
+  const rows = await db.all("SELECT * FROM quiz_questions WHERE quizId = ? ORDER BY position, rowid", [quiz.id]);
+  const questions = rows.map(mapQuestion);
 
   return {
     ...quiz,
@@ -337,12 +340,12 @@ function gradeAnswer(question, rawAnswer) {
   };
 }
 
-function hasApprovedLateRequest(quizId, studentCode) {
+async function hasApprovedLateRequest(quizId, studentCode) {
   return Boolean(
-    db.prepare(`
+    await db.get(`
       SELECT id FROM quiz_late_requests
       WHERE quizId = ? AND studentCode = ? AND status = 'Approved'
-    `).get(quizId, studentCode)
+    `, [quizId, studentCode])
   );
 }
 
@@ -356,8 +359,8 @@ function addQuizState(quiz) {
   };
 }
 
-function getNextId(prefix, tableName, startNumber, padLength = 0) {
-  const rows = db.prepare(`SELECT id FROM ${tableName} WHERE id LIKE ?`).all(`${prefix}-%`);
+async function getNextId(prefix, tableName, startNumber, padLength = 0) {
+  const rows = await db.all(`SELECT id FROM ${tableName} WHERE id LIKE ?`, [`${prefix}-%`]);
   const highestNumber = rows.reduce((highest, row) => {
     const number = Number(String(row.id).replace(`${prefix}-`, ""));
     return Number.isNaN(number) ? highest : Math.max(highest, number);

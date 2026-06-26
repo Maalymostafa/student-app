@@ -15,9 +15,9 @@ function showLogin(req, res) {
   return res.sendFile(path.join(__dirname, "..", "views", "login.html"));
 }
 
-function login(req, res) {
+async function login(req, res) {
   const { email, password } = req.body;
-  const user = findUserByCredentials(email, password);
+  const user = await findUserByCredentials(email, password);
 
   if (!user) {
     return res.redirect("/login?error=invalid");
@@ -42,8 +42,8 @@ const showAccount = [
   },
 ];
 
-function showDemoAccounts(req, res) {
-  return res.json(getDemoAccounts());
+async function showDemoAccounts(req, res) {
+  return res.json(await getDemoAccounts());
 }
 
 function logout(req, res) {
@@ -52,14 +52,14 @@ function logout(req, res) {
   });
 }
 
-function changePassword(req, res) {
+async function changePassword(req, res) {
   const { currentPassword, newPassword, confirmPassword } = req.body;
 
   if (newPassword !== confirmPassword) {
     return res.status(400).json({ message: "New password confirmation does not match" });
   }
 
-  const result = updateUserPassword(req.session.user.id, currentPassword, newPassword);
+  const result = await updateUserPassword(req.session.user.id, currentPassword, newPassword);
 
   if (result.error) {
     return res.status(400).json({ message: result.error });

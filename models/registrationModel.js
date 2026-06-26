@@ -1,4 +1,4 @@
-const db = require("../database/db");
+const db = require("../database/client");
 
 const CODE_START_NUMBER = 100;
 
@@ -25,17 +25,18 @@ function mapRegistration(row) {
   };
 }
 
-function getRegistrations() {
-  return db.prepare("SELECT * FROM registrations ORDER BY submittedAt DESC, rowid DESC").all().map(mapRegistration);
+async function getRegistrations() {
+  const rows = await db.all("SELECT * FROM registrations ORDER BY submittedAt DESC, rowid DESC");
+  return rows.map(mapRegistration);
 }
 
-function getRegistration(registrationId) {
-  return mapRegistration(db.prepare("SELECT * FROM registrations WHERE id = ?").get(registrationId));
+async function getRegistration(registrationId) {
+  return mapRegistration(await db.get("SELECT * FROM registrations WHERE id = ?", [registrationId]));
 }
 
-function getRegistrationWindowStatus(date = new Date()) {
+async function getRegistrationWindowStatus(date = new Date()) {
   const dayOfMonth = date.getDate();
-  const settings = db.prepare("SELECT * FROM registration_settings WHERE id = 1").get();
+  const settings = await db.get("SELECT * FROM registration_settings WHERE id = 1");
   const opensDay = settings.opensDay;
   const closesDay = settings.closesDay;
   const isOpen = isDayInsideWindow(dayOfMonth, opensDay, closesDay);
@@ -52,7 +53,7 @@ function getRegistrationWindowStatus(date = new Date()) {
   };
 }
 
-function updateRegistrationWindowSettings(settings, userName = "") {
+async function updateRegistrationWindowSettings(settings, userName = "") {
   const opensDay = Number(settings.opensDay);
   const closesDay = Number(settings.closesDay);
 
@@ -64,19 +65,19 @@ function updateRegistrationWindowSettings(settings, userName = "") {
     return { error: "Opening and closing days must be between 1 and 31" };
   }
 
-  db.prepare(`
+  await db.run(`
     UPDATE registration_settings
     SET opensDay = ?, closesDay = ?, updatedAt = ?, updatedBy = ?
     WHERE id = 1
-  `).run(opensDay, closesDay, new Date().toISOString(), userName);
+  `, [opensDay, closesDay, new Date().toISOString(), userName]);
 
-  return { windowStatus: getRegistrationWindowStatus() };
+  return { windowStatus: await getRegistrationWindowStatus() };
 }
 
-function createPublicRegistration(registrationData) {
-  const windowStatus = getRegistrationWindowStatus();
+async function createPublicRegistration(registrationData) {
+  const windowStatus = await getRegistrationWindowStatus();
   const registration = {
-    id: getNextId("REG", "registrations", 2000),
+    id: await getNextId("REG", "registrations", 2000),
     submittedAt: new Date().toISOString().slice(0, 10),
     applicantType: registrationData.applicantType || "Parent",
     studentName: registrationData.studentName,
@@ -101,7 +102,7 @@ function createPublicRegistration(registrationData) {
     rejectedAt: "",
   };
 
-  db.prepare(`
+  await db.run(`
     INSERT INTO registrations (
       id, submittedAt, applicantType, studentName, parentName, phone, whatsapp, email, schoolGrade,
       course, paymentMethod, paymentProof, paymentProofUrl, refundPhone, intakeStatus,
@@ -112,7 +113,7 @@ function createPublicRegistration(registrationData) {
       @course, @paymentMethod, @paymentProof, @paymentProofUrl, @refundPhone, @intakeStatus,
       @recipientMatches, @dateWithinRange, @timePresent, @paymentStatus, @reservationStatus, @studentCode, @rejectionReason, @rejectedAt
     )
-  `).run(registration);
+  `, registration);
 
   return {
     registration: mapRegistration(registration),
@@ -120,8 +121,8 @@ function createPublicRegistration(registrationData) {
   };
 }
 
-function confirmRegistration(registrationId) {
-  const registration = getRegistration(registrationId);
+async function confirmRegistration(registrationId) {
+  const registration = await getRegistration(registrationId);
 
   if (!registration) {
     return null;
@@ -135,40 +136,40 @@ function confirmRegistration(registrationId) {
     };
   }
 
-  const studentCode = registration.studentCode || generateStudentCode(registration);
-  db.prepare(`
+  const studentCode = registration.studentCode || await generateStudentCode(registration);
+  await db.run(`
     UPDATE registrations
     SET studentCode = ?, paymentStatus = 'Verified', reservationStatus = 'Confirmed'
     WHERE id = ?
-  `).run(studentCode, registrationId);
+  `, [studentCode, registrationId]);
 
-  const updatedRegistration = getRegistration(registrationId);
+  const updatedRegistration = await getRegistration(registrationId);
   return {
     registration: updatedRegistration,
     message: buildConfirmationMessage(updatedRegistration),
   };
 }
 
-function rejectRegistration(registrationId, reason = "") {
-  const registration = getRegistration(registrationId);
+async function rejectRegistration(registrationId, reason = "") {
+  const registration = await getRegistration(registrationId);
 
   if (!registration) {
     return null;
   }
 
-  db.prepare(`
+  await db.run(`
     UPDATE registrations
     SET paymentStatus = 'Rejected', reservationStatus = 'Rejected', rejectionReason = ?, rejectedAt = ?
     WHERE id = ?
-  `).run(reason, new Date().toISOString(), registrationId);
+  `, [reason, new Date().toISOString(), registrationId]);
 
   return getRegistration(registrationId);
 }
 
-function generateStudentCode(registration) {
+async function generateStudentCode(registration) {
   const prefix = gradeCodePrefixes[registration.schoolGrade] || "g";
-  const count = db.prepare("SELECT COUNT(*) AS count FROM registrations WHERE lower(studentCode) LIKE ?").get(`${prefix}%`).count;
-  const nextNumber = CODE_START_NUMBER + count;
+  const row = await db.get("SELECT COUNT(*) AS count FROM registrations WHERE lower(studentCode) LIKE ?", [`${prefix}%`]);
+  const nextNumber = CODE_START_NUMBER + Number(row.count || 0);
   const hexadecimalNumber = nextNumber.toString(16).padStart(4, "0");
 
   return `${prefix}${hexadecimalNumber}h`;
@@ -178,8 +179,8 @@ function buildConfirmationMessage(registration) {
   return `Hello ${registration.parentName}, payment received and reservation confirmed for ${registration.studentName}. Your student code is ${registration.studentCode}. Please keep it with you. We will inform you with any updates.`;
 }
 
-function updatePaymentReview(registrationId, review) {
-  const registration = getRegistration(registrationId);
+async function updatePaymentReview(registrationId, review) {
+  const registration = await getRegistration(registrationId);
 
   if (!registration) {
     return null;
@@ -190,28 +191,28 @@ function updatePaymentReview(registrationId, review) {
   const timePresent = review.timePresent === true ? 1 : 0;
   const paymentStatus = recipientMatches && dateWithinRange && timePresent ? "Ready to confirm" : "Needs review";
 
-  db.prepare(`
+  await db.run(`
     UPDATE registrations
     SET recipientMatches = ?, dateWithinRange = ?, timePresent = ?, paymentStatus = ?
     WHERE id = ?
-  `).run(recipientMatches, dateWithinRange, timePresent, paymentStatus, registrationId);
+  `, [recipientMatches, dateWithinRange, timePresent, paymentStatus, registrationId]);
 
   return getRegistration(registrationId);
 }
 
-function updatePaymentProof(registrationId, fileName, fileUrl) {
-  const registration = getRegistration(registrationId);
+async function updatePaymentProof(registrationId, fileName, fileUrl) {
+  const registration = await getRegistration(registrationId);
 
   if (!registration) {
     return null;
   }
 
-  db.prepare(`
+  await db.run(`
     UPDATE registrations
     SET paymentProof = ?, paymentProofUrl = ?, paymentStatus = 'Needs review',
         recipientMatches = 0, dateWithinRange = 0, timePresent = 0
     WHERE id = ?
-  `).run(fileName, fileUrl, registrationId);
+  `, [fileName, fileUrl, registrationId]);
 
   return getRegistration(registrationId);
 }
@@ -233,8 +234,8 @@ function isDayInsideWindow(dayOfMonth, opensDay, closesDay) {
   return dayOfMonth >= opensDay || dayOfMonth <= closesDay;
 }
 
-function getNextId(prefix, tableName, startNumber) {
-  const rows = db.prepare(`SELECT id FROM ${tableName} WHERE id LIKE ?`).all(`${prefix}-%`);
+async function getNextId(prefix, tableName, startNumber) {
+  const rows = await db.all(`SELECT id FROM ${tableName} WHERE id LIKE ?`, [`${prefix}-%`]);
   const highestNumber = rows.reduce((highest, row) => {
     const number = Number(String(row.id).replace(`${prefix}-`, ""));
     return Number.isNaN(number) ? highest : Math.max(highest, number);

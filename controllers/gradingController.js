@@ -14,17 +14,17 @@ function showStudentResultsPage(req, res) {
   return res.sendFile(path.join(__dirname, "..", "views", "student-results.html"));
 }
 
-function listSubmissions(req, res) {
-  return res.json({ submissions: getSubmissions() });
+async function listSubmissions(req, res) {
+  return res.json({ submissions: await getSubmissions() });
 }
 
-function listStudentResults(req, res) {
+async function listStudentResults(req, res) {
   const studentCode = req.query.studentCode || "STU-2026-001";
-  return res.json({ results: getStudentResults(studentCode), studentCode });
+  return res.json({ results: await getStudentResults(studentCode), studentCode });
 }
 
-function updateScore(req, res) {
-  const submission = updateSubmissionScore(req.params.id, req.body.question, req.body.score);
+async function updateScore(req, res) {
+  const submission = await updateSubmissionScore(req.params.id, req.body.question, req.body.score);
 
   if (!submission) {
     return res.status(400).json({ message: "Invalid submission, question, or score" });
@@ -33,8 +33,8 @@ function updateScore(req, res) {
   return res.json({ submission });
 }
 
-function updateNotes(req, res) {
-  const submission = updateQuestionNotes(
+async function updateNotes(req, res) {
+  const submission = await updateQuestionNotes(
     req.params.id,
     req.body.question,
     req.body.feedback,
@@ -48,12 +48,12 @@ function updateNotes(req, res) {
   return res.json({ submission });
 }
 
-function uploadCorrectionPhoto(req, res) {
+async function uploadCorrectionPhoto(req, res) {
   if (!req.file) {
     return res.status(400).json({ message: "Correction photo is required" });
   }
 
-  const submission = updateQuestionNotes(
+  const submission = await updateQuestionNotes(
     req.params.id,
     req.body.question,
     req.body.feedback,

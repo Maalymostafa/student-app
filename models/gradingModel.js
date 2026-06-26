@@ -1,18 +1,20 @@
-const db = require("../database/db");
+const db = require("../database/client");
 
-function getSubmissions() {
-  return db.prepare("SELECT * FROM grading_submissions ORDER BY rowid").all().map(addPerformance);
+async function getSubmissions() {
+  const rows = await db.all("SELECT * FROM grading_submissions ORDER BY rowid");
+  return rows.map(addPerformance);
 }
 
-function getStudentResults(studentCode) {
-  return db.prepare("SELECT * FROM grading_submissions WHERE studentCode = ? ORDER BY rowid DESC").all(studentCode)
+async function getStudentResults(studentCode) {
+  const rows = await db.all("SELECT * FROM grading_submissions WHERE studentCode = ? ORDER BY rowid DESC", [studentCode]);
+  return rows
     .map(addPerformance)
     .map(addKidMessage);
 }
 
-function updateSubmissionScore(submissionId, question, score) {
+async function updateSubmissionScore(submissionId, question, score) {
   const parsedScore = Number(score);
-  const submission = getSubmission(submissionId);
+  const submission = await getSubmission(submissionId);
   const allowedQuestions = ["q1Score", "q2Score"];
   const allowedScores = [0, 1, 2];
 
@@ -20,29 +22,29 @@ function updateSubmissionScore(submissionId, question, score) {
     return null;
   }
 
-  db.prepare(`UPDATE grading_submissions SET ${question} = ? WHERE id = ?`).run(parsedScore, submissionId);
-  return addPerformance(getSubmission(submissionId));
+  await db.run(`UPDATE grading_submissions SET ${question} = ? WHERE id = ?`, [parsedScore, submissionId]);
+  return addPerformance(await getSubmission(submissionId));
 }
 
-function updateQuestionNotes(submissionId, question, feedback, correctionPhoto) {
-  const submission = getSubmission(submissionId);
+async function updateQuestionNotes(submissionId, question, feedback, correctionPhoto) {
+  const submission = await getSubmission(submissionId);
   const allowedQuestions = ["q1", "q2"];
 
   if (!submission || !allowedQuestions.includes(question)) {
     return null;
   }
 
-  db.prepare(`
+  await db.run(`
     UPDATE grading_submissions
     SET ${question}Feedback = ?, ${question}CorrectionPhoto = ?
     WHERE id = ?
-  `).run(feedback || "", correctionPhoto || "", submissionId);
+  `, [feedback || "", correctionPhoto || "", submissionId]);
 
-  return addPerformance(getSubmission(submissionId));
+  return addPerformance(await getSubmission(submissionId));
 }
 
-function getSubmission(submissionId) {
-  return db.prepare("SELECT * FROM grading_submissions WHERE id = ?").get(submissionId) || null;
+async function getSubmission(submissionId) {
+  return db.get("SELECT * FROM grading_submissions WHERE id = ?", [submissionId]);
 }
 
 function addPerformance(submission) {

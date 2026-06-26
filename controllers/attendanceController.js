@@ -12,19 +12,19 @@ function showAttendancePage(req, res) {
   return res.sendFile(path.join(__dirname, "..", "views", "attendance.html"));
 }
 
-function listAttendanceSetup(req, res) {
+async function listAttendanceSetup(req, res) {
   return res.json({
     grades: getGradeOptions(),
-    runs: getAttendanceRuns(),
+    runs: await getAttendanceRuns(),
   });
 }
 
-function listAttendanceRecords(req, res) {
-  return res.json({ records: getAttendanceRuns() });
+async function listAttendanceRecords(req, res) {
+  return res.json({ records: await getAttendanceRuns() });
 }
 
-function getAttendance(req, res) {
-  const run = getAttendanceRun(req.params.id);
+async function getAttendance(req, res) {
+  const run = await getAttendanceRun(req.params.id);
 
   if (!run) {
     return res.status(404).json({ message: "Attendance run not found" });
@@ -33,8 +33,8 @@ function getAttendance(req, res) {
   return res.json({ run });
 }
 
-function updateAttendance(req, res) {
-  const run = updateAttendanceRun(req.params.id, req.body);
+async function updateAttendance(req, res) {
+  const run = await updateAttendanceRun(req.params.id, req.body);
 
   if (!run) {
     return res.status(404).json({ message: "Attendance run not found" });
@@ -43,8 +43,8 @@ function updateAttendance(req, res) {
   return res.json({ run });
 }
 
-function removeAttendance(req, res) {
-  const run = deleteAttendanceRun(req.params.id);
+async function removeAttendance(req, res) {
+  const run = await deleteAttendanceRun(req.params.id);
 
   if (!run) {
     return res.status(404).json({ message: "Attendance run not found" });
@@ -53,13 +53,13 @@ function removeAttendance(req, res) {
   return res.json({ run });
 }
 
-function uploadZoomChat(req, res) {
+async function uploadZoomChat(req, res) {
   if (!req.file) {
     return res.status(400).json({ message: "Zoom chat text file is required" });
   }
 
   const chatText = req.file.buffer.toString("utf8");
-  const result = analyzeZoomChatAttendance({
+  const result = await analyzeZoomChatAttendance({
     schoolGrade: req.body.schoolGrade,
     sessionTitle: req.body.sessionTitle,
     chatText,

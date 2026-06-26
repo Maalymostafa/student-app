@@ -19,16 +19,16 @@ function showPublicRegistrationPage(req, res) {
   return res.sendFile(path.join(__dirname, "..", "views", "register.html"));
 }
 
-function getPublicRegistrationStatus(req, res) {
-  return res.json({ windowStatus: getRegistrationWindowStatus() });
+async function getPublicRegistrationStatus(req, res) {
+  return res.json({ windowStatus: await getRegistrationWindowStatus() });
 }
 
-function getManagedRegistrationWindow(req, res) {
-  return res.json({ windowStatus: getRegistrationWindowStatus() });
+async function getManagedRegistrationWindow(req, res) {
+  return res.json({ windowStatus: await getRegistrationWindowStatus() });
 }
 
-function updateManagedRegistrationWindow(req, res) {
-  const result = updateRegistrationWindowSettings(req.body, req.session.user.name);
+async function updateManagedRegistrationWindow(req, res) {
+  const result = await updateRegistrationWindowSettings(req.body, req.session.user.name);
 
   if (result.error) {
     return res.status(400).json({ message: result.error });
@@ -37,8 +37,8 @@ function updateManagedRegistrationWindow(req, res) {
   return res.json(result);
 }
 
-function listRegistrations(req, res) {
-  const registrations = getRegistrations().map((registration) => ({
+async function listRegistrations(req, res) {
+  const registrations = (await getRegistrations()).map((registration) => ({
     ...registration,
     confirmationMessage: registration.studentCode
       ? buildConfirmationMessage(registration)
@@ -48,8 +48,8 @@ function listRegistrations(req, res) {
   return res.json({ registrations, user: req.session.user });
 }
 
-function confirm(req, res) {
-  const result = confirmRegistration(req.params.id);
+async function confirm(req, res) {
+  const result = await confirmRegistration(req.params.id);
 
   if (!result) {
     return res.status(404).json({ message: "Registration not found" });
@@ -62,7 +62,7 @@ function confirm(req, res) {
   return res.json(result);
 }
 
-function createPublic(req, res) {
+async function createPublic(req, res) {
   const requiredFields = [
     "studentName",
     "parentName",
@@ -70,7 +70,7 @@ function createPublic(req, res) {
     "email",
     "schoolGrade",
   ];
-  const windowStatus = getRegistrationWindowStatus();
+  const windowStatus = await getRegistrationWindowStatus();
   const missingFields = requiredFields.filter((field) => !req.body[field]);
 
   if (!windowStatus.isOpen && !req.body.refundPhone) {
@@ -85,11 +85,11 @@ function createPublic(req, res) {
     });
   }
 
-  return res.status(201).json(createPublicRegistration(req.body));
+  return res.status(201).json(await createPublicRegistration(req.body));
 }
 
-function reviewPayment(req, res) {
-  const registration = updatePaymentReview(req.params.id, req.body);
+async function reviewPayment(req, res) {
+  const registration = await updatePaymentReview(req.params.id, req.body);
 
   if (!registration) {
     return res.status(404).json({ message: "Registration not found" });
@@ -98,8 +98,8 @@ function reviewPayment(req, res) {
   return res.json({ registration });
 }
 
-function reject(req, res) {
-  const registration = rejectRegistration(req.params.id, req.body.reason || "");
+async function reject(req, res) {
+  const registration = await rejectRegistration(req.params.id, req.body.reason || "");
 
   if (!registration) {
     return res.status(404).json({ message: "Registration not found" });
@@ -108,12 +108,12 @@ function reject(req, res) {
   return res.json({ registration });
 }
 
-function uploadPaymentProof(req, res) {
+async function uploadPaymentProof(req, res) {
   if (!req.file) {
     return res.status(400).json({ message: "Payment photo is required" });
   }
 
-  const registration = updatePaymentProof(
+  const registration = await updatePaymentProof(
     req.params.id,
     req.file.originalname,
     `/uploads/${req.file.filename}`

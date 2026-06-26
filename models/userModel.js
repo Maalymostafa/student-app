@@ -1,7 +1,7 @@
-const db = require("../database/db");
+const db = require("../database/client");
 
-function findUserByCredentials(email, password) {
-  return db.prepare("SELECT * FROM users WHERE email = ? AND password = ?").get(email, password);
+async function findUserByCredentials(email, password) {
+  return db.get("SELECT * FROM users WHERE email = ? AND password = ?", [email, password]);
 }
 
 function getPublicUser(user) {
@@ -13,16 +13,16 @@ function getPublicUser(user) {
   };
 }
 
-function getDemoAccounts() {
-  return db.prepare("SELECT email, name, role FROM users ORDER BY rowid").all();
+async function getDemoAccounts() {
+  return db.all("SELECT email, name, role FROM users ORDER BY rowid");
 }
 
-function findUserById(userId) {
-  return db.prepare("SELECT * FROM users WHERE id = ?").get(userId) || null;
+async function findUserById(userId) {
+  return db.get("SELECT * FROM users WHERE id = ?", [userId]);
 }
 
-function updateUserPassword(userId, currentPassword, newPassword) {
-  const user = findUserById(userId);
+async function updateUserPassword(userId, currentPassword, newPassword) {
+  const user = await findUserById(userId);
 
   if (!user) {
     return { error: "User not found" };
@@ -36,7 +36,7 @@ function updateUserPassword(userId, currentPassword, newPassword) {
     return { error: "New password must be at least 6 characters" };
   }
 
-  db.prepare("UPDATE users SET password = ? WHERE id = ?").run(newPassword, userId);
+  await db.run("UPDATE users SET password = ? WHERE id = ?", [newPassword, userId]);
 
   return { user: getPublicUser({ ...user, password: newPassword }) };
 }

@@ -1,4 +1,4 @@
-const db = require("../database/db");
+const db = require("../database/client");
 
 const editableFields = [
   "fullName",
@@ -16,27 +16,27 @@ const editableFields = [
   "notes",
 ];
 
-function getStudents(search = "") {
+async function getStudents(search = "") {
   const normalizedSearch = `%${search.trim().toLowerCase()}%`;
 
   if (!search.trim()) {
-    return db.prepare("SELECT * FROM students ORDER BY registrationDate DESC, rowid DESC").all();
+    return db.all("SELECT * FROM students ORDER BY registrationDate DESC, rowid DESC");
   }
 
-  return db.prepare(`
+  return db.all(`
     SELECT * FROM students
     WHERE lower(id || ' ' || fullName || ' ' || parentName || ' ' || phone || ' ' || whatsapp || ' ' || email || ' ' || schoolGrade || ' ' || status)
     LIKE ?
     ORDER BY registrationDate DESC, rowid DESC
-  `).all(normalizedSearch);
+  `, [normalizedSearch]);
 }
 
-function getStudent(studentId) {
-  return db.prepare("SELECT * FROM students WHERE id = ?").get(studentId) || null;
+async function getStudent(studentId) {
+  return db.get("SELECT * FROM students WHERE id = ?", [studentId]);
 }
 
-function createStudent(studentData) {
-  const highestNumber = db.prepare("SELECT id FROM students WHERE id LIKE 'STU-%' ORDER BY id DESC LIMIT 1").get();
+async function createStudent(studentData) {
+  const highestNumber = await db.get("SELECT id FROM students WHERE id LIKE 'STU-%' ORDER BY id DESC LIMIT 1");
   const nextNumber = highestNumber ? Number(highestNumber.id.replace("STU-", "")) + 1 : 1001;
   const student = {
     id: `STU-${nextNumber}`,
@@ -56,7 +56,7 @@ function createStudent(studentData) {
     notes: studentData.notes || "",
   };
 
-  db.prepare(`
+  await db.run(`
     INSERT INTO students (
       id, fullName, dateOfBirth, gender, schoolGrade, parentName, phone, whatsapp, email,
       address, registrationDate, status, medicalNotes, emergencyContact, notes
@@ -65,24 +65,24 @@ function createStudent(studentData) {
       @id, @fullName, @dateOfBirth, @gender, @schoolGrade, @parentName, @phone, @whatsapp, @email,
       @address, @registrationDate, @status, @medicalNotes, @emergencyContact, @notes
     )
-  `).run(student);
+  `, student);
 
   return student;
 }
 
-function archiveStudent(studentId) {
-  const student = getStudent(studentId);
+async function archiveStudent(studentId) {
+  const student = await getStudent(studentId);
 
   if (!student) {
     return null;
   }
 
-  db.prepare("UPDATE students SET status = 'Archived' WHERE id = ?").run(studentId);
+  await db.run("UPDATE students SET status = 'Archived' WHERE id = ?", [studentId]);
   return getStudent(studentId);
 }
 
-function updateStudent(studentId, updates) {
-  const student = getStudent(studentId);
+async function updateStudent(studentId, updates) {
+  const student = await getStudent(studentId);
 
   if (!student) {
     return null;
@@ -95,19 +95,19 @@ function updateStudent(studentId, updates) {
   }
 
   const assignments = fieldsToUpdate.map((field) => `${field} = @${field}`).join(", ");
-  db.prepare(`UPDATE students SET ${assignments} WHERE id = @id`).run({ id: studentId, ...updates });
+  await db.run(`UPDATE students SET ${assignments} WHERE id = @id`, { id: studentId, ...updates });
 
   return getStudent(studentId);
 }
 
-function deleteStudent(studentId) {
-  const student = getStudent(studentId);
+async function deleteStudent(studentId) {
+  const student = await getStudent(studentId);
 
   if (!student) {
     return null;
   }
 
-  db.prepare("DELETE FROM students WHERE id = ?").run(studentId);
+  await db.run("DELETE FROM students WHERE id = ?", [studentId]);
   return student;
 }
 

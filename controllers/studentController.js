@@ -12,13 +12,13 @@ function showStudentsPage(req, res) {
   return res.sendFile(path.join(__dirname, "..", "views", "students.html"));
 }
 
-function listStudents(req, res) {
-  const students = getStudents(req.query.search || "");
+async function listStudents(req, res) {
+  const students = await getStudents(req.query.search || "");
   return res.json({ students });
 }
 
-function getOneStudent(req, res) {
-  const student = getStudent(req.params.id);
+async function getOneStudent(req, res) {
+  const student = await getStudent(req.params.id);
 
   if (!student) {
     return res.status(404).json({ message: "Student not found" });
@@ -27,7 +27,7 @@ function getOneStudent(req, res) {
   return res.json({ student });
 }
 
-function addStudent(req, res) {
+async function addStudent(req, res) {
   const requiredFields = [
     "fullName",
     "dateOfBirth",
@@ -50,12 +50,12 @@ function addStudent(req, res) {
     });
   }
 
-  const student = createStudent(req.body);
+  const student = await createStudent(req.body);
   return res.status(201).json({ student });
 }
 
-function archive(req, res) {
-  const student = archiveStudent(req.params.id);
+async function archive(req, res) {
+  const student = await archiveStudent(req.params.id);
 
   if (!student) {
     return res.status(404).json({ message: "Student not found" });
@@ -64,8 +64,8 @@ function archive(req, res) {
   return res.json({ student });
 }
 
-function update(req, res) {
-  const student = updateStudent(req.params.id, req.body);
+async function update(req, res) {
+  const student = await updateStudent(req.params.id, req.body);
 
   if (!student) {
     return res.status(404).json({ message: "Student not found" });
@@ -74,8 +74,8 @@ function update(req, res) {
   return res.json({ student });
 }
 
-function remove(req, res) {
-  const student = deleteStudent(req.params.id);
+async function remove(req, res) {
+  const student = await deleteStudent(req.params.id);
 
   if (!student) {
     return res.status(404).json({ message: "Student not found" });

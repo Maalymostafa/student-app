@@ -23,20 +23,20 @@ function showTakeQuiz(req, res) {
   return res.sendFile(path.join(__dirname, "..", "views", "take-quiz.html"));
 }
 
-function listQuizzes(req, res) {
-  return res.json({ quizzes: getQuizzes(), lateRequests: getLateRequests() });
+async function listQuizzes(req, res) {
+  return res.json({ quizzes: await getQuizzes(), lateRequests: await getLateRequests() });
 }
 
-function getStudentQuizResults(req, res) {
-  return res.json({ quizResults: getQuizResults(req.query.studentCode || "") });
+async function getStudentQuizResults(req, res) {
+  return res.json({ quizResults: await getQuizResults(req.query.studentCode || "") });
 }
 
-function create(req, res) {
-  return res.json({ quiz: createQuiz(req.body) });
+async function create(req, res) {
+  return res.json({ quiz: await createQuiz(req.body) });
 }
 
-function update(req, res) {
-  const quiz = updateQuiz(req.params.id, req.body);
+async function update(req, res) {
+  const quiz = await updateQuiz(req.params.id, req.body);
 
   if (!quiz) {
     return res.status(404).json({ message: "Quiz not found" });
@@ -45,8 +45,8 @@ function update(req, res) {
   return res.json({ quiz });
 }
 
-function remove(req, res) {
-  const quiz = deleteQuiz(req.params.id);
+async function remove(req, res) {
+  const quiz = await deleteQuiz(req.params.id);
 
   if (!quiz) {
     return res.status(404).json({ message: "Quiz not found" });
@@ -55,8 +55,8 @@ function remove(req, res) {
   return res.json({ quiz });
 }
 
-function createQuestion(req, res) {
-  const quiz = addQuestion(req.params.id, req.body);
+async function createQuestion(req, res) {
+  const quiz = await addQuestion(req.params.id, req.body);
 
   if (!quiz) {
     return res.status(404).json({ message: "Quiz not found" });
@@ -65,8 +65,8 @@ function createQuestion(req, res) {
   return res.json({ quiz });
 }
 
-function updateExistingQuestion(req, res) {
-  const quiz = updateQuestion(req.params.id, req.params.questionId, req.body);
+async function updateExistingQuestion(req, res) {
+  const quiz = await updateQuestion(req.params.id, req.params.questionId, req.body);
 
   if (!quiz) {
     return res.status(404).json({ message: "Quiz or question not found" });
@@ -75,8 +75,8 @@ function updateExistingQuestion(req, res) {
   return res.json({ quiz });
 }
 
-function removeQuestion(req, res) {
-  const quiz = deleteQuestion(req.params.id, req.params.questionId);
+async function removeQuestion(req, res) {
+  const quiz = await deleteQuestion(req.params.id, req.params.questionId);
 
   if (!quiz) {
     return res.status(404).json({ message: "Quiz or question not found" });
@@ -85,8 +85,8 @@ function removeQuestion(req, res) {
   return res.json({ quiz });
 }
 
-function getPublicQuiz(req, res) {
-  const quiz = getQuiz(req.params.id);
+async function getPublicQuiz(req, res) {
+  const quiz = await getQuiz(req.params.id);
 
   if (!quiz) {
     return res.status(404).json({ message: "Quiz not found" });
@@ -95,8 +95,8 @@ function getPublicQuiz(req, res) {
   return res.json({ quiz });
 }
 
-function submit(req, res) {
-  const result = submitQuiz(req.params.id, req.body.studentCode, req.body.answers || {});
+async function submit(req, res) {
+  const result = await submitQuiz(req.params.id, req.body.studentCode, req.body.answers || {});
 
   if (result.error) {
     return res.status(400).json(result);
@@ -105,8 +105,8 @@ function submit(req, res) {
   return res.json(result);
 }
 
-function requestLateAccess(req, res) {
-  const request = createLateRequest(req.params.id, req.body.studentCode, req.body.reason);
+async function requestLateAccess(req, res) {
+  const request = await createLateRequest(req.params.id, req.body.studentCode, req.body.reason);
 
   if (!request) {
     return res.status(404).json({ message: "Quiz not found" });
@@ -115,8 +115,8 @@ function requestLateAccess(req, res) {
   return res.json({ request });
 }
 
-function reviewLateAccess(req, res) {
-  const request = updateLateRequest(req.params.id, req.body.status);
+async function reviewLateAccess(req, res) {
+  const request = await updateLateRequest(req.params.id, req.body.status);
 
   if (!request) {
     return res.status(400).json({ message: "Invalid late request or status" });

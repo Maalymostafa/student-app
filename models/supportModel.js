@@ -1,13 +1,13 @@
-const db = require("../database/db");
+const db = require("../database/client");
 
-function getSupportMessages() {
-  return db.prepare("SELECT * FROM support_messages ORDER BY createdAt DESC, rowid DESC").all();
+async function getSupportMessages() {
+  return db.all("SELECT * FROM support_messages ORDER BY createdAt DESC, rowid DESC");
 }
 
-function createSupportMessage(data) {
+async function createSupportMessage(data) {
   const now = new Date().toISOString();
   const message = {
-    id: getNextMessageId(),
+    id: await getNextMessageId(),
     senderName: data.senderName,
     senderRole: data.senderRole || "Parent",
     studentName: data.studentName || "",
@@ -23,7 +23,7 @@ function createSupportMessage(data) {
     updatedAt: now,
   };
 
-  db.prepare(`
+  await db.run(`
     INSERT INTO support_messages (
       id, senderName, senderRole, studentName, category, assignedTo, status, message,
       aiConfidence, aiSuggestedReply, finalReply, createdByUserId, createdAt, updatedAt
@@ -32,51 +32,51 @@ function createSupportMessage(data) {
       @id, @senderName, @senderRole, @studentName, @category, @assignedTo, @status, @message,
       @aiConfidence, @aiSuggestedReply, @finalReply, @createdByUserId, @createdAt, @updatedAt
     )
-  `).run(message);
+  `, message);
 
   return message;
 }
 
-function getMessagesForUser(userId) {
-  return db.prepare("SELECT * FROM support_messages WHERE createdByUserId = ? ORDER BY createdAt DESC, rowid DESC").all(userId);
+async function getMessagesForUser(userId) {
+  return db.all("SELECT * FROM support_messages WHERE createdByUserId = ? ORDER BY createdAt DESC, rowid DESC", [userId]);
 }
 
-function updateSupportMessage(messageId, updates) {
-  const message = db.prepare("SELECT * FROM support_messages WHERE id = ?").get(messageId);
+async function updateSupportMessage(messageId, updates) {
+  const message = await db.get("SELECT * FROM support_messages WHERE id = ?", [messageId]);
 
   if (!message) {
     return null;
   }
 
-  db.prepare(`
+  await db.run(`
     UPDATE support_messages
     SET assignedTo = ?, status = ?, finalReply = ?, updatedAt = ?
     WHERE id = ?
-  `).run(
+  `, [
     updates.assignedTo || message.assignedTo,
     updates.status || message.status,
     updates.finalReply || message.finalReply,
     new Date().toISOString(),
     messageId
-  );
+  ]);
 
-  return db.prepare("SELECT * FROM support_messages WHERE id = ?").get(messageId);
+  return db.get("SELECT * FROM support_messages WHERE id = ?", [messageId]);
 }
 
-function approveSuggestedReply(messageId) {
-  const message = db.prepare("SELECT * FROM support_messages WHERE id = ?").get(messageId);
+async function approveSuggestedReply(messageId) {
+  const message = await db.get("SELECT * FROM support_messages WHERE id = ?", [messageId]);
 
   if (!message) {
     return null;
   }
 
-  db.prepare(`
+  await db.run(`
     UPDATE support_messages
     SET finalReply = aiSuggestedReply, status = 'Answered', updatedAt = ?
     WHERE id = ?
-  `).run(new Date().toISOString(), messageId);
+  `, [new Date().toISOString(), messageId]);
 
-  return db.prepare("SELECT * FROM support_messages WHERE id = ?").get(messageId);
+  return db.get("SELECT * FROM support_messages WHERE id = ?", [messageId]);
 }
 
 function getDefaultAssignee(category = "") {
@@ -97,8 +97,8 @@ function getDefaultAssignee(category = "") {
   return "Assistant Teacher";
 }
 
-function getNextMessageId() {
-  const rows = db.prepare("SELECT id FROM support_messages WHERE id LIKE 'MSG-%'").all();
+async function getNextMessageId() {
+  const rows = await db.all("SELECT id FROM support_messages WHERE id LIKE 'MSG-%'");
   const highestNumber = rows.reduce((highest, message) => {
     const number = Number(String(message.id).replace("MSG-", ""));
     return Number.isNaN(number) ? highest : Math.max(highest, number);

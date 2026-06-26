@@ -114,6 +114,29 @@ AMS should replace this with:
 - Automatic or semi-automatic confirmation messages.
 - Conversion from approved registration to student record.
 
+## Attendance And Grades Workflow
+
+The current grading reference is stored in this Google Sheet:
+
+https://docs.google.com/spreadsheets/d/15RDG22wiRDfq4ARmoJ3F7VNkE-mCC0Z0HwgwI0WsXUo/edit?gid=587568747#gid=587568747
+
+Attendance should support automatic marking from exported Zoom chat text.
+Students write their student code in the Zoom chat, the administrator uploads the chat text file, and AMS matches the codes to student records.
+Unmatched codes should be shown for manual review.
+
+Each session has two handwritten-answer questions:
+
+- Q1
+- Q2
+
+Assigned teachers enter only `0`, `1`, or `2` for each question:
+
+- `0` means wrong answer.
+- `1` means correct idea but incomplete answer.
+- `2` means correct answer.
+
+AMS should calculate session performance from Q1, Q2, and attendance.
+
 ## Parent Records
 
 Parent data should include:

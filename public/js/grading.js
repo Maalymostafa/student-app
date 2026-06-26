@@ -132,19 +132,33 @@ gradingList.addEventListener("click", async (event) => {
 
   const fieldKey = `${saveButton.dataset.saveNotes}-${saveButton.dataset.questionKey}`;
   const feedback = document.querySelector(`[data-feedback-input="${fieldKey}"]`).value;
-  const correctionPhoto = document.querySelector(`[data-photo-name="${fieldKey}"]`).value;
+  const photoInput = document.querySelector(`[data-photo-input="${fieldKey}"]`);
 
-  await fetch(`/api/grading/submissions/${saveButton.dataset.saveNotes}/notes`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      question: saveButton.dataset.questionKey,
-      feedback,
-      correctionPhoto,
-    }),
-  });
+  if (photoInput.files.length) {
+    const formData = new FormData();
+    formData.append("question", saveButton.dataset.questionKey);
+    formData.append("feedback", feedback);
+    formData.append("correctionPhoto", photoInput.files[0]);
+
+    await fetch(`/api/grading/submissions/${saveButton.dataset.saveNotes}/correction-photo`, {
+      method: "POST",
+      body: formData,
+    });
+  } else {
+    const correctionPhoto = document.querySelector(`[data-photo-name="${fieldKey}"]`).value;
+
+    await fetch(`/api/grading/submissions/${saveButton.dataset.saveNotes}/notes`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        question: saveButton.dataset.questionKey,
+        feedback,
+        correctionPhoto,
+      }),
+    });
+  }
 
   await fetchSubmissions();
 });

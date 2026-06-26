@@ -17,6 +17,24 @@ router.get(
   requireRole(["Administrator", "Teacher"]),
   attendanceController.listAttendanceSetup
 );
+router.get(
+  "/api/attendance/:id",
+  requireApiAuth,
+  requireRole(["Administrator", "Teacher"]),
+  attendanceController.getAttendance
+);
+router.patch(
+  "/api/attendance/:id",
+  requireApiAuth,
+  requireRole(["Administrator", "Teacher"]),
+  attendanceController.updateAttendance
+);
+router.delete(
+  "/api/attendance/:id",
+  requireApiAuth,
+  requireRole(["Administrator", "Teacher"]),
+  attendanceController.removeAttendance
+);
 router.post(
   "/api/attendance/upload-chat",
   requireApiAuth,

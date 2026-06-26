@@ -44,6 +44,25 @@ function getSupportMessages() {
   return supportMessages;
 }
 
+function createSupportMessage(data) {
+  const message = {
+    id: `MSG-${4000 + supportMessages.length + 1}`,
+    senderName: data.senderName,
+    senderRole: data.senderRole || "Parent",
+    studentName: data.studentName || "",
+    category: data.category || "General question",
+    assignedTo: data.assignedTo || getDefaultAssignee(data.category),
+    status: "New",
+    message: data.message,
+    aiConfidence: "Needs human",
+    aiSuggestedReply: "What is the best reply for this message?",
+    finalReply: "",
+  };
+
+  supportMessages.unshift(message);
+  return message;
+}
+
 function updateSupportMessage(messageId, updates) {
   const message = supportMessages.find((item) => item.id === messageId);
 
@@ -71,8 +90,27 @@ function approveSuggestedReply(messageId) {
   return message;
 }
 
+function getDefaultAssignee(category = "") {
+  const normalized = category.toLowerCase();
+
+  if (normalized.includes("technical")) {
+    return "Technical Support";
+  }
+
+  if (normalized.includes("grade")) {
+    return "Miss Hoda / Assistant Teacher";
+  }
+
+  if (normalized.includes("group") || normalized.includes("access")) {
+    return "Manager";
+  }
+
+  return "Assistant Teacher";
+}
+
 module.exports = {
   approveSuggestedReply,
+  createSupportMessage,
   getSupportMessages,
   updateSupportMessage,
 };

@@ -1,8 +1,11 @@
 const path = require("path");
 const {
   analyzeZoomChatAttendance,
+  deleteAttendanceRun,
+  getAttendanceRun,
   getAttendanceRuns,
   getGradeOptions,
+  updateAttendanceRun,
 } = require("../models/attendanceModel");
 
 function showAttendancePage(req, res) {
@@ -14,6 +17,36 @@ function listAttendanceSetup(req, res) {
     grades: getGradeOptions(),
     runs: getAttendanceRuns(),
   });
+}
+
+function getAttendance(req, res) {
+  const run = getAttendanceRun(req.params.id);
+
+  if (!run) {
+    return res.status(404).json({ message: "Attendance run not found" });
+  }
+
+  return res.json({ run });
+}
+
+function updateAttendance(req, res) {
+  const run = updateAttendanceRun(req.params.id, req.body);
+
+  if (!run) {
+    return res.status(404).json({ message: "Attendance run not found" });
+  }
+
+  return res.json({ run });
+}
+
+function removeAttendance(req, res) {
+  const run = deleteAttendanceRun(req.params.id);
+
+  if (!run) {
+    return res.status(404).json({ message: "Attendance run not found" });
+  }
+
+  return res.json({ run });
 }
 
 function uploadZoomChat(req, res) {
@@ -32,7 +65,10 @@ function uploadZoomChat(req, res) {
 }
 
 module.exports = {
+  getAttendance,
   listAttendanceSetup,
+  removeAttendance,
   showAttendancePage,
+  updateAttendance,
   uploadZoomChat,
 };

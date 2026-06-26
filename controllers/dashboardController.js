@@ -1,3 +1,10 @@
+const { getAttendanceRuns } = require("../models/attendanceModel");
+const { getSubmissions } = require("../models/gradingModel");
+const { getQuizzes, getLateRequests } = require("../models/quizModel");
+const { getRegistrations } = require("../models/registrationModel");
+const { getStudents } = require("../models/studentModel");
+const { getSupportMessages } = require("../models/supportModel");
+
 const roleDashboards = {
   Administrator: {
     headline: "Academy Dashboard",
@@ -67,12 +74,59 @@ const roleDashboards = {
 
 function getDashboard(req, res) {
   const user = req.session.user;
-  const dashboard = roleDashboards[user.role] || roleDashboards.Student;
+  const dashboard = {
+    ...(roleDashboards[user.role] || roleDashboards.Student),
+    metrics: buildMetrics(user.role),
+  };
 
   return res.json({
     user,
     dashboard,
   });
+}
+
+function buildMetrics(role) {
+  const students = getStudents();
+  const registrations = getRegistrations();
+  const attendanceRuns = getAttendanceRuns();
+  const submissions = getSubmissions();
+  const quizzes = getQuizzes();
+  const lateRequests = getLateRequests();
+  const supportMessages = getSupportMessages();
+
+  if (role === "Administrator") {
+    return [
+      { label: "Active students", value: String(students.filter((student) => student.status === "Active").length) },
+      { label: "Pending registrations", value: String(registrations.filter((registration) => registration.reservationStatus === "Pending").length) },
+      { label: "Attendance uploads", value: String(attendanceRuns.length) },
+      { label: "Open support", value: String(supportMessages.filter((message) => message.status !== "Answered").length) },
+    ];
+  }
+
+  if (role === "Teacher") {
+    return [
+      { label: "Open quizzes", value: String(quizzes.filter((quiz) => quiz.status === "Open").length) },
+      { label: "Late requests", value: String(lateRequests.filter((request) => request.status === "Pending").length) },
+      { label: "Grades to enter", value: String(submissions.filter((submission) => !submission.complete).length) },
+      { label: "Attendance uploads", value: String(attendanceRuns.length) },
+    ];
+  }
+
+  if (role === "Parent") {
+    return [
+      { label: "Children", value: "2" },
+      { label: "Open quizzes", value: String(quizzes.filter((quiz) => quiz.status === "Open").length) },
+      { label: "Latest results", value: String(submissions.length) },
+      { label: "Support replies", value: String(supportMessages.filter((message) => message.status === "Answered").length) },
+    ];
+  }
+
+  return [
+    { label: "Open quizzes", value: String(quizzes.filter((quiz) => quiz.status === "Open").length) },
+    { label: "Results posted", value: String(submissions.length) },
+    { label: "Attendance uploads", value: String(attendanceRuns.length) },
+    { label: "Average grade", value: "88%" },
+  ];
 }
 
 module.exports = {

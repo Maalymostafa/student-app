@@ -1,5 +1,7 @@
 const childTabs = document.querySelector("#child-tabs");
 const childResults = document.querySelector("#parent-child-results");
+const supportForm = document.querySelector("#parent-support-form");
+const supportMessage = document.querySelector("#parent-support-message");
 
 let portalChildren = [];
 let activeStudentCode = "";
@@ -101,6 +103,29 @@ childTabs.addEventListener("click", (event) => {
 
   activeStudentCode = button.dataset.childCode;
   renderPortal();
+});
+
+supportForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const body = {
+    ...Object.fromEntries(new FormData(supportForm)),
+    senderRole: "Parent",
+  };
+
+  const response = await fetch("/api/support/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+
+  supportMessage.textContent = response.ok
+    ? "Message sent. The academy team will review it."
+    : "Could not send this message.";
+
+  if (response.ok) {
+    supportForm.reset();
+  }
 });
 
 fetchParentOverview();

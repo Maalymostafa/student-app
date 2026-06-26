@@ -48,6 +48,25 @@ function updateNotes(req, res) {
   return res.json({ submission });
 }
 
+function uploadCorrectionPhoto(req, res) {
+  if (!req.file) {
+    return res.status(400).json({ message: "Correction photo is required" });
+  }
+
+  const submission = updateQuestionNotes(
+    req.params.id,
+    req.body.question,
+    req.body.feedback,
+    `/uploads/${req.file.filename}`
+  );
+
+  if (!submission) {
+    return res.status(400).json({ message: "Invalid submission or question" });
+  }
+
+  return res.json({ submission });
+}
+
 module.exports = {
   showGradingPage,
   showStudentResultsPage,
@@ -55,4 +74,5 @@ module.exports = {
   listStudentResults,
   updateScore,
   updateNotes,
+  uploadCorrectionPhoto,
 };

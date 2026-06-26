@@ -77,6 +77,10 @@ function getStudents(search = "") {
   });
 }
 
+function getStudent(studentId) {
+  return students.find((student) => student.id === studentId) || null;
+}
+
 function createStudent(studentData) {
   const nextNumber = students.length + 1001;
   const student = {
@@ -112,8 +116,54 @@ function archiveStudent(studentId) {
   return student;
 }
 
+function updateStudent(studentId, updates) {
+  const student = getStudent(studentId);
+
+  if (!student) {
+    return null;
+  }
+
+  const editableFields = [
+    "fullName",
+    "dateOfBirth",
+    "gender",
+    "schoolGrade",
+    "parentName",
+    "phone",
+    "whatsapp",
+    "email",
+    "address",
+    "status",
+    "medicalNotes",
+    "emergencyContact",
+    "notes",
+  ];
+
+  editableFields.forEach((field) => {
+    if (updates[field] !== undefined) {
+      student[field] = updates[field];
+    }
+  });
+
+  return student;
+}
+
+function deleteStudent(studentId) {
+  const student = getStudent(studentId);
+
+  if (!student) {
+    return null;
+  }
+
+  students = students.filter((item) => item.id !== studentId);
+  return student;
+}
+
 module.exports = {
-  getStudents,
-  createStudent,
   archiveStudent,
+  createStudent,
+  deleteStudent,
+  getStudent,
+  getStudents,
+  updateStudent,
 };

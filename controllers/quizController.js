@@ -3,12 +3,16 @@ const {
   addQuestion,
   createLateRequest,
   createQuiz,
+  deleteQuestion,
+  deleteQuiz,
   getLateRequests,
   getQuiz,
   getQuizResults,
   getQuizzes,
   submitQuiz,
+  updateQuestion,
   updateLateRequest,
+  updateQuiz,
 } = require("../models/quizModel");
 
 function showQuizManager(req, res) {
@@ -31,11 +35,51 @@ function create(req, res) {
   return res.json({ quiz: createQuiz(req.body) });
 }
 
+function update(req, res) {
+  const quiz = updateQuiz(req.params.id, req.body);
+
+  if (!quiz) {
+    return res.status(404).json({ message: "Quiz not found" });
+  }
+
+  return res.json({ quiz });
+}
+
+function remove(req, res) {
+  const quiz = deleteQuiz(req.params.id);
+
+  if (!quiz) {
+    return res.status(404).json({ message: "Quiz not found" });
+  }
+
+  return res.json({ quiz });
+}
+
 function createQuestion(req, res) {
   const quiz = addQuestion(req.params.id, req.body);
 
   if (!quiz) {
     return res.status(404).json({ message: "Quiz not found" });
+  }
+
+  return res.json({ quiz });
+}
+
+function updateExistingQuestion(req, res) {
+  const quiz = updateQuestion(req.params.id, req.params.questionId, req.body);
+
+  if (!quiz) {
+    return res.status(404).json({ message: "Quiz or question not found" });
+  }
+
+  return res.json({ quiz });
+}
+
+function removeQuestion(req, res) {
+  const quiz = deleteQuestion(req.params.id, req.params.questionId);
+
+  if (!quiz) {
+    return res.status(404).json({ message: "Quiz or question not found" });
   }
 
   return res.json({ quiz });
@@ -87,9 +131,13 @@ module.exports = {
   getPublicQuiz,
   getStudentQuizResults,
   listQuizzes,
+  remove,
+  removeQuestion,
   requestLateAccess,
   reviewLateAccess,
   showQuizManager,
   showTakeQuiz,
   submit,
+  update,
+  updateExistingQuestion,
 };

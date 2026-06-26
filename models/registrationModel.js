@@ -109,6 +109,20 @@ function confirmRegistration(registrationId) {
   };
 }
 
+function rejectRegistration(registrationId, reason = "") {
+  const registration = registrations.find((item) => item.id === registrationId);
+
+  if (!registration) {
+    return null;
+  }
+
+  registration.paymentStatus = "Rejected";
+  registration.reservationStatus = "Rejected";
+  registration.rejectionReason = reason;
+
+  return registration;
+}
+
 function generateStudentCode(registration) {
   const prefix = gradeCodePrefixes[registration.schoolGrade] || "g";
   const existingCodesForGrade = registrations.filter((item) =>
@@ -170,10 +184,11 @@ function isPaymentReviewComplete(registration) {
 }
 
 module.exports = {
-  getRegistrations,
-  confirmRegistration,
   buildConfirmationMessage,
+  confirmRegistration,
   generateStudentCode,
+  getRegistrations,
+  rejectRegistration,
   updatePaymentReview,
   updatePaymentProof,
 };

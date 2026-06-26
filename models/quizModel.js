@@ -58,6 +58,36 @@ function createQuiz(data) {
   return addQuizState(quiz);
 }
 
+function updateQuiz(quizId, updates) {
+  const quiz = quizzes.find((item) => item.id === quizId);
+
+  if (!quiz) {
+    return null;
+  }
+
+  ["title", "sessionTitle", "schoolGrade", "closesAt"].forEach((field) => {
+    if (updates[field] !== undefined) {
+      quiz[field] = updates[field];
+    }
+  });
+
+  return addQuizState(quiz);
+}
+
+function deleteQuiz(quizId) {
+  const quiz = quizzes.find((item) => item.id === quizId);
+
+  if (!quiz) {
+    return null;
+  }
+
+  const index = quizzes.findIndex((item) => item.id === quizId);
+  quizzes.splice(index, 1);
+  submissions = submissions.filter((submission) => submission.quizId !== quizId);
+  lateRequests = lateRequests.filter((request) => request.quizId !== quizId);
+  return addQuizState(quiz);
+}
+
 function addQuestion(quizId, data) {
   const quiz = quizzes.find((item) => item.id === quizId);
 
@@ -67,6 +97,45 @@ function addQuestion(quizId, data) {
 
   const question = buildQuestion(data, quiz.questions.length + 1);
   quiz.questions.push(question);
+  return addQuizState(quiz);
+}
+
+function updateQuestion(quizId, questionId, data) {
+  const quiz = quizzes.find((item) => item.id === quizId);
+
+  if (!quiz) {
+    return null;
+  }
+
+  const questionIndex = quiz.questions.findIndex((question) => question.id === questionId);
+
+  if (questionIndex === -1) {
+    return null;
+  }
+
+  quiz.questions[questionIndex] = {
+    ...quiz.questions[questionIndex],
+    ...buildQuestion({ ...quiz.questions[questionIndex], ...data }, questionIndex + 1),
+    id: questionId,
+  };
+
+  return addQuizState(quiz);
+}
+
+function deleteQuestion(quizId, questionId) {
+  const quiz = quizzes.find((item) => item.id === quizId);
+
+  if (!quiz) {
+    return null;
+  }
+
+  const question = quiz.questions.find((item) => item.id === questionId);
+
+  if (!question) {
+    return null;
+  }
+
+  quiz.questions = quiz.questions.filter((item) => item.id !== questionId);
   return addQuizState(quiz);
 }
 
@@ -232,10 +301,14 @@ module.exports = {
   addQuestion,
   createLateRequest,
   createQuiz,
+  deleteQuestion,
+  deleteQuiz,
   getLateRequests,
   getQuiz,
   getQuizResults,
   getQuizzes,
   submitQuiz,
+  updateQuestion,
   updateLateRequest,
+  updateQuiz,
 };

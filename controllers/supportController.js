@@ -1,6 +1,7 @@
 const path = require("path");
 const {
   approveSuggestedReply,
+  createSupportMessage,
   getSupportMessages,
   updateSupportMessage,
 } = require("../models/supportModel");
@@ -11,6 +12,14 @@ function showSupportInbox(req, res) {
 
 function listMessages(req, res) {
   return res.json({ messages: getSupportMessages() });
+}
+
+function createMessage(req, res) {
+  if (!req.body.senderName || !req.body.message) {
+    return res.status(400).json({ message: "Sender name and message are required" });
+  }
+
+  return res.status(201).json({ message: createSupportMessage(req.body) });
 }
 
 function updateMessage(req, res) {
@@ -35,6 +44,7 @@ function approveReply(req, res) {
 
 module.exports = {
   approveReply,
+  createMessage,
   listMessages,
   showSupportInbox,
   updateMessage,

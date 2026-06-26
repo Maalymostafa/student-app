@@ -24,6 +24,12 @@ router.patch(
   registrationController.confirm
 );
 router.patch(
+  "/api/registrations/:id/reject",
+  requireApiAuth,
+  requireRole(["Administrator"]),
+  registrationController.reject
+);
+router.patch(
   "/api/registrations/:id/payment-review",
   requireApiAuth,
   requireRole(["Administrator"]),

@@ -3,6 +3,7 @@ const {
   getRegistrations,
   confirmRegistration,
   buildConfirmationMessage,
+  rejectRegistration,
   updatePaymentReview,
   updatePaymentProof,
 } = require("../models/registrationModel");
@@ -46,6 +47,16 @@ function reviewPayment(req, res) {
   return res.json({ registration });
 }
 
+function reject(req, res) {
+  const registration = rejectRegistration(req.params.id, req.body.reason || "");
+
+  if (!registration) {
+    return res.status(404).json({ message: "Registration not found" });
+  }
+
+  return res.json({ registration });
+}
+
 function uploadPaymentProof(req, res) {
   if (!req.file) {
     return res.status(400).json({ message: "Payment photo is required" });
@@ -65,9 +76,10 @@ function uploadPaymentProof(req, res) {
 }
 
 module.exports = {
-  showRegistrationsPage,
-  listRegistrations,
   confirm,
+  listRegistrations,
+  reject,
   reviewPayment,
+  showRegistrationsPage,
   uploadPaymentProof,
 };

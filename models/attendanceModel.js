@@ -86,10 +86,55 @@ function getAttendanceRuns() {
   return attendanceRuns;
 }
 
+function getAttendanceRun(runId) {
+  return attendanceRuns.find((run) => run.id === runId) || null;
+}
+
+function updateAttendanceRun(runId, updates) {
+  const run = getAttendanceRun(runId);
+
+  if (!run) {
+    return null;
+  }
+
+  if (updates.sessionTitle !== undefined) {
+    run.sessionTitle = updates.sessionTitle;
+  }
+
+  if (updates.schoolGrade !== undefined) {
+    run.schoolGrade = updates.schoolGrade;
+  }
+
+  if (Array.isArray(updates.students)) {
+    run.students = run.students.map((student) => {
+      const update = updates.students.find((item) => item.studentCode === student.studentCode);
+      return update ? { ...student, attendance: update.attendance || student.attendance } : student;
+    });
+  }
+
+  run.presentCount = run.students.filter((student) => student.attendance === "Present").length;
+  run.absentCount = run.students.filter((student) => student.attendance === "Absent").length;
+  return run;
+}
+
+function deleteAttendanceRun(runId) {
+  const run = getAttendanceRun(runId);
+
+  if (!run) {
+    return null;
+  }
+
+  attendanceRuns = attendanceRuns.filter((item) => item.id !== runId);
+  return run;
+}
+
 module.exports = {
   analyzeZoomChatAttendance,
+  deleteAttendanceRun,
   extractCodes,
+  getAttendanceRun,
   getAttendanceRuns,
   getGradeOptions,
   getRoster,
+  updateAttendanceRun,
 };

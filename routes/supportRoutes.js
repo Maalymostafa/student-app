@@ -16,6 +16,12 @@ router.get(
   requireRole(["Administrator", "Teacher"]),
   supportController.listMessages
 );
+router.post(
+  "/api/support/messages",
+  requireApiAuth,
+  requireRole(["Administrator", "Teacher", "Parent", "Student"]),
+  supportController.createMessage
+);
 router.patch(
   "/api/support/messages/:id",
   requireApiAuth,

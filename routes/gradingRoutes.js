@@ -1,6 +1,7 @@
 const express = require("express");
 const gradingController = require("../controllers/gradingController");
 const { requireAuth, requireApiAuth, requireRole } = require("../middleware/authMiddleware");
+const upload = require("../middleware/uploadMiddleware");
 
 const router = express.Router();
 
@@ -39,6 +40,13 @@ router.patch(
   requireApiAuth,
   requireRole(["Administrator", "Teacher"]),
   gradingController.updateNotes
+);
+router.post(
+  "/api/grading/submissions/:id/correction-photo",
+  requireApiAuth,
+  requireRole(["Administrator", "Teacher"]),
+  upload.single("correctionPhoto"),
+  gradingController.uploadCorrectionPhoto
 );
 
 module.exports = router;

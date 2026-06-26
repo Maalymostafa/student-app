@@ -1147,6 +1147,10 @@ h2 {
   margin-top: 18px;
 }
 
+.support-submit-form {
+  margin: 16px;
+}
+
 .hidden {
   display: none;
 }

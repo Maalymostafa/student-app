@@ -9,7 +9,11 @@ router.get("/take-quiz", requireAuth, requireRole(["Administrator", "Teacher", "
 router.get("/api/quizzes", requireApiAuth, requireRole(["Administrator", "Teacher"]), quizController.listQuizzes);
 router.get("/api/quizzes/:id", requireApiAuth, requireRole(["Administrator", "Teacher", "Parent", "Student"]), quizController.getPublicQuiz);
 router.post("/api/quizzes", requireApiAuth, requireRole(["Administrator", "Teacher"]), quizController.create);
+router.patch("/api/quizzes/:id", requireApiAuth, requireRole(["Administrator", "Teacher"]), quizController.update);
+router.delete("/api/quizzes/:id", requireApiAuth, requireRole(["Administrator", "Teacher"]), quizController.remove);
 router.post("/api/quizzes/:id/questions", requireApiAuth, requireRole(["Administrator", "Teacher"]), quizController.createQuestion);
+router.patch("/api/quizzes/:id/questions/:questionId", requireApiAuth, requireRole(["Administrator", "Teacher"]), quizController.updateExistingQuestion);
+router.delete("/api/quizzes/:id/questions/:questionId", requireApiAuth, requireRole(["Administrator", "Teacher"]), quizController.removeQuestion);
 router.post("/api/quizzes/:id/submit", requireApiAuth, requireRole(["Administrator", "Teacher", "Parent", "Student"]), quizController.submit);
 router.post("/api/quizzes/:id/late-requests", requireApiAuth, requireRole(["Administrator", "Teacher", "Parent", "Student"]), quizController.requestLateAccess);
 router.patch("/api/quiz-late-requests/:id", requireApiAuth, requireRole(["Administrator", "Teacher"]), quizController.reviewLateAccess);

@@ -3,254 +3,84 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Style Preview | Academy Management System</title>
+    <title>Advanced Style Preview | Academy Management System</title>
     <link rel="stylesheet" href="/css/style-preview.css" />
-    <style>
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: Arial, Helvetica, sans-serif;
-        color: #18212f;
-        background: #eef2f4;
-      }
-      .preview-page {
-        width: min(1280px, 100%);
-        margin: 0 auto;
-        padding: 32px;
-      }
-      .preview-header {
-        display: flex;
-        justify-content: space-between;
-        gap: 24px;
-        align-items: flex-start;
-        margin-bottom: 24px;
-      }
-      .preview-header p,
-      .sample-topbar p {
-        margin: 0 0 10px;
-        font-size: 12px;
-        font-weight: 800;
-        letter-spacing: 0;
-        text-transform: uppercase;
-      }
-      .preview-header h1 {
-        margin: 0;
-        font-size: 42px;
-        line-height: 1.05;
-      }
-      .preview-header span {
-        display: block;
-        margin-top: 12px;
-        color: #5b6875;
-        line-height: 1.5;
-      }
-      .preview-header a,
-      .sample-topbar button {
-        min-height: 42px;
-        display: inline-flex;
-        align-items: center;
-        padding: 0 14px;
-        border-radius: 6px;
-        font-weight: 800;
-        text-decoration: none;
-      }
-      .preview-header a {
-        border: 1px solid #cbd5dd;
-        color: #22313d;
-        background: #ffffff;
-      }
-      .theme-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
-      }
-      .theme-card {
-        min-height: 430px;
-        display: grid;
-        gap: 16px;
-        align-content: start;
-        padding: 22px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        color: var(--text);
-        background: var(--page);
-      }
-      .sample-topbar {
-        display: flex;
-        justify-content: space-between;
-        gap: 16px;
-        align-items: flex-start;
-        padding: 18px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        background: var(--surface);
-      }
-      .sample-topbar h2 {
-        margin: 0;
-        font-size: 28px;
-      }
-      .sample-topbar span,
-      .sample-panel p {
-        color: var(--muted);
-        line-height: 1.45;
-      }
-      .sample-topbar button {
-        border: 0;
-        color: var(--button-text);
-        background: var(--button);
-      }
-      .sample-metrics {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-      }
-      .sample-metrics div,
-      .sample-panel {
-        padding: 16px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        background: var(--surface);
-      }
-      .sample-metrics span {
-        display: block;
-        margin-bottom: 12px;
-        color: var(--muted);
-        font-size: 13px;
-        font-weight: 800;
-      }
-      .sample-metrics strong {
-        font-size: 34px;
-      }
-      .sample-panel h3 {
-        margin: 0 0 12px;
-        font-size: 22px;
-      }
-      .sample-panel p {
-        margin: 10px 0 0;
-        padding: 12px;
-        border-radius: 6px;
-        background: var(--soft);
-      }
-      .theme-calm {
-        --page: #f4f7f8; --surface: #ffffff; --soft: #edf8f7; --border: #d6e1e6;
-        --text: #17212b; --muted: #53616c; --button: #24706f; --button-text: #ffffff;
-      }
-      .theme-bright {
-        --page: #fff9ed; --surface: #ffffff; --soft: #fff0c7; --border: #f1d59d;
-        --text: #1d2d35; --muted: #6d5a31; --button: #e05b2f; --button-text: #ffffff;
-      }
-      .theme-focus {
-        --page: #111827; --surface: #182235; --soft: #22304a; --border: #2e3c55;
-        --text: #f8fbff; --muted: #b4c0d0; --button: #3fd0a7; --button-text: #071410;
-      }
-      .theme-premium {
-        --page: #f6f3ee; --surface: #fffcf7; --soft: #eee7db; --border: #d8cdbc;
-        --text: #22211e; --muted: #625d54; --button: #243b53; --button-text: #ffffff;
-      }
-      @media (max-width: 900px) {
-        .theme-grid { grid-template-columns: 1fr; }
-        .preview-header, .sample-topbar { flex-direction: column; }
-      }
-      @media (max-width: 560px) {
-        .preview-page { padding: 18px; }
-        .sample-metrics { grid-template-columns: 1fr; }
-      }
-    </style>
+    <script type="module" src="/js/style-preview.js"></script>
   </head>
   <body>
-    <main class="preview-page">
-      <header class="preview-header">
+    <canvas class="ambient-canvas" id="ambient-canvas" aria-hidden="true"></canvas>
+    <main class="preview-shell">
+      <header class="preview-hero">
         <div>
-          <p>Design direction</p>
-          <h1>Choose the AMS look</h1>
-          <span>دي عينات شكل بس. افتح الصفحة، اختار Option 1 أو 2 أو 3 أو 4، وقولي الرقم وأنا أطبقه على الموقع كله.</span>
+          <p class="eyebrow">Advanced visual direction</p>
+          <h1>AMS can look like a real product.</h1>
+          <span>
+            اختار واحد من التلات اتجاهات دول. فيهم حركة، عمق، و3D حقيقي. قولّي Option A أو B أو C وأنا أطبقه على الموقع كله.
+          </span>
         </div>
         <a href="/dashboard">Back to dashboard</a>
       </header>
 
-      <section class="theme-grid" aria-label="Style options">
-        <article class="theme-card theme-calm">
-          <div class="sample-topbar">
-            <div>
-              <p>Option 1</p>
-              <h2>Calm Operations</h2>
-              <span>Best for daily admin work: clean, readable, professional.</span>
+      <section class="concept-grid" aria-label="Advanced design options">
+        <article class="concept concept-a" data-tilt>
+          <div class="concept-copy">
+            <p class="eyebrow">Option A</p>
+            <h2>Command Center</h2>
+            <span>شكل SaaS احترافي: مناسب للإدارة، السكرتارية، مراجعة المدفوعات، والحضور كل يوم.</span>
+          </div>
+          <div class="three-frame">
+            <canvas data-three-card="a" aria-hidden="true"></canvas>
+          </div>
+          <div class="mini-dashboard">
+            <div class="mini-top">
+              <strong>Today</strong>
+              <span>Live academy operations</span>
             </div>
-            <button>Confirm</button>
-          </div>
-          <div class="sample-metrics">
-            <div><span>Students</span><strong>128</strong></div>
-            <div><span>Attendance</span><strong>92%</strong></div>
-            <div><span>Payments</span><strong>14</strong></div>
-          </div>
-          <div class="sample-panel">
-            <h3>Registration queue</h3>
-            <p>Youssef Ali - Grade 4 - payment ready</p>
-            <p>Farida Samir - Prep 2 - needs review</p>
+            <div class="mini-metrics">
+              <div><span>Attendance</span><strong>92%</strong></div>
+              <div><span>Payments</span><strong>14</strong></div>
+              <div><span>Support</span><strong>6</strong></div>
+            </div>
+            <div class="activity-line"><span></span><p>Payment proof approved for Grade 4</p></div>
+            <div class="activity-line"><span></span><p>Zoom chat imported and matched</p></div>
           </div>
         </article>
 
-        <article class="theme-card theme-bright">
-          <div class="sample-topbar">
-            <div>
-              <p>Option 2</p>
-              <h2>Bright Academy</h2>
-              <span>More cheerful for kids and parents without becoming childish.</span>
-            </div>
-            <button>Confirm</button>
+        <article class="concept concept-b" data-tilt>
+          <div class="concept-copy">
+            <p class="eyebrow">Option B</p>
+            <h2>Student Orbit</h2>
+            <span>أكتر حيوية للطلاب وأولياء الأمور: نتائج، كويزات، وتشجيع بصري من غير ما يبقى طفولي زيادة.</span>
           </div>
-          <div class="sample-metrics">
-            <div><span>Quizzes</span><strong>6</strong></div>
-            <div><span>Perfect</span><strong>23</strong></div>
-            <div><span>Support</span><strong>4</strong></div>
+          <div class="three-frame">
+            <canvas data-three-card="b" aria-hidden="true"></canvas>
           </div>
-          <div class="sample-panel">
-            <h3>Student result</h3>
-            <p>Great work. You got full marks in the session quiz.</p>
-            <p>Teacher feedback is ready for Q1 and Q2.</p>
+          <div class="mini-dashboard">
+            <div class="result-ribbon">Perfect Quiz</div>
+            <div class="score-orb">3/3</div>
+            <h3>Great work, Youssef</h3>
+            <p>Your session quiz is complete. Teacher feedback is ready.</p>
+            <div class="progress-track"><span></span></div>
           </div>
         </article>
 
-        <article class="theme-card theme-focus">
-          <div class="sample-topbar">
-            <div>
-              <p>Option 3</p>
-              <h2>Focus Dark</h2>
-              <span>Strong contrast for long work sessions and monitoring screens.</span>
+        <article class="concept concept-c" data-tilt>
+          <div class="concept-copy">
+            <p class="eyebrow">Option C</p>
+            <h2>Premium Studio</h2>
+            <span>أفخم وأهدأ: مناسب لو عايز السيستم يحس كأنه منتج مدفوع ومصقول، مش مشروع بسيط.</span>
+          </div>
+          <div class="three-frame">
+            <canvas data-three-card="c" aria-hidden="true"></canvas>
+          </div>
+          <div class="mini-dashboard premium-panel">
+            <div class="mini-top">
+              <strong>Quiz Builder</strong>
+              <span>Session 2 closes 4:00 PM</span>
             </div>
-            <button>Confirm</button>
-          </div>
-          <div class="sample-metrics">
-            <div><span>Open</span><strong>9</strong></div>
-            <div><span>Closed</span><strong>3</strong></div>
-            <div><span>Late</span><strong>2</strong></div>
-          </div>
-          <div class="sample-panel">
-            <h3>Support inbox</h3>
-            <p>Technical issue routed to support.</p>
-            <p>AI suggestion waiting for approval.</p>
-          </div>
-        </article>
-
-        <article class="theme-card theme-premium">
-          <div class="sample-topbar">
-            <div>
-              <p>Option 4</p>
-              <h2>Premium Minimal</h2>
-              <span>Elegant, quiet, and a bit more high-end for a polished product feel.</span>
-            </div>
-            <button>Confirm</button>
-          </div>
-          <div class="sample-metrics">
-            <div><span>Sessions</span><strong>12</strong></div>
-            <div><span>Grades</span><strong>31</strong></div>
-            <div><span>Parents</span><strong>76</strong></div>
-          </div>
-          <div class="sample-panel">
-            <h3>Quiz builder</h3>
-            <p>Multiple choice, essay, and completion questions.</p>
-            <p>Close time and late permission requests.</p>
+            <div class="question-row"><b>01</b><p>Multiple choice question</p><em>Auto</em></div>
+            <div class="question-row"><b>02</b><p>Essay with model answer</p><em>Review</em></div>
+            <div class="question-row"><b>03</b><p>Complete sentence</p><em>AI choices</em></div>
           </div>
         </article>
       </section>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Students | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script defer src="/js/students.js"></script>
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Module 2</p>
+          <h1>Students</h1>
+          <p class="page-intro">
+            Register students, find records quickly, and archive inactive students.
+          </p>
+        </div>
+        <div class="toolbar-actions">
+          <a class="secondary-link" href="/dashboard">Dashboard</a>
+          <form action="/logout" method="post">
+            <button class="secondary-button" type="submit">Logout</button>
+          </form>
+        </div>
+      </header>
+
+      <section class="management-layout">
+        <form class="data-form" id="student-form">
+          <div>
+            <p class="eyebrow">New student</p>
+            <h2>Add student</h2>
+          </div>
+
+          <label for="fullName">Full name</label>
+          <input id="fullName" name="fullName" required />
+
+          <div class="form-row">
+            <div>
+              <label for="dateOfBirth">Date of birth</label>
+              <input id="dateOfBirth" name="dateOfBirth" type="date" required />
+            </div>
+            <div>
+              <label for="gender">Gender</label>
+              <select id="gender" name="gender" required>
+                <option value="">Select</option>
+                <option>Female</option>
+                <option>Male</option>
+              </select>
+            </div>
+          </div>
+
+          <label for="schoolGrade">School grade</label>
+          <input id="schoolGrade" name="schoolGrade" placeholder="Grade 7" required />
+
+          <label for="parentName">Parent</label>
+          <input id="parentName" name="parentName" required />
+
+          <div class="form-row">
+            <div>
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" required />
+            </div>
+            <div>
+              <label for="whatsapp">WhatsApp</label>
+              <input id="whatsapp" name="whatsapp" required />
+            </div>
+          </div>
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required />
+
+          <label for="address">Address</label>
+          <input id="address" name="address" required />
+
+          <label for="emergencyContact">Emergency contact</label>
+          <input id="emergencyContact" name="emergencyContact" required />
+
+          <label for="medicalNotes">Medical notes</label>
+          <textarea id="medicalNotes" name="medicalNotes" rows="2"></textarea>
+
+          <label for="notes">Student notes</label>
+          <textarea id="notes" name="notes" rows="3"></textarea>
+
+          <button type="submit">Add student</button>
+          <p class="form-message" id="student-form-message" role="status"></p>
+        </form>
+
+        <section class="records-panel" aria-labelledby="student-records-title">
+          <div class="records-header">
+            <div>
+              <p class="eyebrow">Student records</p>
+              <h2 id="student-records-title">All students</h2>
+            </div>
+            <label class="search-control" for="student-search">
+              <span>Search</span>
+              <input id="student-search" type="search" placeholder="Name, parent, phone, status" />
+            </label>
+          </div>
+
+          <div class="student-list" id="student-list"></div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

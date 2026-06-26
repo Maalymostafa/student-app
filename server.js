@@ -3,6 +3,8 @@ const session = require("express-session");
 const path = require("path");
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const registrationRoutes = require("./routes/registrationRoutes");
+const studentRoutes = require("./routes/studentRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,6 +26,8 @@ app.use(
 
 app.use("/", authRoutes);
 app.use("/", dashboardRoutes);
+app.use("/", registrationRoutes);
+app.use("/", studentRoutes);
 
 app.get("/", (req, res) => {
   res.redirect("/login");

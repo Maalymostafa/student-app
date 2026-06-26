@@ -3,6 +3,7 @@
 A web application for managing academy students, parents, sessions, payments, and notifications.
 
 See `PRODUCT_ROADMAP.md` for the full product direction and module plan.
+See `REGISTRATION_WORKFLOW.md` for the Google Form and Google Sheet workflow that AMS is replacing.
 
 ## Run locally
 
@@ -11,6 +12,12 @@ npm start
 ```
 
 Open `http://localhost:3000` in your browser.
+
+Key pages:
+
+- Dashboard: `http://localhost:3000/dashboard`
+- Pending registrations: `http://localhost:3000/registrations`
+- Students: `http://localhost:3000/students`
 
 ## Demo login
 

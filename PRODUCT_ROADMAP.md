@@ -93,6 +93,27 @@ Student data should include:
 - Emergency contact
 - Student notes
 
+## Registration Intake
+
+The first real workflow to replace is the current Google Form and Google Sheet registration process.
+
+Current process:
+
+- Parents or students submit a Google Form.
+- The responses collect in a Google Sheet.
+- The administrator manually checks each payment photo.
+- The administrator manually sends a reservation confirmation.
+- The administrator manually sends the student code.
+
+AMS should replace this with:
+
+- A pending registration queue.
+- Payment proof review.
+- One-click reservation confirmation.
+- Student code generation.
+- Automatic or semi-automatic confirmation messages.
+- Conversion from approved registration to student record.
+
 ## Parent Records
 
 Parent data should include:

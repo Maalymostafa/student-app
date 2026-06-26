@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registrations | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script defer src="/js/registrations.js"></script>
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Registration intake</p>
+          <h1>Pending Registrations</h1>
+          <p class="page-intro">
+            Review submitted registrations, verify payment proof, confirm reservations, and generate student codes.
+          </p>
+        </div>
+        <div class="toolbar-actions">
+          <a class="secondary-link" href="/students">Students</a>
+          <a class="secondary-link" href="/dashboard">Dashboard</a>
+        </div>
+      </header>
+
+      <section class="records-panel" aria-labelledby="registration-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Payment review</p>
+            <h2 id="registration-title">Registration queue</h2>
+          </div>
+        </div>
+        <div class="student-list" id="registration-list"></div>
+      </section>
+    </main>
+  </body>
+</html>

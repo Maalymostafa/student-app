@@ -7,6 +7,7 @@ const gradingRoutes = require("./routes/gradingRoutes");
 const parentRoutes = require("./routes/parentRoutes");
 const registrationRoutes = require("./routes/registrationRoutes");
 const studentRoutes = require("./routes/studentRoutes");
+const supportRoutes = require("./routes/supportRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,6 +33,7 @@ app.use("/", gradingRoutes);
 app.use("/", parentRoutes);
 app.use("/", registrationRoutes);
 app.use("/", studentRoutes);
+app.use("/", supportRoutes);
 
 app.get("/", (req, res) => {
   res.redirect("/login");

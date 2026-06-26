@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Support Inbox | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script defer src="/js/support-inbox.js"></script>
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Internal communication</p>
+          <h1>Support Inbox</h1>
+          <p class="page-intro">
+            Review parent/student questions, route them to the right person, and approve AI suggestions before sending.
+          </p>
+        </div>
+        <div class="toolbar-actions">
+          <a class="secondary-link" href="/dashboard">Dashboard</a>
+          <form action="/logout" method="post">
+            <button class="secondary-button" type="submit">Logout</button>
+          </form>
+        </div>
+      </header>
+
+      <section class="records-panel" aria-labelledby="support-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Repeated questions</p>
+            <h2 id="support-title">Messages needing reply</h2>
+          </div>
+          <div class="score-legend">
+            <span>AI suggests only</span>
+            <span>Human approves</span>
+          </div>
+        </div>
+        <div class="support-list" id="support-list"></div>
+      </section>
+    </main>
+  </body>
+</html>

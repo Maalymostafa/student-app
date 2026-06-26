@@ -113,14 +113,17 @@ Questions should be routed by type:
 
 ## First Build Slice
 
-Build a simple internal support inbox:
+The first internal support inbox is now started in AMS.
+It includes:
 
 - Parent/student message list.
 - Message category.
 - Assigned person.
 - Status: New, In progress, Answered.
 - AI suggested reply for repeated questions.
-- Human approve/send button.
+- Human approve button.
+- Human-written final reply field.
+- Routing to technical support, assistant teachers, Miss Hoda, or manager.
 
 Later, add:
 

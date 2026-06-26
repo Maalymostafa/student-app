@@ -23,6 +23,7 @@ Key pages:
 - Assistant grading: `http://localhost:3000/grading`
 - Student results: `http://localhost:3000/my-results`
 - Parent portal: `http://localhost:3000/parent-portal`
+- Support inbox: `http://localhost:3000/support-inbox`
 
 ## Demo login
 

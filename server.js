@@ -16,6 +16,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const isProduction = process.env.NODE_ENV === "production";
 
+if (isProduction) {
+  app.set("trust proxy", 1);
+}
+
 function buildSessionStore() {
   if (!process.env.DATABASE_URL) {
     return undefined;

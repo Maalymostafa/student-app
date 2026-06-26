@@ -1588,3 +1588,152 @@ body::before {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Persistent user theme switcher */
+:root[data-theme="calm"] {
+  --ams-ink: #17212b;
+  --ams-muted: #53616c;
+  --ams-page: #f4f7f8;
+  --ams-surface: #ffffff;
+  --ams-surface-soft: #edf8f7;
+  --ams-line: #d6e1e6;
+  --ams-primary: #24706f;
+  --ams-primary-dark: #1d605f;
+  --ams-teal: #24706f;
+  --ams-blue: #2563eb;
+  --ams-green: #15835c;
+  --ams-shadow: 0 18px 50px rgba(23, 33, 43, 0.1);
+}
+
+:root[data-theme="focus"] {
+  --ams-ink: #f8fbff;
+  --ams-muted: #b4c0d0;
+  --ams-page: #101827;
+  --ams-surface: #182235;
+  --ams-surface-soft: #22304a;
+  --ams-line: #2e3c55;
+  --ams-primary: #38bdf8;
+  --ams-primary-dark: #7dd3fc;
+  --ams-teal: #3fd0a7;
+  --ams-blue: #60a5fa;
+  --ams-green: #4ade80;
+  --ams-shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
+}
+
+:root[data-theme="calm"] body {
+  background:
+    linear-gradient(135deg, rgba(36, 112, 111, 0.08) 0 24%, transparent 24% 100%),
+    linear-gradient(165deg, rgba(37, 99, 235, 0.05) 0 18%, transparent 18% 100%),
+    var(--ams-page);
+}
+
+:root[data-theme="focus"] body {
+  background:
+    linear-gradient(135deg, rgba(56, 189, 248, 0.12) 0 24%, transparent 24% 100%),
+    linear-gradient(165deg, rgba(216, 180, 254, 0.08) 0 18%, transparent 18% 100%),
+    var(--ams-page);
+}
+
+:root[data-theme="calm"] .module-card.active,
+:root[data-theme="focus"] .module-card.active {
+  border-color: color-mix(in srgb, var(--ams-primary) 45%, var(--ams-line));
+  background: linear-gradient(145deg, var(--ams-surface-soft), var(--ams-surface));
+}
+
+:root[data-theme="calm"] .records-header,
+:root[data-theme="focus"] .records-header {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--ams-surface-soft) 72%, transparent), transparent);
+}
+
+:root[data-theme="focus"] .auth-panel,
+:root[data-theme="focus"] .login-form,
+:root[data-theme="focus"] .metric-card,
+:root[data-theme="focus"] .action-panel,
+:root[data-theme="focus"] .module-card,
+:root[data-theme="focus"] .data-form,
+:root[data-theme="focus"] .records-panel,
+:root[data-theme="focus"] .student-card,
+:root[data-theme="focus"] .grading-card,
+:root[data-theme="focus"] .kid-result-card,
+:root[data-theme="focus"] .parent-child-card,
+:root[data-theme="focus"] .support-card,
+:root[data-theme="focus"] .quiz-card,
+:root[data-theme="focus"] .quiz-attempt {
+  background: rgba(24, 34, 53, 0.94);
+}
+
+:root[data-theme="focus"] .data-form input,
+:root[data-theme="focus"] .data-form select,
+:root[data-theme="focus"] .data-form textarea,
+:root[data-theme="focus"] .search-control input,
+:root[data-theme="focus"] .login-form input,
+:root[data-theme="focus"] .support-routing-grid select,
+:root[data-theme="focus"] .support-routing-grid input,
+:root[data-theme="focus"] .final-reply-box textarea,
+:root[data-theme="focus"] .question-form input,
+:root[data-theme="focus"] .question-form select,
+:root[data-theme="focus"] .question-form textarea,
+:root[data-theme="focus"] .quiz-question textarea,
+:root[data-theme="focus"] .late-request-box textarea {
+  color: var(--ams-ink);
+  background: #121c2e;
+}
+
+:root[data-theme="focus"] .feedback-panel,
+:root[data-theme="focus"] .payment-review-panel,
+:root[data-theme="focus"] .payment-proof-viewer,
+:root[data-theme="focus"] .support-message-box,
+:root[data-theme="focus"] .ai-reply-panel,
+:root[data-theme="focus"] .final-reply-box,
+:root[data-theme="focus"] .quiz-question-list,
+:root[data-theme="focus"] .question-form,
+:root[data-theme="focus"] .quiz-question,
+:root[data-theme="focus"] .late-request-box,
+:root[data-theme="focus"] .attendance-summary div,
+:root[data-theme="focus"] .attendance-warning-panel,
+:root[data-theme="focus"] .kid-question-card,
+:root[data-theme="focus"] .parent-child-card {
+  background: rgba(34, 48, 74, 0.88);
+}
+
+:root[data-theme="calm"] .kid-result-hero,
+:root[data-theme="focus"] .kid-result-hero {
+  background: linear-gradient(135deg, var(--ams-surface-soft), color-mix(in srgb, var(--ams-primary) 14%, var(--ams-surface)));
+}
+
+.theme-switcher {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 50;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--ams-primary) 35%, var(--ams-line));
+  border-radius: 999px;
+  color: var(--ams-ink);
+  background: color-mix(in srgb, var(--ams-surface) 88%, transparent);
+  box-shadow: 0 14px 32px rgba(23, 33, 43, 0.14);
+  backdrop-filter: blur(16px);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.theme-switcher select {
+  min-height: 28px;
+  border: 0;
+  border-radius: 999px;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--ams-primary), color-mix(in srgb, var(--ams-primary) 74%, #f5c542));
+  font-weight: 800;
+}
+
+@media (max-width: 560px) {
+  .theme-switcher {
+    top: auto;
+    right: 12px;
+    bottom: 12px;
+  }
+}

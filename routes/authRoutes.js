@@ -1,5 +1,6 @@
 const express = require("express");
 const authController = require("../controllers/authController");
+const { requireApiAuth } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -8,7 +9,7 @@ router.post("/login", authController.login);
 router.get("/api/demo-accounts", authController.showDemoAccounts);
 router.get("/dashboard", authController.showDashboard);
 router.get("/account", authController.showAccount);
-router.patch("/api/account/password", authController.changePassword);
+router.patch("/api/account/password", requireApiAuth, authController.changePassword);
 router.post("/logout", authController.logout);
 
 module.exports = router;

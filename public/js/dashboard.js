@@ -11,6 +11,7 @@ async function loadDashboard() {
   document.querySelector("#user-role").textContent = `${user.role} - ${user.name}`;
   document.querySelector("#dashboard-title").textContent = dashboard.headline;
   document.querySelector("#dashboard-intro").textContent = dashboard.intro;
+  applyRoleVisibility(user.role);
   configureSupportLinks(user.role);
 
   const metricGrid = document.querySelector("#metric-grid");
@@ -35,6 +36,13 @@ async function loadDashboard() {
   }
 }
 
+function applyRoleVisibility(role) {
+  document.querySelectorAll("[data-roles]").forEach((element) => {
+    const allowedRoles = element.dataset.roles.split(",").map((allowedRole) => allowedRole.trim());
+    element.hidden = !allowedRoles.includes(role);
+  });
+}
+
 function configureSupportLinks(role) {
   const supportPanel = document.querySelector("#support-workflow-panel");
   const supportTitle = document.querySelector("#support-workflow-title");
@@ -43,10 +51,12 @@ function configureSupportLinks(role) {
   const supportModuleLink = document.querySelector("#support-module-link");
 
   if (["Administrator", "Teacher"].includes(role)) {
+    supportPanel.hidden = false;
     return;
   }
 
   if (role === "Parent") {
+    supportPanel.hidden = false;
     supportTitle.textContent = "Message archive and support";
     supportLink.textContent = "Open parent messages";
     supportLink.href = "/parent-portal";

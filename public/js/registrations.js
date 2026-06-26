@@ -5,6 +5,7 @@ const bookingWindowSummary = document.querySelector("#booking-window-summary");
 const bookingWindowMessage = document.querySelector("#booking-window-message");
 const opensDayInput = document.querySelector("#opensDay");
 const closesDayInput = document.querySelector("#closesDay");
+const studentsLink = document.querySelector("#students-link");
 
 let canManageReservations = false;
 
@@ -18,6 +19,9 @@ async function fetchRegistrations() {
 
   const { registrations, user } = await response.json();
   canManageReservations = user && user.role === "Administrator";
+  if (studentsLink) {
+    studentsLink.hidden = !canManageReservations;
+  }
   renderRegistrations(registrations);
 }
 

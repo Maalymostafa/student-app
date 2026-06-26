@@ -51,7 +51,7 @@
           <p class="eyebrow" data-i18n="common.registration">Registration workflow</p>
           <h2 id="registration-workflow-title" data-i18n="common.reviewPayment">Review payment proofs</h2>
         </div>
-        <a class="secondary-link" href="/registrations">Open registrations</a>
+        <a class="secondary-link" href="/registrations" data-roles="Administrator,Teacher" hidden>Open registrations</a>
       </section>
 
       <section class="action-panel" aria-labelledby="grading-workflow-title">
@@ -60,14 +60,14 @@
           <h2 id="grading-workflow-title" data-i18n="common.attendanceQuizzes">Attendance, quizzes, and correction</h2>
         </div>
         <div class="toolbar-actions">
-          <a class="secondary-link" href="/attendance">Upload attendance</a>
-          <a class="secondary-link" href="/quizzes">Build quizzes</a>
-          <a class="secondary-link" href="/grading">Open grading</a>
+          <a class="secondary-link" href="/attendance" data-roles="Administrator,Teacher" hidden>Upload attendance</a>
+          <a class="secondary-link" href="/quizzes" data-roles="Administrator,Teacher" hidden>Build quizzes</a>
+          <a class="secondary-link" href="/grading" data-roles="Administrator,Teacher" hidden>Open grading</a>
           <a class="secondary-link" href="/my-results">Student view</a>
         </div>
       </section>
 
-      <section class="action-panel" id="support-workflow-panel" aria-labelledby="support-workflow-title">
+      <section class="action-panel" id="support-workflow-panel" aria-labelledby="support-workflow-title" hidden>
         <div>
           <p class="eyebrow" data-i18n="common.support">Support workflow</p>
           <h2 id="support-workflow-title" data-i18n="common.reviewQuestions">Review repeated questions</h2>
@@ -85,21 +85,21 @@
           <span>Module 2</span>
           <h2>Students</h2>
           <p>Add, edit, search, and archive student records.</p>
-          <a href="/students">Open students</a>
+          <a href="/students" data-roles="Administrator" hidden>Open students</a>
         </article>
         <article class="module-card">
           <span>Module 3</span>
           <h2>Parents</h2>
           <p>Parent accounts, contact details, and linked children.</p>
-          <a href="/parent-portal">Open parent portal</a>
+          <a href="/parent-portal" data-roles="Administrator,Parent" hidden>Open parent portal</a>
         </article>
         <article class="module-card">
           <span>Module 4</span>
           <h2>Sessions</h2>
           <p>Schedules, attendance, and classroom assignments.</p>
-          <a href="/attendance">Open attendance</a>
-          <a href="/quizzes">Open quizzes</a>
-          <a href="/grading">Open grading</a>
+          <a href="/attendance" data-roles="Administrator,Teacher" hidden>Open attendance</a>
+          <a href="/quizzes" data-roles="Administrator,Teacher" hidden>Open quizzes</a>
+          <a href="/grading" data-roles="Administrator,Teacher" hidden>Open grading</a>
         </article>
         <article class="module-card">
           <span>Module 5</span>

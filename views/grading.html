@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assistant Grading | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script defer src="/js/grading.js"></script>
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Zoom webinar correction</p>
+          <h1>Assistant Grading</h1>
+          <p class="page-intro">
+            Review handwriting photos for Question 1 and Question 2, then assign only 0, 1, or 2.
+          </p>
+        </div>
+        <div class="toolbar-actions">
+          <a class="secondary-link" href="/dashboard">Dashboard</a>
+          <form action="/logout" method="post">
+            <button class="secondary-button" type="submit">Logout</button>
+          </form>
+        </div>
+      </header>
+
+      <section class="records-panel" aria-labelledby="grading-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Miss Hoda session support</p>
+            <h2 id="grading-title">Submissions to correct</h2>
+          </div>
+          <div class="score-legend">
+            <span>0 wrong</span>
+            <span>1 incomplete</span>
+            <span>2 correct</span>
+          </div>
+        </div>
+        <div class="grading-list" id="grading-list"></div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -20,6 +20,7 @@ Key pages:
 - Dashboard: `http://localhost:3000/dashboard`
 - Pending registrations: `http://localhost:3000/registrations`
 - Students: `http://localhost:3000/students`
+- Assistant grading: `http://localhost:3000/grading`
 
 ## Demo login
 

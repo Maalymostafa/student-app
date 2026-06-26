@@ -86,6 +86,8 @@ Build a session grading page with:
 - Q1 and Q2 score controls with only `0`, `1`, and `2`.
 - Attendance status.
 - Performance calculation.
+- Assistant teacher correction interface for webinar photo submissions.
+- Separate photo review areas for Q1 and Q2.
 
 Then build Zoom chat import:
 

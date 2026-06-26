@@ -136,6 +136,7 @@ Assigned teachers enter only `0`, `1`, or `2` for each question:
 - `2` means correct answer.
 
 AMS should calculate session performance from Q1, Q2, and attendance.
+Students should see grades in a fun, cheerful, kid-friendly page that encourages perfect students and motivates students who need improvement.
 
 ## Parent Records
 
@@ -165,8 +166,10 @@ Parents and students should be able to communicate with:
 - Miss Hoda Ismail
 - Miss Hoda's manager
 
-AI should help respond to repeated questions by suggesting or sending approved answers.
+AI should help respond to repeated questions by suggesting approved answers.
 Unclear, sensitive, or personal questions should be routed to the correct human role.
+When AI is unsure, it should ask the assigned human for the best reply before sending anything.
+Approved replies can later be reused for repeated questions.
 
 ## Notifications
 

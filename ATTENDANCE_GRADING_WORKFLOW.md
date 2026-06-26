@@ -58,6 +58,25 @@ The system should eventually:
 - Store grades per student per session.
 - Generate parent/student grade notifications later.
 
+## Kid-Friendly Grade Display
+
+AMS should include a fun grade page for students.
+
+The page should:
+
+- Show grades in a cheerful, child-friendly way.
+- Encourage students who got perfect or high scores.
+- Motivate students who need improvement without making them feel bad.
+- Make progress feel like a game or achievement.
+- Support positive messages from Miss Hoda and assistant teachers.
+- Avoid harsh wording for low scores.
+
+Examples:
+
+- Perfect score: strong celebration and encouragement.
+- Medium score: praise the effort and show what to improve.
+- Low score: gentle motivation and a clear next step.
+
 ## First Build Slice
 
 Build a session grading page with:

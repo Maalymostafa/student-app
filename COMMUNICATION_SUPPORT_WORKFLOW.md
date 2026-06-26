@@ -73,7 +73,10 @@ The AI should:
 
 - Detect repeated or common questions.
 - Suggest a ready answer.
-- Answer directly when the question is safe and already covered by academy rules.
+- Ask the assigned human for the best reply when the answer is uncertain.
+- Stay flexible and adapt to the academy's preferred reply style.
+- Avoid sending a direct answer if it may be wrong, incomplete, sensitive, or unclear.
+- Answer directly only when the question is safe, repeated, and already covered by approved academy rules.
 - Route unclear questions to the correct person.
 - Avoid answering sensitive cases without human review.
 
@@ -87,6 +90,16 @@ Examples of repeated questions:
 - Attendance question
 - Grade question
 - Technical login problem
+
+## Human Approval Rule
+
+The AI should not guess.
+
+If the AI is not confident, it should ask:
+
+> What is the best reply for this message?
+
+After the human provides or approves a reply, the system can save it as an approved answer for similar repeated questions later.
 
 ## Routing Rules
 

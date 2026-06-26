@@ -57,6 +57,8 @@ Before connecting to Google Forms or Google Sheets directly, build the AMS-nativ
 
 - Pending registrations page for administrators.
 - Example registration submissions.
+- Upload transaction photo inside AMS.
+- Show the uploaded transaction photo inside the admin review page.
 - Payment proof status.
 - Payment photo criteria checklist.
 - Confirm reservation action.

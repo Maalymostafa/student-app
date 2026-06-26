@@ -10,6 +10,7 @@ let registrations = [
     course: "English Conversation - Level 1",
     paymentMethod: "Vodafone Cash",
     paymentProof: "payment-youssef-ali.jpg",
+    paymentProofUrl: "",
     paymentReview: {
       recipientMatches: false,
       dateWithinRange: false,
@@ -30,6 +31,7 @@ let registrations = [
     course: "English Grammar - Level 2",
     paymentMethod: "Instapay",
     paymentProof: "payment-farida-samir.png",
+    paymentProofUrl: "",
     paymentReview: {
       recipientMatches: true,
       dateWithinRange: true,
@@ -50,6 +52,7 @@ let registrations = [
     course: "Placement Test",
     paymentMethod: "Bank transfer",
     paymentProof: "payment-karim-tarek.pdf",
+    paymentProofUrl: "",
     paymentReview: {
       recipientMatches: true,
       dateWithinRange: true,
@@ -115,6 +118,25 @@ function updatePaymentReview(registrationId, review) {
   return registration;
 }
 
+function updatePaymentProof(registrationId, fileName, fileUrl) {
+  const registration = registrations.find((item) => item.id === registrationId);
+
+  if (!registration) {
+    return null;
+  }
+
+  registration.paymentProof = fileName;
+  registration.paymentProofUrl = fileUrl;
+  registration.paymentStatus = "Needs review";
+  registration.paymentReview = {
+    recipientMatches: false,
+    dateWithinRange: false,
+    timePresent: false,
+  };
+
+  return registration;
+}
+
 function isPaymentReviewComplete(registration) {
   return Boolean(
     registration.paymentReview &&
@@ -129,4 +151,5 @@ module.exports = {
   confirmRegistration,
   buildConfirmationMessage,
   updatePaymentReview,
+  updatePaymentProof,
 };

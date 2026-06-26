@@ -45,6 +45,17 @@ function renderRegistrations(registrations) {
               <dd>${registration.studentCode || "Not generated"}</dd>
             </div>
           </dl>
+          <div class="payment-proof-viewer">
+            ${
+              registration.paymentProofUrl
+                ? `<img src="${registration.paymentProofUrl}" alt="Payment proof for ${registration.studentName}" />`
+                : `<div class="payment-proof-placeholder">No payment photo uploaded in AMS yet</div>`
+            }
+            <label>
+              Upload transaction photo
+              <input type="file" accept="image/*" data-payment-proof="${registration.id}" />
+            </label>
+          </div>
           <p class="student-note">
             ${registration.confirmationMessage || "Confirm this registration to generate the student code and message."}
           </p>
@@ -129,6 +140,24 @@ registrationList.addEventListener("click", async (event) => {
   await fetch(`/api/registrations/${confirmButton.dataset.registrationId}/confirm`, {
     method: "PATCH",
   });
+  await fetchRegistrations();
+});
+
+registrationList.addEventListener("change", async (event) => {
+  const input = event.target.closest("[data-payment-proof]");
+
+  if (!input || !input.files.length) {
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("paymentProof", input.files[0]);
+
+  await fetch(`/api/registrations/${input.dataset.paymentProof}/payment-proof`, {
+    method: "POST",
+    body: formData,
+  });
+
   await fetchRegistrations();
 });
 

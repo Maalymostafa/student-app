@@ -1,6 +1,7 @@
 const express = require("express");
 const registrationController = require("../controllers/registrationController");
 const { requireAuth, requireApiAuth, requireRole } = require("../middleware/authMiddleware");
+const upload = require("../middleware/uploadMiddleware");
 
 const router = express.Router();
 
@@ -27,6 +28,13 @@ router.patch(
   requireApiAuth,
   requireRole(["Administrator"]),
   registrationController.reviewPayment
+);
+router.post(
+  "/api/registrations/:id/payment-proof",
+  requireApiAuth,
+  requireRole(["Administrator"]),
+  upload.single("paymentProof"),
+  registrationController.uploadPaymentProof
 );
 
 module.exports = router;

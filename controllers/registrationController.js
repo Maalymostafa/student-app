@@ -3,6 +3,7 @@ const {
   getRegistrations,
   confirmRegistration,
   buildConfirmationMessage,
+  updatePaymentReview,
 } = require("../models/registrationModel");
 
 function showRegistrationsPage(req, res) {
@@ -27,11 +28,26 @@ function confirm(req, res) {
     return res.status(404).json({ message: "Registration not found" });
   }
 
+  if (result.error) {
+    return res.status(400).json(result);
+  }
+
   return res.json(result);
+}
+
+function reviewPayment(req, res) {
+  const registration = updatePaymentReview(req.params.id, req.body);
+
+  if (!registration) {
+    return res.status(404).json({ message: "Registration not found" });
+  }
+
+  return res.json({ registration });
 }
 
 module.exports = {
   showRegistrationsPage,
   listRegistrations,
   confirm,
+  reviewPayment,
 };

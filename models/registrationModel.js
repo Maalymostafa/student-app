@@ -10,6 +10,11 @@ let registrations = [
     course: "English Conversation - Level 1",
     paymentMethod: "Vodafone Cash",
     paymentProof: "payment-youssef-ali.jpg",
+    paymentReview: {
+      recipientMatches: false,
+      dateWithinRange: false,
+      timePresent: false,
+    },
     paymentStatus: "Needs review",
     reservationStatus: "Pending",
     studentCode: "",
@@ -25,6 +30,11 @@ let registrations = [
     course: "English Grammar - Level 2",
     paymentMethod: "Instapay",
     paymentProof: "payment-farida-samir.png",
+    paymentReview: {
+      recipientMatches: true,
+      dateWithinRange: true,
+      timePresent: false,
+    },
     paymentStatus: "Needs review",
     reservationStatus: "Pending",
     studentCode: "",
@@ -40,6 +50,11 @@ let registrations = [
     course: "Placement Test",
     paymentMethod: "Bank transfer",
     paymentProof: "payment-karim-tarek.pdf",
+    paymentReview: {
+      recipientMatches: true,
+      dateWithinRange: true,
+      timePresent: true,
+    },
     paymentStatus: "Verified",
     reservationStatus: "Confirmed",
     studentCode: "STU-2026-001",
@@ -57,6 +72,14 @@ function confirmRegistration(registrationId) {
     return null;
   }
 
+  if (!isPaymentReviewComplete(registration)) {
+    return {
+      registration,
+      message: "",
+      error: "Payment proof is missing required confirmation criteria",
+    };
+  }
+
   if (!registration.studentCode) {
     const nextNumber = registrations.filter((item) => item.studentCode).length + 1;
     registration.studentCode = `STU-2026-${String(nextNumber).padStart(3, "0")}`;
@@ -72,11 +95,38 @@ function confirmRegistration(registrationId) {
 }
 
 function buildConfirmationMessage(registration) {
-  return `Hello ${registration.parentName}, reservation confirmed for ${registration.studentName}. Student code: ${registration.studentCode}. Course: ${registration.course}.`;
+  return `Hello ${registration.parentName}, payment received and reservation confirmed for ${registration.studentName}. Your student code is ${registration.studentCode}. Please keep it with you. We will inform you with any updates.`;
+}
+
+function updatePaymentReview(registrationId, review) {
+  const registration = registrations.find((item) => item.id === registrationId);
+
+  if (!registration) {
+    return null;
+  }
+
+  registration.paymentReview = {
+    recipientMatches: review.recipientMatches === true,
+    dateWithinRange: review.dateWithinRange === true,
+    timePresent: review.timePresent === true,
+  };
+  registration.paymentStatus = isPaymentReviewComplete(registration) ? "Ready to confirm" : "Needs review";
+
+  return registration;
+}
+
+function isPaymentReviewComplete(registration) {
+  return Boolean(
+    registration.paymentReview &&
+      registration.paymentReview.recipientMatches &&
+      registration.paymentReview.dateWithinRange &&
+      registration.paymentReview.timePresent
+  );
 }
 
 module.exports = {
   getRegistrations,
   confirmRegistration,
   buildConfirmationMessage,
+  updatePaymentReview,
 };

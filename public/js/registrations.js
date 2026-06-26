@@ -48,13 +48,26 @@ function renderRegistrations(registrations) {
           <p class="student-note">
             ${registration.confirmationMessage || "Confirm this registration to generate the student code and message."}
           </p>
+          <div class="payment-review-panel">
+            <p>Payment photo criteria</p>
+            ${renderPaymentCheck(registration, "recipientMatches", "Recipient is Hoda Bahr @ Instapay")}
+            ${renderPaymentCheck(registration, "dateWithinRange", "Transaction date is within 7 days")}
+            ${renderPaymentCheck(registration, "timePresent", "Transaction time is visible")}
+            <button
+              class="save-feedback-button"
+              type="button"
+              data-save-payment-review="${registration.id}"
+            >
+              Save payment review
+            </button>
+          </div>
           <button
             class="archive-button confirm-button"
             type="button"
             data-registration-id="${registration.id}"
-            ${registration.reservationStatus === "Confirmed" ? "disabled" : ""}
+            ${registration.reservationStatus === "Confirmed" || !isPaymentReady(registration) ? "disabled" : ""}
           >
-            Confirm reservation
+            Confirm payment and reservation
           </button>
         </article>
       `
@@ -62,14 +75,58 @@ function renderRegistrations(registrations) {
     .join("");
 }
 
-registrationList.addEventListener("click", async (event) => {
-  const button = event.target.closest("[data-registration-id]");
+function renderPaymentCheck(registration, key, label) {
+  const checked = registration.paymentReview && registration.paymentReview[key] ? "checked" : "";
 
-  if (!button) {
+  return `
+    <label class="payment-check">
+      <input
+        type="checkbox"
+        data-payment-check="${registration.id}-${key}"
+        ${checked}
+      />
+      <span>${label}</span>
+    </label>
+  `;
+}
+
+function isPaymentReady(registration) {
+  return Boolean(
+    registration.paymentReview &&
+      registration.paymentReview.recipientMatches &&
+      registration.paymentReview.dateWithinRange &&
+      registration.paymentReview.timePresent
+  );
+}
+
+registrationList.addEventListener("click", async (event) => {
+  const confirmButton = event.target.closest("[data-registration-id]");
+  const reviewButton = event.target.closest("[data-save-payment-review]");
+
+  if (reviewButton) {
+    const registrationId = reviewButton.dataset.savePaymentReview;
+
+    await fetch(`/api/registrations/${registrationId}/payment-review`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        recipientMatches: document.querySelector(`[data-payment-check="${registrationId}-recipientMatches"]`).checked,
+        dateWithinRange: document.querySelector(`[data-payment-check="${registrationId}-dateWithinRange"]`).checked,
+        timePresent: document.querySelector(`[data-payment-check="${registrationId}-timePresent"]`).checked,
+      }),
+    });
+
+    await fetchRegistrations();
     return;
   }
 
-  await fetch(`/api/registrations/${button.dataset.registrationId}/confirm`, {
+  if (!confirmButton) {
+    return;
+  }
+
+  await fetch(`/api/registrations/${confirmButton.dataset.registrationId}/confirm`, {
     method: "PATCH",
   });
   await fetchRegistrations();

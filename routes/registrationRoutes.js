@@ -22,5 +22,11 @@ router.patch(
   requireRole(["Administrator"]),
   registrationController.confirm
 );
+router.patch(
+  "/api/registrations/:id/payment-review",
+  requireApiAuth,
+  requireRole(["Administrator"]),
+  registrationController.reviewPayment
+);
 
 module.exports = router;

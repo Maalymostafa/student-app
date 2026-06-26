@@ -27,6 +27,13 @@ Current process:
 6. The system matches student codes to students.
 7. The system marks attendance automatically.
 
+Important rule:
+
+- Attendance is always uploaded for one specific grade.
+- A code is counted present only if it belongs to the selected grade.
+- If a student writes a valid code from a different grade, that code is shown as ignored and the student in the selected grade is still absent.
+- Unknown or mistyped codes are shown separately for review.
+
 ## Current Grading Process
 
 Each session has two questions.

@@ -1,6 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
+const attendanceRoutes = require("./routes/attendanceRoutes");
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const gradingRoutes = require("./routes/gradingRoutes");
@@ -27,6 +28,7 @@ app.use(
   })
 );
 
+app.use("/", attendanceRoutes);
 app.use("/", authRoutes);
 app.use("/", dashboardRoutes);
 app.use("/", gradingRoutes);

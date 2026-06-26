@@ -20,6 +20,7 @@ Key pages:
 - Dashboard: `http://localhost:3000/dashboard`
 - Pending registrations: `http://localhost:3000/registrations`
 - Students: `http://localhost:3000/students`
+- Zoom attendance: `http://localhost:3000/attendance`
 - Assistant grading: `http://localhost:3000/grading`
 - Student results: `http://localhost:3000/my-results`
 - Parent portal: `http://localhost:3000/parent-portal`

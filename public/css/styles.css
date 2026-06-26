@@ -472,6 +472,16 @@ h2 {
   background: #e7ecef;
 }
 
+.status-badge.present {
+  color: #1d605f;
+  background: #dff4f1;
+}
+
+.status-badge.absent {
+  color: #8d2d1b;
+  background: #fff1ee;
+}
+
 .status-badge.pending {
   color: #8d5c00;
   background: #fff3cf;
@@ -982,6 +992,55 @@ h2 {
   background: #dff4f1;
 }
 
+.attendance-results {
+  display: grid;
+  gap: 14px;
+}
+
+.attendance-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+
+.attendance-summary div,
+.attendance-warning-panel {
+  padding: 14px;
+  border: 1px solid #d7e1e6;
+  border-radius: 8px;
+  background: #f8fbfb;
+}
+
+.attendance-summary span {
+  display: block;
+  margin-bottom: 8px;
+  color: #697985;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.attendance-summary strong {
+  color: #17212b;
+  font-size: 22px;
+}
+
+.attendance-warning-panel {
+  margin: 0 16px 16px;
+}
+
+.attendance-warning-panel h3 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.attendance-warning-panel p {
+  margin: 8px 0 0;
+  color: #52626e;
+  line-height: 1.5;
+}
+
 @media (max-width: 860px) {
   .auth-panel,
   .management-layout,
@@ -1022,6 +1081,10 @@ h2 {
   .support-routing-grid {
     grid-template-columns: 1fr;
   }
+
+  .attendance-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 560px) {
@@ -1057,7 +1120,8 @@ h2 {
   }
 
   .form-row,
-  .record-details {
+  .record-details,
+  .attendance-summary {
     grid-template-columns: 1fr;
   }
 }

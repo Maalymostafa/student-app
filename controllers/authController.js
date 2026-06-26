@@ -1,5 +1,10 @@
 const path = require("path");
-const { findUserByCredentials, getPublicUser, getDemoAccounts } = require("../models/userModel");
+const {
+  findUserByCredentials,
+  getPublicUser,
+  getDemoAccounts,
+  updateUserPassword,
+} = require("../models/userModel");
 const { requireAuth } = require("../middleware/authMiddleware");
 
 function showLogin(req, res) {
@@ -30,6 +35,13 @@ const showDashboard = [
   },
 ];
 
+const showAccount = [
+  requireAuth,
+  (req, res) => {
+    return res.sendFile(path.join(__dirname, "..", "views", "account.html"));
+  },
+];
+
 function showDemoAccounts(req, res) {
   return res.json(getDemoAccounts());
 }
@@ -40,9 +52,27 @@ function logout(req, res) {
   });
 }
 
+function changePassword(req, res) {
+  const { currentPassword, newPassword, confirmPassword } = req.body;
+
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ message: "New password confirmation does not match" });
+  }
+
+  const result = updateUserPassword(req.session.user.id, currentPassword, newPassword);
+
+  if (result.error) {
+    return res.status(400).json({ message: result.error });
+  }
+
+  return res.json({ user: result.user, message: "Password updated" });
+}
+
 module.exports = {
+  changePassword,
   showLogin,
   login,
+  showAccount,
   showDashboard,
   showDemoAccounts,
   logout,

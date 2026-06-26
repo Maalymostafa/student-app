@@ -1,0 +1,30 @@
+[
+  {
+    "id": "usr_admin_001",
+    "email": "admin@academy.test",
+    "password": "password123",
+    "name": "Academy Admin",
+    "role": "Administrator"
+  },
+  {
+    "id": "usr_teacher_001",
+    "email": "teacher@academy.test",
+    "password": "password123",
+    "name": "Mona Teacher",
+    "role": "Teacher"
+  },
+  {
+    "id": "usr_parent_001",
+    "email": "parent@academy.test",
+    "password": "password123",
+    "name": "Ahmed Parent",
+    "role": "Parent"
+  },
+  {
+    "id": "usr_student_001",
+    "email": "student@academy.test",
+    "password": "password123",
+    "name": "Lina Student",
+    "role": "Student"
+  }
+]

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script defer src="/js/account.js"></script>
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Account security</p>
+          <h1>Change password</h1>
+          <p class="page-intro">
+            Update your password from inside your account. Use the new password next time you sign in.
+          </p>
+        </div>
+        <div class="toolbar-actions">
+          <a class="secondary-link" href="/dashboard">Dashboard</a>
+          <form action="/logout" method="post">
+            <button class="secondary-button" type="submit">Logout</button>
+          </form>
+        </div>
+      </header>
+
+      <section class="management-layout account-layout">
+        <form class="data-form" id="password-form">
+          <div>
+            <p class="eyebrow">Password</p>
+            <h2>Choose a new password</h2>
+          </div>
+
+          <label for="currentPassword">Current password</label>
+          <input id="currentPassword" name="currentPassword" type="password" autocomplete="current-password" required />
+
+          <label for="newPassword">New password</label>
+          <input id="newPassword" name="newPassword" type="password" autocomplete="new-password" minlength="6" required />
+
+          <label for="confirmPassword">Confirm new password</label>
+          <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required />
+
+          <button type="submit">Update password</button>
+          <p class="form-message" id="password-message"></p>
+        </form>
+
+        <section class="records-panel">
+          <div class="records-header">
+            <div>
+              <p class="eyebrow">Important</p>
+              <h2>What changes?</h2>
+            </div>
+          </div>
+          <div class="support-list">
+            <article class="support-card">
+              <p class="student-note">
+                After changing your password, keep using the same email address with the new password.
+              </p>
+            </article>
+            <article class="support-card">
+              <p class="student-note">
+                If a parent or student forgets the password later, admin reset will be added next.
+              </p>
+            </article>
+          </div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

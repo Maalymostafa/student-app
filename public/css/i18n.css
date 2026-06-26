@@ -53,11 +53,17 @@ html[dir="rtl"] .status-badge {
 
 .language-switcher select {
   min-height: 28px;
+  padding: 0 10px;
   border: 0;
   border-radius: 999px;
   color: #ffffff;
   background: linear-gradient(135deg, var(--ams-blue), var(--ams-teal));
   font-weight: 800;
+}
+
+.language-switcher option {
+  color: #17212b;
+  background: #ffffff;
 }
 
 html[dir="rtl"] .theme-switcher {

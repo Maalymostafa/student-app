@@ -1723,11 +1723,17 @@ body::before {
 
 .theme-switcher select {
   min-height: 28px;
+  padding: 0 10px;
   border: 0;
   border-radius: 999px;
   color: #ffffff;
   background: linear-gradient(135deg, var(--ams-primary), color-mix(in srgb, var(--ams-primary) 74%, #f5c542));
   font-weight: 800;
+}
+
+.theme-switcher option {
+  color: #17212b;
+  background: #ffffff;
 }
 
 @media (max-width: 560px) {

@@ -1,4 +1,12 @@
 const registrationList = document.querySelector("#registration-list");
+const bookingWindowForm = document.querySelector("#booking-window-form");
+const bookingWindowState = document.querySelector("#booking-window-state");
+const bookingWindowSummary = document.querySelector("#booking-window-summary");
+const bookingWindowMessage = document.querySelector("#booking-window-message");
+const opensDayInput = document.querySelector("#opensDay");
+const closesDayInput = document.querySelector("#closesDay");
+
+let canManageReservations = false;
 
 async function fetchRegistrations() {
   const response = await fetch("/api/registrations");
@@ -8,8 +16,31 @@ async function fetchRegistrations() {
     return;
   }
 
-  const { registrations } = await response.json();
+  const { registrations, user } = await response.json();
+  canManageReservations = user && user.role === "Administrator";
   renderRegistrations(registrations);
+}
+
+async function fetchBookingWindow() {
+  const response = await fetch("/api/registration-window");
+
+  if (!response.ok) {
+    bookingWindowForm.hidden = true;
+    return;
+  }
+
+  const { windowStatus } = await response.json();
+  renderBookingWindow(windowStatus);
+}
+
+function renderBookingWindow(windowStatus) {
+  opensDayInput.value = windowStatus.opensDay;
+  closesDayInput.value = windowStatus.closesDay;
+  bookingWindowState.textContent = windowStatus.isOpen ? "Open now" : "Waiting list now";
+  bookingWindowState.className = `status-badge ${windowStatus.isOpen ? "confirmed" : "waiting"}`;
+  bookingWindowSummary.textContent = `${windowStatus.message}${
+    windowStatus.updatedBy ? ` Last changed by ${windowStatus.updatedBy}.` : ""
+  }`;
 }
 
 function renderRegistrations(registrations) {
@@ -65,7 +96,7 @@ function renderRegistrations(registrations) {
             }
             <label>
               Upload transaction photo
-              <input type="file" accept="image/*" data-payment-proof="${registration.id}" />
+              <input type="file" accept="image/*" data-payment-proof="${registration.id}" ${canManageReservations ? "" : "disabled"} />
             </label>
           </div>
           <p class="student-note">
@@ -80,6 +111,7 @@ function renderRegistrations(registrations) {
               class="save-feedback-button"
               type="button"
               data-save-payment-review="${registration.id}"
+              ${canManageReservations ? "" : "disabled"}
             >
               Save payment review
             </button>
@@ -88,7 +120,7 @@ function renderRegistrations(registrations) {
             class="archive-button confirm-button"
             type="button"
             data-registration-id="${registration.id}"
-            ${["Confirmed", "Rejected"].includes(registration.reservationStatus) || !isPaymentReady(registration) ? "disabled" : ""}
+            ${!canManageReservations || ["Confirmed", "Rejected"].includes(registration.reservationStatus) || !isPaymentReady(registration) ? "disabled" : ""}
           >
             Confirm payment and reservation
           </button>
@@ -96,10 +128,11 @@ function renderRegistrations(registrations) {
             class="archive-button"
             type="button"
             data-reject-registration="${registration.id}"
-            ${["Confirmed", "Rejected"].includes(registration.reservationStatus) ? "disabled" : ""}
+            ${!canManageReservations || ["Confirmed", "Rejected"].includes(registration.reservationStatus) ? "disabled" : ""}
           >
             Reject and prepare refund
           </button>
+          ${canManageReservations ? "" : `<p class="student-note">Teachers can manage the booking window here. Final reservation decisions are admin-only.</p>`}
         </article>
       `
     )
@@ -131,6 +164,7 @@ function renderPaymentCheck(registration, key, label) {
         type="checkbox"
         data-payment-check="${registration.id}-${key}"
         ${checked}
+        ${canManageReservations ? "" : "disabled"}
       />
       <span>${label}</span>
     </label>
@@ -145,6 +179,32 @@ function isPaymentReady(registration) {
       registration.paymentReview.timePresent
   );
 }
+
+bookingWindowForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  bookingWindowMessage.textContent = "Saving booking window...";
+
+  const response = await fetch("/api/registration-window", {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      opensDay: opensDayInput.value,
+      closesDay: closesDayInput.value,
+    }),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    bookingWindowMessage.textContent = result.message || "Could not update booking window.";
+    return;
+  }
+
+  renderBookingWindow(result.windowStatus);
+  bookingWindowMessage.textContent = "Booking window saved.";
+});
 
 registrationList.addEventListener("click", async (event) => {
   const confirmButton = event.target.closest("[data-registration-id]");
@@ -211,4 +271,5 @@ registrationList.addEventListener("change", async (event) => {
   await fetchRegistrations();
 });
 
+fetchBookingWindow();
 fetchRegistrations();

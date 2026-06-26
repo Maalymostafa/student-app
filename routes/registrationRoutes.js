@@ -11,13 +11,25 @@ router.post("/api/public/registrations", registrationController.createPublic);
 router.get(
   "/registrations",
   requireAuth,
-  requireRole(["Administrator"]),
+  requireRole(["Administrator", "Teacher"]),
   registrationController.showRegistrationsPage
+);
+router.get(
+  "/api/registration-window",
+  requireApiAuth,
+  requireRole(["Administrator", "Teacher"]),
+  registrationController.getManagedRegistrationWindow
+);
+router.patch(
+  "/api/registration-window",
+  requireApiAuth,
+  requireRole(["Administrator", "Teacher"]),
+  registrationController.updateManagedRegistrationWindow
 );
 router.get(
   "/api/registrations",
   requireApiAuth,
-  requireRole(["Administrator"]),
+  requireRole(["Administrator", "Teacher"]),
   registrationController.listRegistrations
 );
 router.patch(

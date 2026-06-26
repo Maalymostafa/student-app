@@ -24,6 +24,31 @@
         </div>
       </header>
 
+      <form class="data-form booking-window-form" id="booking-window-form">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Booking control</p>
+            <h2>Registration window</h2>
+          </div>
+          <span class="status-badge" id="booking-window-state">Loading</span>
+        </div>
+        <p class="student-note" id="booking-window-summary">
+          Only teachers and administrators can change when public registration is open.
+        </p>
+        <div class="form-row">
+          <label for="opensDay">
+            Opens on day
+            <input id="opensDay" name="opensDay" type="number" min="1" max="31" required />
+          </label>
+          <label for="closesDay">
+            Closes on day
+            <input id="closesDay" name="closesDay" type="number" min="1" max="31" required />
+          </label>
+        </div>
+        <button type="submit">Save booking window</button>
+        <p class="form-message" id="booking-window-message" role="status"></p>
+      </form>
+
       <section class="records-panel" aria-labelledby="registration-title">
         <div class="records-header">
           <div>

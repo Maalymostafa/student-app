@@ -6,6 +6,7 @@ const {
   createPublicRegistration,
   getRegistrationWindowStatus,
   rejectRegistration,
+  updateRegistrationWindowSettings,
   updatePaymentReview,
   updatePaymentProof,
 } = require("../models/registrationModel");
@@ -22,6 +23,20 @@ function getPublicRegistrationStatus(req, res) {
   return res.json({ windowStatus: getRegistrationWindowStatus() });
 }
 
+function getManagedRegistrationWindow(req, res) {
+  return res.json({ windowStatus: getRegistrationWindowStatus() });
+}
+
+function updateManagedRegistrationWindow(req, res) {
+  const result = updateRegistrationWindowSettings(req.body, req.session.user.name);
+
+  if (result.error) {
+    return res.status(400).json({ message: result.error });
+  }
+
+  return res.json(result);
+}
+
 function listRegistrations(req, res) {
   const registrations = getRegistrations().map((registration) => ({
     ...registration,
@@ -30,7 +45,7 @@ function listRegistrations(req, res) {
       : "",
   }));
 
-  return res.json({ registrations });
+  return res.json({ registrations, user: req.session.user });
 }
 
 function confirm(req, res) {
@@ -114,11 +129,13 @@ function uploadPaymentProof(req, res) {
 module.exports = {
   confirm,
   createPublic,
+  getManagedRegistrationWindow,
   getPublicRegistrationStatus,
   listRegistrations,
   reject,
   reviewPayment,
   showPublicRegistrationPage,
   showRegistrationsPage,
+  updateManagedRegistrationWindow,
   uploadPaymentProof,
 };

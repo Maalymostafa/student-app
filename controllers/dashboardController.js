@@ -33,6 +33,7 @@ const roleDashboards = {
     ],
     actions: [
       { label: "Take attendance", href: "/attendance" },
+      { label: "Set booking window", href: "/registrations" },
       { label: "Build session quiz", href: "/quizzes" },
       { label: "Enter grades", href: "/grading" },
       { label: "Review support notes", href: "/support-inbox" },

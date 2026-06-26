@@ -1,3 +1,16 @@
+const fs = require("fs");
+const path = require("path");
+
+const registrationWindowFile = path.join(__dirname, "..", "database", "registration-window.json");
+const defaultRegistrationWindow = {
+  opensDay: 1,
+  closesDay: 10,
+  updatedAt: "",
+  updatedBy: "",
+};
+
+let registrationWindowSettings = loadRegistrationWindowSettings();
+
 let registrations = [
   {
     id: "REG-2001",
@@ -83,16 +96,42 @@ function getRegistrations() {
 
 function getRegistrationWindowStatus(date = new Date()) {
   const dayOfMonth = date.getDate();
-  const isOpen = dayOfMonth >= 1 && dayOfMonth <= 10;
+  const { opensDay, closesDay } = registrationWindowSettings;
+  const isOpen = isDayInsideWindow(dayOfMonth, opensDay, closesDay);
 
   return {
     isOpen,
-    opensDay: 1,
-    closesDay: 10,
+    opensDay,
+    closesDay,
+    updatedAt: registrationWindowSettings.updatedAt,
+    updatedBy: registrationWindowSettings.updatedBy,
     message: isOpen
-      ? "Registration is open. Your request will be reviewed after payment verification."
-      : "Registration is currently outside the official booking window. Your request will join the waiting list.",
+      ? `Registration is open from day ${opensDay} to day ${closesDay}. Your request will be reviewed after payment verification.`
+      : `Registration is currently outside the official booking window from day ${opensDay} to day ${closesDay}. Your request will join the waiting list.`,
   };
+}
+
+function updateRegistrationWindowSettings(settings, userName = "") {
+  const opensDay = Number(settings.opensDay);
+  const closesDay = Number(settings.closesDay);
+
+  if (!Number.isInteger(opensDay) || !Number.isInteger(closesDay)) {
+    return { error: "Opening and closing days must be whole numbers" };
+  }
+
+  if (opensDay < 1 || opensDay > 31 || closesDay < 1 || closesDay > 31) {
+    return { error: "Opening and closing days must be between 1 and 31" };
+  }
+
+  registrationWindowSettings = {
+    opensDay,
+    closesDay,
+    updatedAt: new Date().toISOString(),
+    updatedBy: userName,
+  };
+  saveRegistrationWindowSettings();
+
+  return { windowStatus: getRegistrationWindowStatus() };
 }
 
 function createPublicRegistration(registrationData) {
@@ -233,6 +272,46 @@ function isPaymentReviewComplete(registration) {
   );
 }
 
+function isDayInsideWindow(dayOfMonth, opensDay, closesDay) {
+  if (opensDay <= closesDay) {
+    return dayOfMonth >= opensDay && dayOfMonth <= closesDay;
+  }
+
+  return dayOfMonth >= opensDay || dayOfMonth <= closesDay;
+}
+
+function loadRegistrationWindowSettings() {
+  ensureRegistrationWindowFile();
+
+  try {
+    const fileContent = fs.readFileSync(registrationWindowFile, "utf8");
+    const settings = JSON.parse(fileContent);
+    return {
+      ...defaultRegistrationWindow,
+      ...settings,
+    };
+  } catch (error) {
+    return defaultRegistrationWindow;
+  }
+}
+
+function saveRegistrationWindowSettings() {
+  ensureRegistrationWindowFile();
+  fs.writeFileSync(registrationWindowFile, JSON.stringify(registrationWindowSettings, null, 2));
+}
+
+function ensureRegistrationWindowFile() {
+  const databaseDir = path.dirname(registrationWindowFile);
+
+  if (!fs.existsSync(databaseDir)) {
+    fs.mkdirSync(databaseDir, { recursive: true });
+  }
+
+  if (!fs.existsSync(registrationWindowFile)) {
+    fs.writeFileSync(registrationWindowFile, JSON.stringify(defaultRegistrationWindow, null, 2));
+  }
+}
+
 module.exports = {
   buildConfirmationMessage,
   confirmRegistration,
@@ -241,6 +320,7 @@ module.exports = {
   getRegistrations,
   getRegistrationWindowStatus,
   rejectRegistration,
+  updateRegistrationWindowSettings,
   updatePaymentReview,
   updatePaymentProof,
 };

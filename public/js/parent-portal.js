@@ -113,7 +113,7 @@ supportForm.addEventListener("submit", async (event) => {
     senderRole: "Parent",
   };
 
-  const response = await fetch("/api/support/messages", {
+  const response = await fetch("/api/parent/messages", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),

@@ -19,6 +19,10 @@ function listAttendanceSetup(req, res) {
   });
 }
 
+function listAttendanceRecords(req, res) {
+  return res.json({ records: getAttendanceRuns() });
+}
+
 function getAttendance(req, res) {
   const run = getAttendanceRun(req.params.id);
 
@@ -66,6 +70,7 @@ function uploadZoomChat(req, res) {
 
 module.exports = {
   getAttendance,
+  listAttendanceRecords,
   listAttendanceSetup,
   removeAttendance,
   showAttendancePage,

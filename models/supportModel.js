@@ -52,6 +52,7 @@ function createSupportMessage(data) {
     studentName: data.studentName || "",
     category: data.category || "General question",
     assignedTo: data.assignedTo || getDefaultAssignee(data.category),
+    createdByUserId: data.createdByUserId || "",
     status: "New",
     message: data.message,
     aiConfidence: "Needs human",
@@ -61,6 +62,10 @@ function createSupportMessage(data) {
 
   supportMessages.unshift(message);
   return message;
+}
+
+function getMessagesForUser(userId) {
+  return supportMessages.filter((message) => message.createdByUserId === userId);
 }
 
 function updateSupportMessage(messageId, updates) {
@@ -111,6 +116,7 @@ function getDefaultAssignee(category = "") {
 module.exports = {
   approveSuggestedReply,
   createSupportMessage,
+  getMessagesForUser,
   getSupportMessages,
   updateSupportMessage,
 };

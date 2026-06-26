@@ -16,5 +16,17 @@ router.get(
   requireRole(["Administrator", "Parent"]),
   parentController.getParentOverview
 );
+router.get(
+  "/api/parent/messages",
+  requireApiAuth,
+  requireRole(["Administrator", "Parent"]),
+  parentController.listParentMessages
+);
+router.post(
+  "/api/parent/messages",
+  requireApiAuth,
+  requireRole(["Administrator", "Parent"]),
+  parentController.createParentMessage
+);
 
 module.exports = router;

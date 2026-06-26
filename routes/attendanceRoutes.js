@@ -18,6 +18,12 @@ router.get(
   attendanceController.listAttendanceSetup
 );
 router.get(
+  "/api/attendance/records",
+  requireApiAuth,
+  requireRole(["Administrator", "Teacher"]),
+  attendanceController.listAttendanceRecords
+);
+router.get(
   "/api/attendance/:id",
   requireApiAuth,
   requireRole(["Administrator", "Teacher"]),

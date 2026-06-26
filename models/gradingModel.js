@@ -56,6 +56,13 @@ function getSubmissions() {
   return submissions.map(addPerformance);
 }
 
+function getStudentResults(studentCode) {
+  return submissions
+    .filter((submission) => submission.studentCode === studentCode)
+    .map(addPerformance)
+    .map(addKidMessage);
+}
+
 function updateSubmissionScore(submissionId, question, score) {
   const parsedScore = Number(score);
   const submission = submissions.find((item) => item.id === submissionId);
@@ -101,8 +108,31 @@ function addPerformance(submission) {
   };
 }
 
+function addKidMessage(submission) {
+  let headline = "Keep going";
+  let message = "Every answer is practice. Review the feedback and try the next one with confidence.";
+
+  if (!submission.complete) {
+    headline = "Correction in progress";
+    message = "Your teacher is still checking this work. Come back soon for your full result.";
+  } else if (submission.percentage === 100) {
+    headline = "Perfect work";
+    message = "Amazing job. You answered everything correctly and should feel proud.";
+  } else if (submission.percentage >= 50) {
+    headline = "Good effort";
+    message = "You are on the right track. Read the feedback and polish the missing part.";
+  }
+
+  return {
+    ...submission,
+    kidHeadline: headline,
+    kidMessage: message,
+  };
+}
+
 module.exports = {
   getSubmissions,
+  getStudentResults,
   updateSubmissionScore,
   updateQuestionNotes,
 };

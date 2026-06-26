@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Results | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script defer src="/js/student-results.js"></script>
+  </head>
+  <body>
+    <main class="dashboard kid-results-page">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">My session results</p>
+          <h1>Your corrected answers</h1>
+          <p class="page-intro">
+            See your Q1 and Q2 correction, teacher feedback, and what to improve next.
+          </p>
+        </div>
+        <div class="toolbar-actions">
+          <a class="secondary-link" href="/dashboard">Dashboard</a>
+          <form action="/logout" method="post">
+            <button class="secondary-button" type="submit">Logout</button>
+          </form>
+        </div>
+      </header>
+
+      <section class="records-panel" aria-labelledby="results-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Progress report</p>
+            <h2 id="results-title">Latest session</h2>
+          </div>
+          <label class="search-control" for="student-code">
+            <span>Student code</span>
+            <input id="student-code" value="STU-2026-001" />
+          </label>
+        </div>
+        <div class="kid-results-list" id="kid-results-list"></div>
+      </section>
+    </main>
+  </body>
+</html>

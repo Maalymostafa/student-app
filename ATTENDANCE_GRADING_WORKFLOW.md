@@ -70,6 +70,9 @@ The page should:
 - Make progress feel like a game or achievement.
 - Support positive messages from Miss Hoda and assistant teachers.
 - Avoid harsh wording for low scores.
+- Show Q1 and Q2 scores.
+- Show corrected photo references when the assistant uploads them.
+- Show assistant feedback when available.
 
 Examples:
 

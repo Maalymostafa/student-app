@@ -1,5 +1,6 @@
 const path = require("path");
 const {
+  getStudentResults,
   getSubmissions,
   updateQuestionNotes,
   updateSubmissionScore,
@@ -9,8 +10,17 @@ function showGradingPage(req, res) {
   return res.sendFile(path.join(__dirname, "..", "views", "grading.html"));
 }
 
+function showStudentResultsPage(req, res) {
+  return res.sendFile(path.join(__dirname, "..", "views", "student-results.html"));
+}
+
 function listSubmissions(req, res) {
   return res.json({ submissions: getSubmissions() });
+}
+
+function listStudentResults(req, res) {
+  const studentCode = req.query.studentCode || "STU-2026-001";
+  return res.json({ results: getStudentResults(studentCode), studentCode });
 }
 
 function updateScore(req, res) {
@@ -40,7 +50,9 @@ function updateNotes(req, res) {
 
 module.exports = {
   showGradingPage,
+  showStudentResultsPage,
   listSubmissions,
+  listStudentResults,
   updateScore,
   updateNotes,
 };

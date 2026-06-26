@@ -11,10 +11,22 @@ router.get(
   gradingController.showGradingPage
 );
 router.get(
+  "/my-results",
+  requireAuth,
+  requireRole(["Administrator", "Teacher", "Parent", "Student"]),
+  gradingController.showStudentResultsPage
+);
+router.get(
   "/api/grading/submissions",
   requireApiAuth,
   requireRole(["Administrator", "Teacher"]),
   gradingController.listSubmissions
+);
+router.get(
+  "/api/my-results",
+  requireApiAuth,
+  requireRole(["Administrator", "Teacher", "Parent", "Student"]),
+  gradingController.listStudentResults
 );
 router.patch(
   "/api/grading/submissions/:id/score",

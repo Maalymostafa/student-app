@@ -21,6 +21,7 @@ Key pages:
 - Pending registrations: `http://localhost:3000/registrations`
 - Students: `http://localhost:3000/students`
 - Assistant grading: `http://localhost:3000/grading`
+- Student results: `http://localhost:3000/my-results`
 
 ## Demo login
 

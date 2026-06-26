@@ -5,6 +5,158 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Style Preview | Academy Management System</title>
     <link rel="stylesheet" href="/css/style-preview.css" />
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #18212f;
+        background: #eef2f4;
+      }
+      .preview-page {
+        width: min(1280px, 100%);
+        margin: 0 auto;
+        padding: 32px;
+      }
+      .preview-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        align-items: flex-start;
+        margin-bottom: 24px;
+      }
+      .preview-header p,
+      .sample-topbar p {
+        margin: 0 0 10px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+      .preview-header h1 {
+        margin: 0;
+        font-size: 42px;
+        line-height: 1.05;
+      }
+      .preview-header span {
+        display: block;
+        margin-top: 12px;
+        color: #5b6875;
+        line-height: 1.5;
+      }
+      .preview-header a,
+      .sample-topbar button {
+        min-height: 42px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 14px;
+        border-radius: 6px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+      .preview-header a {
+        border: 1px solid #cbd5dd;
+        color: #22313d;
+        background: #ffffff;
+      }
+      .theme-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+      .theme-card {
+        min-height: 430px;
+        display: grid;
+        gap: 16px;
+        align-content: start;
+        padding: 22px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        background: var(--page);
+      }
+      .sample-topbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: flex-start;
+        padding: 18px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface);
+      }
+      .sample-topbar h2 {
+        margin: 0;
+        font-size: 28px;
+      }
+      .sample-topbar span,
+      .sample-panel p {
+        color: var(--muted);
+        line-height: 1.45;
+      }
+      .sample-topbar button {
+        border: 0;
+        color: var(--button-text);
+        background: var(--button);
+      }
+      .sample-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .sample-metrics div,
+      .sample-panel {
+        padding: 16px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--surface);
+      }
+      .sample-metrics span {
+        display: block;
+        margin-bottom: 12px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .sample-metrics strong {
+        font-size: 34px;
+      }
+      .sample-panel h3 {
+        margin: 0 0 12px;
+        font-size: 22px;
+      }
+      .sample-panel p {
+        margin: 10px 0 0;
+        padding: 12px;
+        border-radius: 6px;
+        background: var(--soft);
+      }
+      .theme-calm {
+        --page: #f4f7f8; --surface: #ffffff; --soft: #edf8f7; --border: #d6e1e6;
+        --text: #17212b; --muted: #53616c; --button: #24706f; --button-text: #ffffff;
+      }
+      .theme-bright {
+        --page: #fff9ed; --surface: #ffffff; --soft: #fff0c7; --border: #f1d59d;
+        --text: #1d2d35; --muted: #6d5a31; --button: #e05b2f; --button-text: #ffffff;
+      }
+      .theme-focus {
+        --page: #111827; --surface: #182235; --soft: #22304a; --border: #2e3c55;
+        --text: #f8fbff; --muted: #b4c0d0; --button: #3fd0a7; --button-text: #071410;
+      }
+      .theme-premium {
+        --page: #f6f3ee; --surface: #fffcf7; --soft: #eee7db; --border: #d8cdbc;
+        --text: #22211e; --muted: #625d54; --button: #243b53; --button-text: #ffffff;
+      }
+      @media (max-width: 900px) {
+        .theme-grid { grid-template-columns: 1fr; }
+        .preview-header, .sample-topbar { flex-direction: column; }
+      }
+      @media (max-width: 560px) {
+        .preview-page { padding: 18px; }
+        .sample-metrics { grid-template-columns: 1fr; }
+      }
+    </style>
   </head>
   <body>
     <main class="preview-page">

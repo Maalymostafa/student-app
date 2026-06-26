@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quizzes | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script defer src="/js/quizzes.js"></script>
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Session quizzes</p>
+          <h1>Build and review quizzes</h1>
+          <p class="page-intro">
+            Create the quiz after each session, set the close time, add questions, and review late access requests.
+          </p>
+        </div>
+        <div class="toolbar-actions">
+          <a class="secondary-link" href="/take-quiz">Student quiz page</a>
+          <a class="secondary-link" href="/dashboard">Dashboard</a>
+        </div>
+      </header>
+
+      <section class="management-layout">
+        <form class="data-form" id="quiz-form">
+          <div>
+            <p class="eyebrow">New quiz</p>
+            <h2>Session setup</h2>
+          </div>
+          <label for="title">Quiz title</label>
+          <input id="title" name="title" placeholder="Session 2 Quiz" required />
+
+          <label for="sessionTitle">Session</label>
+          <input id="sessionTitle" name="sessionTitle" placeholder="Zoom Webinar - Session 2" required />
+
+          <label for="schoolGrade">Grade</label>
+          <select id="schoolGrade" name="schoolGrade">
+            <option>Grade 4</option>
+            <option>Grade 5</option>
+            <option>Grade 6</option>
+            <option>Prep 1</option>
+            <option>Prep 2</option>
+          </select>
+
+          <label for="closesAt">Closes at</label>
+          <input id="closesAt" name="closesAt" type="datetime-local" required />
+
+          <button type="submit">Create quiz</button>
+          <p class="form-message" id="quiz-message"></p>
+        </form>
+
+        <section class="records-panel" aria-labelledby="quiz-list-title">
+          <div class="records-header">
+            <div>
+              <p class="eyebrow">Question builder</p>
+              <h2 id="quiz-list-title">Quizzes</h2>
+            </div>
+          </div>
+          <div class="quiz-list" id="quiz-list"></div>
+        </section>
+      </section>
+
+      <section class="records-panel quiz-late-panel" aria-labelledby="late-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Late permission</p>
+            <h2 id="late-title">Requests for closed quizzes</h2>
+          </div>
+        </div>
+        <div class="quiz-list" id="late-request-list"></div>
+      </section>
+    </main>
+  </body>
+</html>

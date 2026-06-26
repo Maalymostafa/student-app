@@ -138,6 +138,34 @@ Assigned teachers enter only `0`, `1`, or `2` for each question:
 AMS should calculate session performance from Q1, Q2, and attendance.
 Students should see grades in a fun, cheerful, kid-friendly page that encourages perfect students and motivates students who need improvement.
 
+## Session Quizzes
+
+Quizzes are created inside AMS after each session.
+They are not homework file uploads.
+
+Teacher workflow:
+
+- Create a quiz for a specific session and grade.
+- Set a close time.
+- Add multiple-choice questions with four choices.
+- Add essay questions with a model answer.
+- Add completion questions by writing the incomplete sentence and correct missing word; AMS can suggest answer choices.
+- Review late access requests from students who missed the deadline.
+
+Student workflow:
+
+- Open the quiz page.
+- Enter student code.
+- Answer before the close time.
+- If the quiz is closed, send a late request with a reason.
+- When Miss Hoda or the teacher approves the request, the student can submit.
+
+After quiz submission:
+
+- Objective questions are corrected automatically.
+- Written answers can be checked against a model answer in the first build, then manually reviewed later.
+- Quiz scores appear on the student result page.
+
 ## Parent Records
 
 Parent data should include:

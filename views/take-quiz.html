@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Take Quiz | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script defer src="/js/take-quiz.js"></script>
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Student quiz</p>
+          <h1>Answer session quiz</h1>
+          <p class="page-intro">
+            Enter your student code, choose the quiz, and submit before the close time.
+          </p>
+        </div>
+        <div class="toolbar-actions">
+          <a class="secondary-link" href="/my-results">My results</a>
+          <a class="secondary-link" href="/dashboard">Dashboard</a>
+        </div>
+      </header>
+
+      <section class="records-panel" aria-labelledby="take-quiz-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Quiz access</p>
+            <h2 id="take-quiz-title">Available quiz</h2>
+          </div>
+          <label class="search-control" for="student-code">
+            <span>Student code</span>
+            <input id="student-code" value="g40064h" />
+          </label>
+        </div>
+        <form class="quiz-attempt" id="quiz-attempt"></form>
+      </section>
+    </main>
+  </body>
+</html>

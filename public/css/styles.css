@@ -992,6 +992,18 @@ h2 {
   background: #dff4f1;
 }
 
+.status-badge.open,
+.status-badge.approved {
+  color: #1d605f;
+  background: #dff4f1;
+}
+
+.status-badge.closed,
+.status-badge.rejected {
+  color: #8d2d1b;
+  background: #fff1ee;
+}
+
 .attendance-results {
   display: grid;
   gap: 14px;
@@ -1041,6 +1053,100 @@ h2 {
   line-height: 1.5;
 }
 
+.quiz-list {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.quiz-card,
+.quiz-attempt {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #d7e1e6;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.quiz-question-list,
+.question-form,
+.quiz-question,
+.late-request-box {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #d7e1e6;
+  border-radius: 8px;
+  background: #f8fbfb;
+}
+
+.quiz-question-list p {
+  margin: 0;
+  color: #52626e;
+}
+
+.question-form label,
+.quiz-question span,
+.late-request-box label {
+  display: grid;
+  gap: 8px;
+  color: #344653;
+  font-weight: 700;
+}
+
+.question-form input,
+.question-form select,
+.question-form textarea,
+.quiz-question textarea,
+.late-request-box textarea {
+  width: 100%;
+  min-height: 40px;
+  padding: 10px 12px;
+  border: 1px solid #c7d3da;
+  border-radius: 6px;
+  color: #17212b;
+  background: #ffffff;
+}
+
+.choice-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.question-form button,
+.quiz-attempt button,
+.late-request-box button {
+  min-height: 40px;
+  border: 1px solid #b7d7d4;
+  border-radius: 6px;
+  color: #1d605f;
+  background: #edf8f7;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.quiz-attempt-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.quiz-attempt-header p {
+  margin: 8px 0 0;
+  color: #52626e;
+}
+
+.quiz-late-panel {
+  margin-top: 18px;
+}
+
+.hidden {
+  display: none;
+}
+
 @media (max-width: 860px) {
   .auth-panel,
   .management-layout,
@@ -1084,6 +1190,14 @@ h2 {
 
   .attendance-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .choice-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .quiz-attempt-header {
+    flex-direction: column;
   }
 }
 

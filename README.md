@@ -2,6 +2,8 @@
 
 A web application for managing academy students, parents, sessions, payments, and notifications.
 
+See `PRODUCT_ROADMAP.md` for the full product direction and module plan.
+
 ## Run locally
 
 ```bash

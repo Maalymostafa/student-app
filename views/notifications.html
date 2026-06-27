@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifications | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/i18n.css" />
+    <script defer src="/js/notifications.js"></script>
+    <script defer src="/js/i18n.js"></script>
+    <script defer src="/js/theme.js"></script>
+  </head>
+  <body>
+    <main class="dashboard notifications-page">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Notification center</p>
+          <h1>Official messages</h1>
+          <p class="page-intro">
+            Payments, sessions, grades, support replies, and important academy updates stay here instead of getting lost in group chats.
+          </p>
+        </div>
+        <div class="toolbar-actions">
+          <a class="secondary-link" href="/dashboard">Dashboard</a>
+          <form action="/logout" method="post">
+            <button class="secondary-button" type="submit">Logout</button>
+          </form>
+        </div>
+      </header>
+
+      <section class="content-grid">
+        <article class="student-card">
+          <div class="student-main">
+            <div>
+              <span class="record-id">Inbox</span>
+              <h2 id="notification-count">Loading messages</h2>
+              <p class="student-note">Unread messages stay highlighted until you mark them as read.</p>
+            </div>
+            <span class="status-badge pending" id="notification-unread-badge">0 unread</span>
+          </div>
+        </article>
+
+        <article class="student-card" id="notification-compose-panel" hidden>
+          <h2>Send official update</h2>
+          <form class="login-form" id="notification-form">
+            <label for="audience">Send to</label>
+            <select id="audience" name="audience">
+              <option value="everyone">Everyone</option>
+              <option value="grade">A full grade</option>
+              <option value="students">All students</option>
+              <option value="parents">All parents</option>
+              <option value="role">A role broadcast</option>
+              <option value="account">One specific account</option>
+            </select>
+
+            <div id="gradeTargetFields">
+              <label for="schoolGrade">Grade</label>
+              <select id="schoolGrade" name="schoolGrade">
+                <option value="">Choose grade</option>
+                <option>Grade 4</option>
+                <option>Grade 5</option>
+                <option>Grade 6</option>
+                <option>Prep 1</option>
+                <option>Prep 2</option>
+              </select>
+
+              <label for="includeParents">Grade recipients</label>
+              <select id="includeParents" name="includeParents">
+                <option value="yes">Students and parents</option>
+                <option value="no">Students only</option>
+              </select>
+            </div>
+
+            <div id="roleTargetFields">
+              <label for="recipientRole">Role</label>
+            <select id="recipientRole" name="recipientRole">
+              <option>Parent</option>
+              <option>Student</option>
+              <option>Teacher</option>
+            </select>
+            </div>
+
+            <div id="accountTargetFields">
+            <label for="recipientUserId">Specific account ID <span class="optional-label">optional</span></label>
+            <input id="recipientUserId" name="recipientUserId" placeholder="Student code, parent phone, or user ID" />
+
+            <label for="studentCode">Student code <span class="optional-label">optional</span></label>
+            <input id="studentCode" name="studentCode" placeholder="Example: G600B5" />
+            </div>
+
+            <label for="category">Category</label>
+            <select id="category" name="category">
+              <option>General</option>
+              <option>Payment</option>
+              <option>Session</option>
+              <option>Grades</option>
+              <option>Support</option>
+            </select>
+
+            <label for="priority">Priority</label>
+            <select id="priority" name="priority">
+              <option>Normal</option>
+              <option>Important</option>
+              <option>Urgent</option>
+            </select>
+
+            <label for="title">Title</label>
+            <input id="title" name="title" required />
+
+            <label for="body">Message</label>
+            <textarea id="body" name="body" rows="4" required></textarea>
+
+            <button type="submit">Send in-app notification</button>
+            <p class="form-message" id="notification-message"></p>
+          </form>
+        </article>
+      </section>
+
+      <section class="records-panel" aria-labelledby="notification-list-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Archive</p>
+            <h2 id="notification-list-title">All messages</h2>
+          </div>
+        </div>
+        <div class="student-list" id="notification-list"></div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -88,3 +88,41 @@ html[dir="rtl"] .language-switcher {
     left: 12px;
   }
 }
+
+.floating-tools .language-switcher {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  display: block;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.floating-tools .language-switcher select {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  min-width: 94px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--ams-primary) 28%, var(--ams-line));
+  border-radius: 8px;
+  color: var(--ams-ink);
+  background: var(--ams-surface);
+  box-shadow: 0 18px 48px rgba(23, 33, 43, 0.18);
+  font-weight: 800;
+}
+
+.floating-tools .language-switcher:not([open]) select {
+  display: none;
+}
+
+html[dir="rtl"] .floating-tools .language-switcher {
+  right: auto;
+  left: auto;
+}

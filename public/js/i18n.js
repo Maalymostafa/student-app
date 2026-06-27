@@ -7,6 +7,7 @@ const amsTranslations = {
   "Bright": "فاتح",
   "Calm": "هادئ",
   "Dark": "داكن",
+  "Girly": "بناتي",
   "Login | Academy Management System": "تسجيل الدخول | نظام إدارة الأكاديمية",
   "Dashboard | Academy Management System": "لوحة التحكم | نظام إدارة الأكاديمية",
   "Students | Academy Management System": "الطلاب | نظام إدارة الأكاديمية",
@@ -434,11 +435,20 @@ function buildLanguageSwitcher() {
     return;
   }
 
-  const switcher = document.createElement("label");
-  switcher.className = "language-switcher";
+  let tools = document.querySelector("#ams-floating-tools");
+
+  if (!tools) {
+    tools = document.createElement("div");
+    tools.className = "floating-tools";
+    tools.id = "ams-floating-tools";
+    document.body.appendChild(tools);
+  }
+
+  const switcher = document.createElement("details");
+  switcher.className = "floating-tool language-switcher";
   switcher.id = "ams-language-switcher";
   switcher.innerHTML = `
-    <span>Language</span>
+    <summary aria-label="Language"><span class="tool-icon globe-icon">◎</span><span class="tool-label">Language</span></summary>
     <select aria-label="Choose language">
       <option value="en">EN</option>
       <option value="ar">عربي</option>
@@ -446,9 +456,24 @@ function buildLanguageSwitcher() {
   `;
 
   const select = switcher.querySelector("select");
+  const arabicOption = switcher.querySelector('option[value="ar"]');
+  if (arabicOption) {
+    arabicOption.textContent = "AR";
+  }
   select.value = amsI18n.getLanguage();
   select.addEventListener("change", () => amsI18n.setLanguage(select.value));
-  document.body.appendChild(switcher);
+  switcher.addEventListener("toggle", () => {
+    if (!switcher.open) {
+      return;
+    }
+
+    tools.querySelectorAll("details").forEach((details) => {
+      if (details !== switcher) {
+        details.open = false;
+      }
+    });
+  });
+  tools.prepend(switcher);
 }
 
 function syncLanguageSwitcher() {

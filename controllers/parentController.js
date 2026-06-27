@@ -8,7 +8,7 @@ function showParentPortal(req, res) {
 }
 
 async function getParentOverview(req, res) {
-  const children = await Promise.all((await getChildrenForParent(req.session.user.id)).map(async (child) => ({
+  const children = await Promise.all((await getChildrenForParent(req.session.user)).map(async (child) => ({
     ...child,
     results: await getStudentResults(child.studentCode),
   })));

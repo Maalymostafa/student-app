@@ -12,29 +12,32 @@
   </head>
   <body>
     <main class="auth-layout">
-      <section class="auth-panel" aria-labelledby="login-title">
+      <section class="auth-panel login-panel" aria-labelledby="login-title">
         <div>
-          <p class="eyebrow">Academy Management System</p>
-          <h1 id="login-title">Sign in to your workspace.</h1>
-          <p class="summary compact">
-            Manage students, sessions, payments, and notifications from one place.
-          </p>
+          <h1 class="visually-hidden" id="login-title">Sign in</h1>
         </div>
 
         <form class="login-form" action="/login" method="post">
           <div class="alert" id="login-error" hidden>
-            The email or password is incorrect.
+            The code, phone, email, or password is incorrect.
           </div>
 
-          <label for="email">Email</label>
+          <label for="identifier">Student code / phone / email</label>
           <input
-            id="email"
+            id="identifier"
             name="email"
-            type="email"
-            autocomplete="email"
+            type="text"
+            autocomplete="username"
             value="admin@academy.test"
             required
           />
+
+          <label for="loginRole">Sign in as</label>
+          <select id="loginRole" name="loginRole">
+            <option value="Staff">Admin / Teacher</option>
+            <option value="Student">Student</option>
+            <option value="Parent">Parent</option>
+          </select>
 
           <label for="password">Password</label>
           <input
@@ -51,10 +54,10 @@
 
           <div class="demo-users" aria-label="Demo accounts">
             <p>Demo accounts</p>
-            <button type="button" data-demo-email="admin@academy.test">Admin</button>
-            <button type="button" data-demo-email="teacher@academy.test">Teacher</button>
-            <button type="button" data-demo-email="parent@academy.test">Parent</button>
-            <button type="button" data-demo-email="student@academy.test">Student</button>
+            <button type="button" data-demo-email="admin@academy.test" data-demo-role="Staff">Admin</button>
+            <button type="button" data-demo-email="teacher@academy.test" data-demo-role="Staff">Teacher</button>
+            <button type="button" data-demo-email="parent@academy.test" data-demo-role="Parent">Parent</button>
+            <button type="button" data-demo-email="student@academy.test" data-demo-role="Student">Student</button>
           </div>
         </form>
       </section>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Session Work | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/i18n.css" />
+    <script defer src="/js/session-work.js"></script>
+    <script defer src="/js/i18n.js"></script>
+    <script defer src="/js/theme.js"></script>
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Live session work</p>
+          <h1>Upload Q1 and Q2 answers</h1>
+          <p class="page-intro">
+            When Miss Hoda opens a question window, upload clear handwriting photos before the closing time.
+          </p>
+        </div>
+        <div class="toolbar-actions">
+          <a class="secondary-link" href="/my-results">My results</a>
+          <a class="secondary-link" href="/dashboard">Dashboard</a>
+        </div>
+      </header>
+
+      <section class="records-panel" aria-labelledby="session-work-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Open windows</p>
+            <h2 id="session-work-title">Available submissions</h2>
+          </div>
+        </div>
+        <div class="student-list" id="session-work-list"></div>
+      </section>
+    </main>
+  </body>
+</html>

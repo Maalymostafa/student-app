@@ -1,4 +1,6 @@
 const supportList = document.querySelector("#support-list");
+const supportFlowForm = document.querySelector("#support-flow-form");
+const supportFlowMessage = document.querySelector("#support-flow-message");
 
 async function fetchMessages() {
   const response = await fetch("/api/support/messages");
@@ -104,6 +106,26 @@ supportList.addEventListener("click", async (event) => {
     }),
   });
   await fetchMessages();
+});
+
+supportFlowForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  supportFlowMessage.textContent = "Saving scenario...";
+
+  const response = await fetch("/api/support/flows", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(Object.fromEntries(new FormData(supportFlowForm))),
+  });
+  const result = await response.json();
+
+  if (!response.ok) {
+    supportFlowMessage.textContent = result.message || "Could not save scenario.";
+    return;
+  }
+
+  supportFlowForm.reset();
+  supportFlowMessage.textContent = `${result.flow.title} added to the support assistant.`;
 });
 
 fetchMessages();

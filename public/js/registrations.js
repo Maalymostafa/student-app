@@ -64,8 +64,20 @@ function renderRegistrations(registrations) {
           </div>
           <dl class="record-details">
             <div>
-              <dt>WhatsApp</dt>
-              <dd>${registration.whatsapp}</dd>
+              <dt>Parent WhatsApp</dt>
+              <dd>${registration.parentWhatsapp || registration.whatsapp}</dd>
+            </div>
+            <div>
+              <dt>Student WhatsApp</dt>
+              <dd>${registration.studentWhatsapp || "Not provided"}</dd>
+            </div>
+            <div>
+              <dt>Prize phone</dt>
+              <dd>${registration.prizePhone || "Not provided"}</dd>
+            </div>
+            <div>
+              <dt>Transfer number</dt>
+              <dd>${registration.transferPhone || "Not provided"}</dd>
             </div>
             <div>
               <dt>Payment</dt>
@@ -97,6 +109,11 @@ function renderRegistrations(registrations) {
               registration.paymentProofUrl
                 ? `<img src="${registration.paymentProofUrl}" alt="Payment proof for ${registration.studentName}" />`
                 : `<div class="payment-proof-placeholder">No payment photo uploaded in AMS yet</div>`
+            }
+            ${
+              registration.studentPhotoUrl
+                ? `<img src="${registration.studentPhotoUrl}" alt="Student photo for ${registration.studentName}" />`
+                : `<div class="payment-proof-placeholder">No student photo</div>`
             }
             <label>
               Upload transaction photo

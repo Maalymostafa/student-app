@@ -28,6 +28,44 @@
         </div>
       </header>
 
+      <section class="records-panel" aria-labelledby="support-flow-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Support scenarios</p>
+            <h2 id="support-flow-title">Add custom flow for Miss Hoda</h2>
+          </div>
+        </div>
+        <form class="data-form" id="support-flow-form">
+          <label for="flowTitle">Scenario title</label>
+          <input id="flowTitle" name="title" placeholder="Homework policy question" required />
+
+          <label for="flowCategory">Category</label>
+          <select id="flowCategory" name="category">
+            <option>Session question</option>
+            <option>Grade question</option>
+            <option>Technical support</option>
+            <option>Group access</option>
+            <option>Payments</option>
+          </select>
+
+          <label for="flowJson">Flow JSON</label>
+          <textarea id="flowJson" name="flowJson" rows="8" required>{
+  "start": {
+    "text": "Write the first question here.",
+    "options": [
+      { "label": "Yes", "next": "yes" },
+      { "label": "No", "next": "no" }
+    ]
+  },
+  "yes": { "resolution": "Write the answer for yes here." },
+  "no": { "resolution": "Write the answer for no here. If this needs a person, ask them to leave a message." }
+}</textarea>
+
+          <button type="submit">Add scenario</button>
+          <p class="form-message" id="support-flow-message"></p>
+        </form>
+      </section>
+
       <section class="records-panel" aria-labelledby="support-title">
         <div class="records-header">
           <div>

@@ -29,7 +29,31 @@ const quotedColumns = [
   "paymentMethod",
   "paymentProof",
   "paymentProofUrl",
+  "studentWhatsapp",
+  "parentWhatsapp",
+  "transferPhone",
+  "prizePhone",
+  "studentPhoto",
+  "studentPhotoUrl",
   "refundPhone",
+  "paymentType",
+  "requiredAmount",
+  "paidAmount",
+  "remainingAmount",
+  "transferDate",
+  "transferTime",
+  "adminNotes",
+  "ocrText",
+  "ocrReviewJson",
+  "ocrReviewedAt",
+  "requiredKeywords",
+  "receiverTerms",
+  "dateFrom",
+  "dateTo",
+  "expectedAmount",
+  "expectedSender",
+  "reviewedAt",
+  "expenseDate",
   "intakeStatus",
   "recipientMatches",
   "dateWithinRange",
@@ -37,6 +61,7 @@ const quotedColumns = [
   "paymentStatus",
   "reservationStatus",
   "studentCode",
+  "accountPassword",
   "rejectionReason",
   "rejectedAt",
   "opensDay",
@@ -51,6 +76,15 @@ const quotedColumns = [
   "finalReply",
   "createdByUserId",
   "createdAt",
+  "flowJson",
+  "audience",
+  "recipientUserId",
+  "recipientRole",
+  "deliveryChannel",
+  "readAt",
+  "senderUserId",
+  "pageUrl",
+  "adminReply",
   "parentId",
   "sessionTitle",
   "uploadedAt",
@@ -69,6 +103,16 @@ const quotedColumns = [
   "maxScore",
   "answersJson",
   "requestedAt",
+  "windowId",
+  "q1Prompt",
+  "q2Prompt",
+  "opensAt",
+  "startsAt",
+  "zoomLink",
+  "zoomRevealAt",
+  "sessionDate",
+  "youtubeUrl",
+  "materialUrl",
   "assistantTeacher",
   "q1Image",
   "q2Image",
@@ -78,6 +122,8 @@ const quotedColumns = [
   "q2Feedback",
   "q1CorrectionPhoto",
   "q2CorrectionPhoto",
+  "templateText",
+  "usageCount",
 ];
 
 function preparePostgresQuery(sql, params = []) {
@@ -178,6 +224,11 @@ async function initializePostgres() {
       "parentName" TEXT NOT NULL,
       phone TEXT NOT NULL,
       whatsapp TEXT NOT NULL,
+      "studentWhatsapp" TEXT,
+      "parentWhatsapp" TEXT,
+      "transferPhone" TEXT,
+      "studentPhoto" TEXT,
+      "studentPhotoUrl" TEXT,
       email TEXT NOT NULL,
       address TEXT NOT NULL,
       "registrationDate" TEXT NOT NULL,
@@ -201,6 +252,7 @@ async function initializePostgres() {
       "paymentMethod" TEXT NOT NULL,
       "paymentProof" TEXT NOT NULL,
       "paymentProofUrl" TEXT,
+      "prizePhone" TEXT,
       "refundPhone" TEXT,
       "intakeStatus" TEXT,
       "recipientMatches" INTEGER NOT NULL DEFAULT 0,
@@ -209,8 +261,57 @@ async function initializePostgres() {
       "paymentStatus" TEXT NOT NULL,
       "reservationStatus" TEXT NOT NULL,
       "studentCode" TEXT,
+      "accountPassword" TEXT,
       "rejectionReason" TEXT,
       "rejectedAt" TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS payments (
+      id TEXT PRIMARY KEY,
+      "studentCode" TEXT NOT NULL,
+      "studentName" TEXT NOT NULL,
+      "schoolGrade" TEXT NOT NULL,
+      "paymentType" TEXT NOT NULL,
+      "requiredAmount" REAL NOT NULL DEFAULT 0,
+      "paidAmount" REAL NOT NULL DEFAULT 0,
+      "remainingAmount" REAL NOT NULL DEFAULT 0,
+      "transferDate" TEXT NOT NULL,
+      "transferTime" TEXT NOT NULL,
+      "transferPhone" TEXT NOT NULL,
+      "refundPhone" TEXT NOT NULL,
+      "paymentProof" TEXT NOT NULL,
+      "paymentProofUrl" TEXT NOT NULL,
+      status TEXT NOT NULL,
+      "adminNotes" TEXT,
+      "ocrText" TEXT,
+      "ocrReviewJson" TEXT,
+      "ocrReviewedAt" TEXT,
+      "createdAt" TEXT NOT NULL,
+      "reviewedAt" TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS payment_ocr_rules (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      "requiredKeywords" TEXT,
+      "receiverTerms" TEXT,
+      "dateFrom" TEXT,
+      "dateTo" TEXT,
+      "expectedAmount" TEXT,
+      "expectedSender" TEXT,
+      status TEXT NOT NULL,
+      "createdAt" TEXT NOT NULL,
+      "updatedAt" TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS report_expenses (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      category TEXT NOT NULL,
+      amount REAL NOT NULL DEFAULT 0,
+      "expenseDate" TEXT NOT NULL,
+      notes TEXT,
+      "createdAt" TEXT NOT NULL
     );
 
     CREATE TABLE IF NOT EXISTS registration_settings (
@@ -234,6 +335,48 @@ async function initializePostgres() {
       "aiSuggestedReply" TEXT NOT NULL,
       "finalReply" TEXT,
       "createdByUserId" TEXT,
+      "createdAt" TEXT NOT NULL,
+      "updatedAt" TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS support_flows (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      category TEXT NOT NULL,
+      audience TEXT NOT NULL,
+      "flowJson" TEXT NOT NULL,
+      status TEXT NOT NULL,
+      "createdAt" TEXT NOT NULL,
+      "updatedAt" TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS notifications (
+      id TEXT PRIMARY KEY,
+      "recipientUserId" TEXT NOT NULL,
+      "recipientRole" TEXT NOT NULL,
+      "studentCode" TEXT,
+      title TEXT NOT NULL,
+      body TEXT NOT NULL,
+      category TEXT NOT NULL,
+      priority TEXT NOT NULL,
+      "deliveryChannel" TEXT NOT NULL,
+      status TEXT NOT NULL,
+      "createdByUserId" TEXT,
+      "createdAt" TEXT NOT NULL,
+      "readAt" TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS feedback_items (
+      id TEXT PRIMARY KEY,
+      "senderUserId" TEXT NOT NULL,
+      "senderName" TEXT NOT NULL,
+      "senderRole" TEXT NOT NULL,
+      type TEXT NOT NULL,
+      "pageUrl" TEXT,
+      title TEXT NOT NULL,
+      details TEXT NOT NULL,
+      status TEXT NOT NULL,
+      "adminReply" TEXT,
       "createdAt" TEXT NOT NULL,
       "updatedAt" TEXT NOT NULL
     );
@@ -307,8 +450,52 @@ async function initializePostgres() {
       "requestedAt" TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS grading_windows (
+      id TEXT PRIMARY KEY,
+      "sessionTitle" TEXT NOT NULL,
+      "schoolGrade" TEXT NOT NULL,
+      "q1Prompt" TEXT NOT NULL,
+      "q2Prompt" TEXT NOT NULL,
+      "opensAt" TEXT NOT NULL,
+      "closesAt" TEXT NOT NULL,
+      status TEXT NOT NULL,
+      "createdAt" TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS sessions (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      "schoolGrade" TEXT NOT NULL,
+      "startsAt" TEXT NOT NULL,
+      "zoomLink" TEXT NOT NULL,
+      "zoomRevealAt" TEXT NOT NULL,
+      status TEXT NOT NULL,
+      notes TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS session_archives (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      "schoolGrade" TEXT NOT NULL,
+      "sessionDate" TEXT NOT NULL,
+      "youtubeUrl" TEXT NOT NULL,
+      description TEXT,
+      "createdAt" TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS library_materials (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      "schoolGrade" TEXT NOT NULL,
+      category TEXT NOT NULL,
+      "materialUrl" TEXT NOT NULL,
+      description TEXT,
+      "createdAt" TEXT NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS grading_submissions (
       id TEXT PRIMARY KEY,
+      "windowId" TEXT,
       "sessionTitle" TEXT NOT NULL,
       grade TEXT NOT NULL,
       "studentCode" TEXT NOT NULL,
@@ -322,11 +509,48 @@ async function initializePostgres() {
       "q1Feedback" TEXT,
       "q2Feedback" TEXT,
       "q1CorrectionPhoto" TEXT,
-      "q2CorrectionPhoto" TEXT
+      "q2CorrectionPhoto" TEXT,
+      "submittedAt" TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS grading_comment_templates (
+      id TEXT PRIMARY KEY,
+      "templateText" TEXT NOT NULL UNIQUE,
+      "usageCount" INTEGER NOT NULL DEFAULT 0,
+      "createdAt" TEXT NOT NULL
     );
   `);
 
+  await addPostgresColumnIfMissing("registrations", "accountPassword", "TEXT");
+  await addPostgresColumnIfMissing("registrations", "studentWhatsapp", "TEXT");
+  await addPostgresColumnIfMissing("registrations", "parentWhatsapp", "TEXT");
+  await addPostgresColumnIfMissing("registrations", "transferPhone", "TEXT");
+  await addPostgresColumnIfMissing("registrations", "prizePhone", "TEXT");
+  await addPostgresColumnIfMissing("registrations", "studentPhoto", "TEXT");
+  await addPostgresColumnIfMissing("registrations", "studentPhotoUrl", "TEXT");
+  await addPostgresColumnIfMissing("payments", "ocrText", "TEXT");
+  await addPostgresColumnIfMissing("payments", "ocrReviewJson", "TEXT");
+  await addPostgresColumnIfMissing("payments", "ocrReviewedAt", "TEXT");
+  await addPostgresColumnIfMissing("grading_submissions", "windowId", "TEXT");
+  await addPostgresColumnIfMissing("grading_submissions", "submittedAt", "TEXT");
+
   await seedPostgres();
+}
+
+async function addPostgresColumnIfMissing(tableName, columnName, columnDefinition) {
+  const result = await pool.query(
+    `
+      SELECT 1
+      FROM information_schema.columns
+      WHERE table_schema = 'public' AND table_name = $1 AND column_name = $2
+      LIMIT 1
+    `,
+    [tableName, columnName]
+  );
+
+  if (!result.rowCount) {
+    await pool.query(`ALTER TABLE ${tableName} ADD COLUMN "${columnName}" ${columnDefinition}`);
+  }
 }
 
 async function seedPostgres() {

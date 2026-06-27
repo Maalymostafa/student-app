@@ -12,19 +12,13 @@
   </head>
   <body>
     <main class="dashboard">
-      <header class="topbar">
+      <header class="topbar dashboard-compact-header">
         <div>
           <p class="eyebrow" id="user-role">Loading</p>
           <h1 id="dashboard-title" data-i18n="dashboard.welcome">Academy Dashboard</h1>
           <p class="page-intro" id="dashboard-intro" data-i18n="dashboard.sessions">
             Preparing your workspace.
           </p>
-        </div>
-        <div class="toolbar-actions">
-          <a class="secondary-link" href="/account" data-i18n="nav.account">Account</a>
-          <form action="/logout" method="post">
-            <button class="secondary-button" type="submit" data-i18n="nav.logout">Logout</button>
-          </form>
         </div>
       </header>
 
@@ -80,12 +74,14 @@
           <span>Module 1</span>
           <h2>Authentication</h2>
           <p>Login, logout, and user roles are now underway.</p>
+          <a href="/reports" data-roles="Administrator" hidden>Open reports</a>
         </article>
         <article class="module-card">
           <span>Module 2</span>
           <h2>Students</h2>
           <p>Add, edit, search, and archive student records.</p>
           <a href="/students" data-roles="Administrator" hidden>Open students</a>
+          <a href="/staff" data-roles="Administrator" hidden>Staff accounts</a>
         </article>
         <article class="module-card">
           <span>Module 3</span>
@@ -105,11 +101,15 @@
           <span>Module 5</span>
           <h2>Payments</h2>
           <p>Installments, balances, and payment reminders.</p>
+          <a href="/payments">Open payments</a>
         </article>
         <article class="module-card" id="support-module-card">
           <span>Module 6</span>
           <h2>Notifications</h2>
           <p>Manual, automatic, and scheduled messages.</p>
+          <a href="/notifications">Open notifications</a>
+          <a href="/support">Open support assistant</a>
+          <a href="/feedback">Complaints and suggestions</a>
           <a id="support-module-link" href="/support-inbox">Open support</a>
         </article>
         <article class="module-card">

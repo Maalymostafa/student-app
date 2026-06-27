@@ -3,9 +3,17 @@ const childResults = document.querySelector("#parent-child-results");
 const supportForm = document.querySelector("#parent-support-form");
 const supportMessage = document.querySelector("#parent-support-message");
 const messageArchive = document.querySelector("#parent-message-archive");
+const supportFlowSelect = document.querySelector("#supportFlowSelect");
+const supportFlowStep = document.querySelector("#support-flow-step");
+const supportFlowOptions = document.querySelector("#support-flow-options");
+const supportFlowResult = document.querySelector("#support-flow-result");
 
 let portalChildren = [];
 let activeStudentCode = "";
+let supportFlows = [];
+let activeFlow = null;
+let activeNodeId = "start";
+let supportPath = [];
 
 async function fetchParentOverview() {
   const response = await fetch("/api/parent/overview");
@@ -33,6 +41,19 @@ async function fetchParentMessages() {
   renderMessageArchive(messages);
 }
 
+async function fetchSupportFlows() {
+  const response = await fetch("/api/support/flows");
+
+  if (!response.ok) {
+    supportFlowStep.innerHTML = `<p>Support assistant is not available right now.</p>`;
+    return;
+  }
+
+  const { flows } = await response.json();
+  supportFlows = flows;
+  renderFlowSelector();
+}
+
 function renderPortal() {
   if (portalChildren.length === 0) {
     childTabs.innerHTML = "";
@@ -58,6 +79,53 @@ function renderPortal() {
   childResults.innerHTML = renderChild(activeChild);
 }
 
+function renderFlowSelector() {
+  supportFlowSelect.innerHTML = supportFlows
+    .map((flow) => `<option value="${flow.id}">${flow.title}</option>`)
+    .join("");
+  activeFlow = supportFlows[0] || null;
+  activeNodeId = "start";
+  supportPath = [];
+  renderSupportStep();
+}
+
+function renderSupportStep() {
+  if (!activeFlow) {
+    supportFlowStep.innerHTML = `<p>No support scenarios yet.</p>`;
+    supportFlowOptions.innerHTML = "";
+    return;
+  }
+
+  const node = activeFlow.nodes[activeNodeId];
+
+  if (!node) {
+    supportFlowStep.innerHTML = `<p>This path is not configured yet.</p>`;
+    supportFlowOptions.innerHTML = `<button type="button" data-open-human-support="1">Send to support</button>`;
+    return;
+  }
+
+  if (node.resolution) {
+    supportFlowStep.innerHTML = `
+      <span>Suggested answer</span>
+      <p>${node.resolution}</p>
+    `;
+    supportFlowOptions.innerHTML = `
+      <button type="button" data-flow-solved="1">This solved it</button>
+      <button type="button" data-open-human-support="1">Still need a person</button>
+      <button type="button" data-flow-restart="1">Start again</button>
+    `;
+    return;
+  }
+
+  supportFlowStep.innerHTML = `
+    <span>${activeFlow.title}</span>
+    <p>${node.text}</p>
+  `;
+  supportFlowOptions.innerHTML = (node.options || [])
+    .map((option) => `<button type="button" data-flow-next="${option.next}" data-flow-label="${option.label}">${option.label}</button>`)
+    .join("");
+}
+
 function renderChild(child) {
   const results = child.results.length
     ? child.results.map(renderResult).join("")
@@ -69,9 +137,28 @@ function renderChild(child) {
         <div>
           <span class="record-id">${child.studentCode} - ${child.grade}</span>
           <h3>${child.studentName}</h3>
-          <p>Corrected answers and teacher feedback.</p>
+          <p>${child.accountStatus || "Linked"} - ${child.paymentStatus || "Payment status not recorded"}</p>
         </div>
+        <a class="secondary-link" href="/payments?studentCode=${encodeURIComponent(child.studentCode)}">Open payments</a>
       </div>
+      <dl class="record-details">
+        <div>
+          <dt>Account</dt>
+          <dd>${child.accountStatus || "Linked"}</dd>
+        </div>
+        <div>
+          <dt>Reservation</dt>
+          <dd>${child.reservationStatus || "Not recorded"}</dd>
+        </div>
+        <div>
+          <dt>Payment</dt>
+          <dd>${child.paymentStatus || "Not recorded"}</dd>
+        </div>
+        <div>
+          <dt>Intake</dt>
+          <dd>${child.intakeStatus || "Not recorded"}</dd>
+        </div>
+      </dl>
       <div class="kid-results-list">${results}</div>
     </article>
   `;
@@ -159,6 +246,56 @@ childTabs.addEventListener("click", (event) => {
   renderPortal();
 });
 
+supportFlowSelect.addEventListener("change", () => {
+  activeFlow = supportFlows.find((flow) => flow.id === supportFlowSelect.value) || null;
+  activeNodeId = "start";
+  supportPath = [];
+  supportFlowResult.textContent = "";
+  renderSupportStep();
+});
+
+supportFlowOptions.addEventListener("click", (event) => {
+  const nextButton = event.target.closest("[data-flow-next]");
+  const solvedButton = event.target.closest("[data-flow-solved]");
+  const humanButton = event.target.closest("[data-open-human-support]");
+  const restartButton = event.target.closest("[data-flow-restart]");
+
+  if (nextButton) {
+    supportPath.push(nextButton.dataset.flowLabel);
+    activeNodeId = nextButton.dataset.flowNext;
+    renderSupportStep();
+    return;
+  }
+
+  if (solvedButton) {
+    supportFlowResult.textContent = "Great. No support message was sent.";
+    return;
+  }
+
+  if (restartButton) {
+    activeNodeId = "start";
+    supportPath = [];
+    supportFlowResult.textContent = "";
+    renderSupportStep();
+    return;
+  }
+
+  if (!humanButton) {
+    return;
+  }
+
+  const activeChild = portalChildren.find((child) => child.studentCode === activeStudentCode);
+  supportForm.querySelector("#senderName").value ||= "";
+  supportForm.querySelector("#studentName").value = activeChild ? activeChild.studentName : "";
+  supportForm.querySelector("#category").value = activeFlow ? activeFlow.category : "Technical support";
+  supportForm.querySelector("#message").value = [
+    `Support scenario: ${activeFlow ? activeFlow.title : "Unknown"}`,
+    `Path: ${supportPath.join(" > ") || "No option selected"}`,
+    "Details: ",
+  ].join("\n");
+  supportMessage.textContent = "Please add any extra details, then send to support.";
+});
+
 supportForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -184,4 +321,5 @@ supportForm.addEventListener("submit", async (event) => {
 });
 
 fetchParentOverview();
+fetchSupportFlows();
 fetchParentMessages();

@@ -3,11 +3,11 @@ const db = require("../database/client");
 const CODE_START_NUMBER = 100;
 
 const gradeCodePrefixes = {
-  "Grade 4": "g4",
-  "Grade 5": "g5",
-  "Grade 6": "g6",
-  "Prep 1": "p1",
-  "Prep 2": "p2",
+  "Grade 4": "G4",
+  "Grade 5": "G5",
+  "Grade 6": "G6",
+  "Prep 1": "P1",
+  "Prep 2": "P2",
 };
 
 function mapRegistration(row) {
@@ -76,28 +76,36 @@ async function updateRegistrationWindowSettings(settings, userName = "") {
 
 async function createPublicRegistration(registrationData) {
   const windowStatus = await getRegistrationWindowStatus();
+  const registrationId = await getNextId("REG", "registrations", 2000);
   const registration = {
-    id: await getNextId("REG", "registrations", 2000),
+    id: registrationId,
     submittedAt: new Date().toISOString().slice(0, 10),
     applicantType: registrationData.applicantType || "Parent",
     studentName: registrationData.studentName,
-    parentName: registrationData.parentName,
-    phone: registrationData.phone,
-    whatsapp: registrationData.whatsapp || registrationData.phone,
-    email: registrationData.email,
+    parentName: `Parent of ${registrationData.studentName}`,
+    phone: registrationData.parentWhatsapp,
+    whatsapp: registrationData.parentWhatsapp,
+    studentWhatsapp: registrationData.studentWhatsapp,
+    parentWhatsapp: registrationData.parentWhatsapp,
+    transferPhone: "",
+    prizePhone: registrationData.prizePhone,
+    email: registrationData.email || `${String(registrationData.parentWhatsapp).replace(/\D/g, "") || "unknown"}@no-email.local`,
     schoolGrade: registrationData.schoolGrade,
-    course: registrationData.course || "Academy session",
-    paymentMethod: registrationData.paymentMethod || "Pending",
-    paymentProof: registrationData.paymentProof || "Will be reviewed later",
+    course: "Math with Miss Hoda Ismail",
+    paymentMethod: "Not submitted yet",
+    paymentProof: "Not submitted yet",
     paymentProofUrl: "",
-    refundPhone: windowStatus.isOpen ? "" : registrationData.refundPhone,
+    studentPhoto: registrationData.studentPhoto || "",
+    studentPhotoUrl: registrationData.studentPhotoUrl || "",
+    refundPhone: "",
     intakeStatus: windowStatus.isOpen ? "Open window" : "Waiting list",
     recipientMatches: 0,
     dateWithinRange: 0,
     timePresent: 0,
-    paymentStatus: windowStatus.isOpen ? "Needs review" : "Waiting list",
-    reservationStatus: windowStatus.isOpen ? "Pending" : "Waiting List",
-    studentCode: "",
+    paymentStatus: "Payment required",
+    reservationStatus: windowStatus.isOpen ? "Pending Payment" : "Waiting List",
+    studentCode: await generateStudentCode({ id: registrationId, schoolGrade: registrationData.schoolGrade }),
+    accountPassword: registrationData.accountPassword,
     rejectionReason: "",
     rejectedAt: "",
   };
@@ -105,15 +113,18 @@ async function createPublicRegistration(registrationData) {
   await db.run(`
     INSERT INTO registrations (
       id, submittedAt, applicantType, studentName, parentName, phone, whatsapp, email, schoolGrade,
-      course, paymentMethod, paymentProof, paymentProofUrl, refundPhone, intakeStatus,
-      recipientMatches, dateWithinRange, timePresent, paymentStatus, reservationStatus, studentCode, rejectionReason, rejectedAt
+      course, paymentMethod, paymentProof, paymentProofUrl, studentWhatsapp, parentWhatsapp, transferPhone, prizePhone, studentPhoto, studentPhotoUrl, refundPhone, intakeStatus,
+      recipientMatches, dateWithinRange, timePresent, paymentStatus, reservationStatus, studentCode, accountPassword, rejectionReason, rejectedAt
     )
     VALUES (
       @id, @submittedAt, @applicantType, @studentName, @parentName, @phone, @whatsapp, @email, @schoolGrade,
-      @course, @paymentMethod, @paymentProof, @paymentProofUrl, @refundPhone, @intakeStatus,
-      @recipientMatches, @dateWithinRange, @timePresent, @paymentStatus, @reservationStatus, @studentCode, @rejectionReason, @rejectedAt
+      @course, @paymentMethod, @paymentProof, @paymentProofUrl, @studentWhatsapp, @parentWhatsapp, @transferPhone, @prizePhone, @studentPhoto, @studentPhotoUrl, @refundPhone, @intakeStatus,
+      @recipientMatches, @dateWithinRange, @timePresent, @paymentStatus, @reservationStatus, @studentCode, @accountPassword, @rejectionReason, @rejectedAt
     )
   `, registration);
+
+  await createStudentLoginAccount(registration);
+  await createParentLoginAccount(registration);
 
   return {
     registration: mapRegistration(registration),
@@ -142,12 +153,61 @@ async function confirmRegistration(registrationId) {
     SET studentCode = ?, paymentStatus = 'Verified', reservationStatus = 'Confirmed'
     WHERE id = ?
   `, [studentCode, registrationId]);
+  await createStudentLoginAccount({ ...registration, studentCode });
+  await createParentLoginAccount({ ...registration, studentCode });
 
   const updatedRegistration = await getRegistration(registrationId);
   return {
     registration: updatedRegistration,
     message: buildConfirmationMessage(updatedRegistration),
   };
+}
+
+async function createStudentLoginAccount(registration) {
+  const existingUser = await db.get("SELECT * FROM users WHERE id = ?", [registration.studentCode]);
+
+  if (existingUser) {
+    return existingUser;
+  }
+
+  const email = `${registration.studentCode}@student.local`;
+  await db.run(`
+    INSERT INTO users (id, email, password, name, role)
+    VALUES (?, ?, ?, ?, 'Student')
+  `, [
+    registration.studentCode,
+    email,
+    registration.accountPassword || "password123",
+    registration.studentName,
+  ]);
+
+  return db.get("SELECT * FROM users WHERE id = ?", [registration.studentCode]);
+}
+
+async function createParentLoginAccount(registration) {
+  const parentId = normalizePhone(registration.parentWhatsapp || registration.whatsapp || registration.phone);
+
+  if (!parentId) {
+    return null;
+  }
+
+  const existingUser = await db.get("SELECT * FROM users WHERE id = ?", [parentId]);
+
+  if (existingUser) {
+    return existingUser;
+  }
+
+  await db.run(`
+    INSERT INTO users (id, email, password, name, role)
+    VALUES (?, ?, ?, ?, 'Parent')
+  `, [
+    parentId,
+    `${parentId}@parent.local`,
+    registration.accountPassword || "password123",
+    `Parent of ${registration.studentName}`,
+  ]);
+
+  return db.get("SELECT * FROM users WHERE id = ?", [parentId]);
 }
 
 async function rejectRegistration(registrationId, reason = "") {
@@ -167,16 +227,33 @@ async function rejectRegistration(registrationId, reason = "") {
 }
 
 async function generateStudentCode(registration) {
-  const prefix = gradeCodePrefixes[registration.schoolGrade] || "g";
-  const row = await db.get("SELECT COUNT(*) AS count FROM registrations WHERE lower(studentCode) LIKE ?", [`${prefix}%`]);
-  const nextNumber = CODE_START_NUMBER + Number(row.count || 0);
-  const hexadecimalNumber = nextNumber.toString(16).padStart(4, "0");
+  const prefix = gradeCodePrefixes[registration.schoolGrade] || "G";
+  const sequenceNumber = getRegistrationSequenceNumber(registration);
+  const hexadecimalNumber = (sequenceNumber + CODE_START_NUMBER).toString(16).toUpperCase().padStart(4, "0");
 
-  return `${prefix}${hexadecimalNumber}h`;
+  return `${prefix}${hexadecimalNumber}`;
+}
+
+function getRegistrationSequenceNumber(registration) {
+  const idNumber = Number(String(registration.id || "").replace("REG-", ""));
+
+  if (Number.isInteger(idNumber) && idNumber > 2000) {
+    return idNumber - 2000;
+  }
+
+  if (Number.isInteger(idNumber) && idNumber > 0) {
+    return idNumber;
+  }
+
+  return 1;
 }
 
 function buildConfirmationMessage(registration) {
   return `Hello ${registration.parentName}, payment received and reservation confirmed for ${registration.studentName}. Your student code is ${registration.studentCode}. Please keep it with you. We will inform you with any updates.`;
+}
+
+function normalizePhone(value = "") {
+  return String(value).replace(/\D/g, "");
 }
 
 async function updatePaymentReview(registrationId, review) {
@@ -243,6 +320,7 @@ async function getNextId(prefix, tableName, startNumber) {
 
   return `${prefix}-${highestNumber + 1}`;
 }
+
 
 module.exports = {
   buildConfirmationMessage,

@@ -11,10 +11,34 @@ router.get(
   supportController.showSupportInbox
 );
 router.get(
+  "/support",
+  requireAuth,
+  requireRole(["Administrator", "Teacher", "Parent", "Student"]),
+  supportController.showSupportPage
+);
+router.get(
   "/api/support/messages",
   requireApiAuth,
   requireRole(["Administrator", "Teacher"]),
   supportController.listMessages
+);
+router.get(
+  "/api/support/my-messages",
+  requireApiAuth,
+  requireRole(["Administrator", "Teacher", "Parent", "Student"]),
+  supportController.listMyMessages
+);
+router.get(
+  "/api/support/flows",
+  requireApiAuth,
+  requireRole(["Administrator", "Teacher", "Parent", "Student"]),
+  supportController.listFlows
+);
+router.post(
+  "/api/support/flows",
+  requireApiAuth,
+  requireRole(["Administrator"]),
+  supportController.createFlow
 );
 router.post(
   "/api/support/messages",

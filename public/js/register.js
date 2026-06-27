@@ -2,7 +2,6 @@ const registrationForm = document.querySelector("#public-registration-form");
 const registrationMessage = document.querySelector("#public-registration-message");
 const registrationAlert = document.querySelector("#public-registration-alert");
 const windowMessage = document.querySelector("#registration-window-message");
-const refundFields = document.querySelectorAll(".refund-field");
 
 let registrationWindow = null;
 
@@ -11,21 +10,24 @@ async function loadRegistrationWindow() {
   const { windowStatus } = await response.json();
   registrationWindow = windowStatus;
   windowMessage.textContent = windowStatus.message;
-
-  refundFields.forEach((field) => {
-    field.hidden = windowStatus.isOpen;
-  });
 }
 
 registrationForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   registrationAlert.hidden = true;
   registrationMessage.textContent = "Sending registration.";
+  const formData = new FormData(registrationForm);
+
+  if (formData.get("accountPassword") !== formData.get("confirmPassword")) {
+    registrationAlert.hidden = false;
+    registrationAlert.textContent = "Password confirmation does not match.";
+    registrationMessage.textContent = "";
+    return;
+  }
 
   const response = await fetch("/api/public/registrations", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(Object.fromEntries(new FormData(registrationForm))),
+    body: formData,
   });
   const result = await response.json();
 
@@ -37,14 +39,11 @@ registrationForm.addEventListener("submit", async (event) => {
   }
 
   const statusText = result.registration.reservationStatus === "Waiting List"
-    ? "You are now on the waiting list. If Miss Hoda approves your request, we will send your student code. If not, we will use your refund phone."
-    : "Your registration was received. We will review payment proof and send your student code after approval.";
+    ? `Your account was created and is on the waiting list. Your student code is ${result.registration.studentCode}. Use it with your password to follow payments and updates.`
+    : `Your account was created. Your student code is ${result.registration.studentCode}. Use it with your password to log in and register payments.`;
 
   registrationForm.reset();
-  registrationMessage.textContent = `${statusText} Reference: ${result.registration.id}`;
-  refundFields.forEach((field) => {
-    field.hidden = registrationWindow ? registrationWindow.isOpen : true;
-  });
+  registrationMessage.textContent = statusText;
 });
 
 loadRegistrationWindow();

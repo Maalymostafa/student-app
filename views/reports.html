@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reports | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/i18n.css" />
+    <script defer src="/js/reports.js"></script>
+    <script defer src="/js/i18n.js"></script>
+    <script defer src="/js/theme.js"></script>
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Admin reports</p>
+          <h1>Academy performance</h1>
+          <p class="page-intro">Payments, attendance, grades, support workload, assistant performance, and monthly net income.</p>
+        </div>
+        <div class="toolbar-actions">
+          <label class="search-control" for="report-month">
+            <span>Month</span>
+            <input id="report-month" type="month" />
+          </label>
+          <a class="secondary-link" href="/dashboard">Dashboard</a>
+        </div>
+      </header>
+
+      <section class="metric-grid" id="report-metrics"></section>
+
+      <section class="content-grid">
+        <article class="student-card">
+          <h2>Payment report</h2>
+          <div class="report-bars" id="payment-bars"></div>
+          <div class="student-list" id="payment-types"></div>
+        </article>
+
+        <article class="student-card">
+          <h2>Attendance report</h2>
+          <div class="report-bars" id="attendance-bars"></div>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="student-card">
+          <h2>Prize candidates 97-100</h2>
+          <div class="report-bars" id="grade-bars"></div>
+          <div class="student-list" id="reward-list"></div>
+        </article>
+
+        <article class="student-card">
+          <h2>Assistant performance</h2>
+          <div class="student-list" id="assistant-list"></div>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="student-card">
+          <h2>Support report</h2>
+          <div class="report-bars" id="support-bars"></div>
+          <div class="student-list" id="support-assignees"></div>
+        </article>
+
+        <article class="student-card">
+          <h2>Expenses and wages</h2>
+          <form class="login-form" id="expense-form">
+            <label for="expense-title">Title</label>
+            <input id="expense-title" name="title" placeholder="Assistant wage / Zoom / Bonus" required />
+
+            <label for="expense-category">Category</label>
+            <select id="expense-category" name="category">
+              <option>Assistant wages</option>
+              <option>Teacher wages</option>
+              <option>Prize payout</option>
+              <option>Platform cost</option>
+              <option>Other</option>
+            </select>
+
+            <label for="expense-amount">Amount</label>
+            <input id="expense-amount" name="amount" type="number" min="0" step="0.01" required />
+
+            <label for="expense-date">Date</label>
+            <input id="expense-date" name="expenseDate" type="date" required />
+
+            <label for="expense-notes">Notes</label>
+            <textarea id="expense-notes" name="notes" rows="2"></textarea>
+
+            <button type="submit">Add expense</button>
+            <p class="form-message" id="expense-message"></p>
+          </form>
+          <div class="student-list" id="expense-list"></div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

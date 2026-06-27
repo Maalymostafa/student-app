@@ -21,13 +21,77 @@
           </p>
         </div>
         <div class="toolbar-actions">
+          <a class="secondary-link" href="/notifications">Notifications</a>
+          <a class="secondary-link" href="/support">Support</a>
+          <a class="secondary-link" href="/session-work">Upload answers</a>
           <a class="secondary-link" href="/take-quiz">Take quiz</a>
+          <a class="secondary-link" href="/payments">Payments</a>
           <a class="secondary-link" href="/dashboard">Dashboard</a>
           <form action="/logout" method="post">
             <button class="secondary-button" type="submit">Logout</button>
           </form>
         </div>
       </header>
+
+      <section class="content-grid" aria-label="Student current status">
+        <article class="student-card">
+          <div class="student-main">
+            <div>
+              <span class="record-id">Account status</span>
+              <h2 id="account-status-title">Checking account</h2>
+              <p class="student-note" id="account-status-message">Loading financial status.</p>
+            </div>
+            <span class="status-badge pending" id="account-status-badge">Checking</span>
+          </div>
+          <dl class="record-details" id="account-status-details"></dl>
+        </article>
+
+        <article class="student-card">
+          <div class="student-main">
+            <div>
+              <span class="record-id">Next session</span>
+              <h2 id="next-session-title">Checking schedule</h2>
+              <p class="student-note" id="next-session-message">Loading Zoom information.</p>
+            </div>
+            <span class="status-badge pending" id="next-session-badge">Schedule</span>
+          </div>
+          <dl class="record-details" id="next-session-details"></dl>
+        </article>
+      </section>
+
+      <section class="records-panel" aria-labelledby="month-summary-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Monthly score</p>
+            <h2 id="month-summary-title">100 point summary</h2>
+          </div>
+        </div>
+        <div class="student-list" id="month-summary-list"></div>
+      </section>
+
+      <section class="content-grid" aria-label="Lessons and library">
+        <article class="student-card">
+          <div class="student-main">
+            <div>
+              <span class="record-id">Archive</span>
+              <h2>Recorded lessons</h2>
+              <p class="student-note">Previous YouTube sessions for your grade.</p>
+            </div>
+          </div>
+          <div class="student-list" id="archive-list"></div>
+        </article>
+
+        <article class="student-card">
+          <div class="student-main">
+            <div>
+              <span class="record-id">Library</span>
+              <h2>Study materials</h2>
+              <p class="student-note">Memos, homework sheets, and revision files from Miss Hoda.</p>
+            </div>
+          </div>
+          <div class="student-list" id="library-list"></div>
+        </article>
+      </section>
 
       <section class="records-panel" aria-labelledby="results-title">
         <div class="records-header">

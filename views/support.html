@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Support | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/i18n.css" />
+    <script defer src="/js/support.js"></script>
+    <script defer src="/js/i18n.js"></script>
+    <script defer src="/js/theme.js"></script>
+  </head>
+  <body>
+    <main class="dashboard support-page">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Support assistant</p>
+          <h1>Get help without getting lost</h1>
+          <p class="page-intro">
+            Choose the problem type first. If the quick path does not solve it, send the full case to the academy team.
+          </p>
+        </div>
+        <div class="toolbar-actions">
+          <a class="secondary-link" href="/notifications">Notifications</a>
+          <a class="secondary-link" href="/feedback">Feedback</a>
+          <a class="secondary-link" href="/dashboard">Dashboard</a>
+          <form action="/logout" method="post">
+            <button class="secondary-button" type="submit">Logout</button>
+          </form>
+        </div>
+      </header>
+
+      <section class="content-grid">
+        <article class="student-card">
+          <div class="student-main">
+            <div>
+              <span class="record-id">Step by step</span>
+              <h2>What do you need help with?</h2>
+              <p class="student-note">The assistant tries to solve repeated questions before opening a support ticket.</p>
+            </div>
+          </div>
+          <label for="supportFlowSelect">Problem type</label>
+          <select id="supportFlowSelect"></select>
+          <div class="support-message-box" id="support-flow-step"></div>
+          <div class="toolbar-actions" id="support-flow-options"></div>
+          <p class="form-message" id="support-flow-result"></p>
+        </article>
+
+        <article class="student-card">
+          <h2>Send to support</h2>
+          <form class="login-form" id="support-form">
+            <label for="senderName">Your name</label>
+            <input id="senderName" name="senderName" required />
+
+            <label for="studentName">Student name or code <span class="optional-label">optional</span></label>
+            <input id="studentName" name="studentName" />
+
+            <label for="category">Category</label>
+            <select id="category" name="category">
+              <option>Technical support</option>
+              <option>Payments</option>
+              <option>Session question</option>
+              <option>Grade question</option>
+              <option>Group access</option>
+            </select>
+
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+
+            <button type="submit">Send support message</button>
+            <p class="form-message" id="support-message"></p>
+          </form>
+        </article>
+      </section>
+
+      <section class="records-panel" aria-labelledby="support-archive-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Archive</p>
+            <h2 id="support-archive-title">My previous messages</h2>
+          </div>
+        </div>
+        <div class="support-list" id="support-archive"></div>
+      </section>
+    </main>
+  </body>
+</html>

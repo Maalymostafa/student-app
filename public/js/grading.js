@@ -1,4 +1,18 @@
 const gradingList = document.querySelector("#grading-list");
+const gradingWindowForm = document.querySelector("#grading-window-form");
+const gradingWindowMessage = document.querySelector("#grading-window-message");
+const sessionScheduleForm = document.querySelector("#session-schedule-form");
+const sessionScheduleMessage = document.querySelector("#session-schedule-message");
+const archiveForm = document.querySelector("#archive-form");
+const archiveMessage = document.querySelector("#archive-message");
+const materialForm = document.querySelector("#material-form");
+const materialMessage = document.querySelector("#material-message");
+const manualAttendanceForm = document.querySelector("#manual-attendance-form");
+const manualAttendanceMessage = document.querySelector("#manual-attendance-message");
+const attendanceWindowId = document.querySelector("#attendanceWindowId");
+const feedbackTemplateList = document.querySelector("#feedback-template-list");
+let feedbackTemplates = [];
+let gradingWindows = [];
 
 async function fetchSubmissions() {
   const response = await fetch("/api/grading/submissions");
@@ -8,8 +22,24 @@ async function fetchSubmissions() {
     return;
   }
 
-  const { submissions } = await response.json();
+  const { submissions, templates, windows } = await response.json();
+  feedbackTemplates = templates || [];
+  gradingWindows = windows || [];
+  renderFeedbackTemplates(feedbackTemplates);
+  renderAttendanceWindows(gradingWindows);
   renderSubmissions(submissions);
+}
+
+function renderFeedbackTemplates(templates) {
+  feedbackTemplateList.innerHTML = templates
+    .map((template) => `<option value="${template.templateText}"></option>`)
+    .join("");
+}
+
+function renderAttendanceWindows(windows) {
+  attendanceWindowId.innerHTML = windows.length
+    ? windows.map((window) => `<option value="${window.id}">${window.sessionTitle} - ${window.schoolGrade}</option>`).join("")
+    : `<option value="">No windows yet</option>`;
 }
 
 function renderSubmissions(submissions) {
@@ -51,7 +81,7 @@ function renderQuestion(submission, question, label, imageText) {
     <section class="question-card">
       <div class="answer-photo" aria-label="${label} handwriting photo">
         <span>${label}</span>
-        <p>${imageText}</p>
+        ${renderAnswerImage(imageText)}
       </div>
       <div class="score-buttons" aria-label="${label} score">
         ${[0, 1, 2]
@@ -71,6 +101,15 @@ function renderQuestion(submission, question, label, imageText) {
           .join("")}
       </div>
       <div class="feedback-panel">
+        <label>
+          Saved feedback
+          <select data-template-picker="${submission.id}-${questionKey}">
+            <option value="">Choose a repeated comment</option>
+            ${feedbackTemplates.map((template) => `
+              <option value="${template.templateText}">${template.templateText}</option>
+            `).join("")}
+          </select>
+        </label>
         <label>
           Feedback if needed
           <textarea
@@ -105,6 +144,116 @@ function renderQuestion(submission, question, label, imageText) {
     </section>
   `;
 }
+
+function renderAnswerImage(imageText) {
+  if (String(imageText || "").startsWith("/uploads/")) {
+    return `<img src="${imageText}" alt="Uploaded answer photo" />`;
+  }
+
+  return `<p>${imageText}</p>`;
+}
+
+gradingWindowForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  gradingWindowMessage.textContent = "Opening answer window...";
+
+  const response = await fetch("/api/grading/windows", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(Object.fromEntries(new FormData(gradingWindowForm))),
+  });
+  const result = await response.json();
+
+  if (!response.ok) {
+    gradingWindowMessage.textContent = result.message || "Could not open answer window.";
+    return;
+  }
+
+  gradingWindowForm.reset();
+  gradingWindowMessage.textContent = `Window ${result.window.id} is open until ${new Date(result.window.closesAt).toLocaleString()}.`;
+  await fetchSubmissions();
+});
+
+sessionScheduleForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  sessionScheduleMessage.textContent = "Saving Zoom session...";
+
+  const response = await fetch("/api/sessions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(Object.fromEntries(new FormData(sessionScheduleForm))),
+  });
+  const result = await response.json();
+
+  if (!response.ok) {
+    sessionScheduleMessage.textContent = result.message || "Could not schedule this session.";
+    return;
+  }
+
+  sessionScheduleForm.reset();
+  sessionScheduleMessage.textContent = `${result.session.title} saved. Link appears ${new Date(result.session.zoomRevealAt).toLocaleString()}.`;
+});
+
+archiveForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  archiveMessage.textContent = "Saving recording...";
+
+  const response = await fetch("/api/session-archives", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(Object.fromEntries(new FormData(archiveForm))),
+  });
+  const result = await response.json();
+
+  if (!response.ok) {
+    archiveMessage.textContent = result.message || "Could not save recording.";
+    return;
+  }
+
+  archiveForm.reset();
+  archiveMessage.textContent = `${result.archive.title} added to the student archive.`;
+});
+
+materialForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  materialMessage.textContent = "Saving material...";
+
+  const response = await fetch("/api/library-materials", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(Object.fromEntries(new FormData(materialForm))),
+  });
+  const result = await response.json();
+
+  if (!response.ok) {
+    materialMessage.textContent = result.message || "Could not save material.";
+    return;
+  }
+
+  materialForm.reset();
+  materialMessage.textContent = `${result.material.title} added to the library.`;
+});
+
+manualAttendanceForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  manualAttendanceMessage.textContent = "Saving attendance...";
+
+  const response = await fetch("/api/grading/attendance", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(Object.fromEntries(new FormData(manualAttendanceForm))),
+  });
+  const result = await response.json();
+
+  if (!response.ok) {
+    manualAttendanceMessage.textContent = result.message || "Could not mark attendance.";
+    return;
+  }
+
+  manualAttendanceForm.reset();
+  manualAttendanceMessage.textContent = `${result.submission.studentName} marked present.`;
+  await fetchSubmissions();
+});
 
 gradingList.addEventListener("click", async (event) => {
   const scoreButton = event.target.closest("[data-submission-id]");
@@ -165,6 +314,13 @@ gradingList.addEventListener("click", async (event) => {
 
 gradingList.addEventListener("change", (event) => {
   const input = event.target.closest("[data-photo-input]");
+  const templatePicker = event.target.closest("[data-template-picker]");
+
+  if (templatePicker && templatePicker.value) {
+    const feedbackInput = document.querySelector(`[data-feedback-input="${templatePicker.dataset.templatePicker}"]`);
+    feedbackInput.value = templatePicker.value;
+    return;
+  }
 
   if (!input || !input.files.length) {
     return;

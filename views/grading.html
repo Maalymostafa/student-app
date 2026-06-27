@@ -28,6 +28,170 @@
         </div>
       </header>
 
+      <section class="records-panel" aria-labelledby="session-schedule-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Next Zoom session</p>
+            <h2 id="session-schedule-title">Schedule class link</h2>
+          </div>
+        </div>
+        <form class="data-form" id="session-schedule-form">
+          <label for="scheduleTitle">Session title</label>
+          <input id="scheduleTitle" name="title" placeholder="June - Session 2" required />
+
+          <label for="scheduleGrade">Grade</label>
+          <select id="scheduleGrade" name="schoolGrade" required>
+            <option>Grade 4</option>
+            <option>Grade 5</option>
+            <option>Grade 6</option>
+            <option>Prep 1</option>
+            <option>Prep 2</option>
+          </select>
+
+          <label for="startsAt">Session time</label>
+          <input id="startsAt" name="startsAt" type="datetime-local" required />
+
+          <label for="zoomRevealAt">Show Zoom link at</label>
+          <input id="zoomRevealAt" name="zoomRevealAt" type="datetime-local" required />
+
+          <label for="zoomLink">Zoom link</label>
+          <input id="zoomLink" name="zoomLink" type="url" placeholder="https://zoom.us/..." required />
+
+          <button type="submit">Schedule Zoom link</button>
+          <p class="form-message" id="session-schedule-message"></p>
+        </form>
+      </section>
+
+      <section class="content-grid" aria-label="Student resources manager">
+        <article class="student-card">
+          <div class="student-main">
+            <div>
+              <span class="record-id">YouTube archive</span>
+              <h2>Save past session</h2>
+              <p class="student-note">Add recorded lesson links by grade so students can watch old sessions.</p>
+            </div>
+          </div>
+          <form class="login-form" id="archive-form">
+            <label for="archiveTitle">Title</label>
+            <input id="archiveTitle" name="title" placeholder="February S1 recording" required />
+
+            <label for="archiveGrade">Grade</label>
+            <select id="archiveGrade" name="schoolGrade" required>
+              <option>Grade 4</option>
+              <option>Grade 5</option>
+              <option>Grade 6</option>
+              <option>Prep 1</option>
+              <option>Prep 2</option>
+            </select>
+
+            <label for="sessionDate">Session date</label>
+            <input id="sessionDate" name="sessionDate" type="date" required />
+
+            <label for="youtubeUrl">YouTube link</label>
+            <input id="youtubeUrl" name="youtubeUrl" type="url" placeholder="https://youtube.com/..." required />
+
+            <label for="archiveDescription">Description</label>
+            <textarea id="archiveDescription" name="description" rows="2"></textarea>
+
+            <button type="submit">Add recording</button>
+            <p class="form-message" id="archive-message"></p>
+          </form>
+        </article>
+
+        <article class="student-card">
+          <div class="student-main">
+            <div>
+              <span class="record-id">Library</span>
+              <h2>Add material</h2>
+              <p class="student-note">Add titled notes, homework sheets, or revision files by grade.</p>
+            </div>
+          </div>
+          <form class="login-form" id="material-form">
+            <label for="materialTitle">Title</label>
+            <input id="materialTitle" name="title" placeholder="Unit 1 revision notes" required />
+
+            <label for="materialGrade">Grade</label>
+            <select id="materialGrade" name="schoolGrade" required>
+              <option>Grade 4</option>
+              <option>Grade 5</option>
+              <option>Grade 6</option>
+              <option>Prep 1</option>
+              <option>Prep 2</option>
+            </select>
+
+            <label for="category">Category</label>
+            <select id="category" name="category" required>
+              <option>Memo</option>
+              <option>Homework</option>
+              <option>Revision</option>
+              <option>Answer key</option>
+            </select>
+
+            <label for="materialUrl">Material link</label>
+            <input id="materialUrl" name="materialUrl" type="url" placeholder="https://..." required />
+
+            <label for="materialDescription">Description</label>
+            <textarea id="materialDescription" name="description" rows="2"></textarea>
+
+            <button type="submit">Add material</button>
+            <p class="form-message" id="material-message"></p>
+          </form>
+        </article>
+      </section>
+
+      <section class="records-panel" aria-labelledby="grading-window-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Live upload window</p>
+            <h2 id="grading-window-title">Open session questions</h2>
+          </div>
+        </div>
+        <form class="data-form" id="grading-window-form">
+          <label for="sessionTitle">Session title</label>
+          <input id="sessionTitle" name="sessionTitle" placeholder="June - Session 1" required />
+
+          <label for="schoolGrade">Grade</label>
+          <select id="schoolGrade" name="schoolGrade" required>
+            <option>Grade 4</option>
+            <option>Grade 5</option>
+            <option>Grade 6</option>
+            <option>Prep 1</option>
+            <option>Prep 2</option>
+          </select>
+
+          <label for="q1Prompt">Question 1</label>
+          <textarea id="q1Prompt" name="q1Prompt" rows="2" required></textarea>
+
+          <label for="q2Prompt">Question 2</label>
+          <textarea id="q2Prompt" name="q2Prompt" rows="2" required></textarea>
+
+          <label for="closesAt">Accept answers until</label>
+          <input id="closesAt" name="closesAt" type="datetime-local" required />
+
+          <button type="submit">Open answer window</button>
+          <p class="form-message" id="grading-window-message"></p>
+        </form>
+      </section>
+
+      <section class="records-panel" aria-labelledby="manual-attendance-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Attendance without answer</p>
+            <h2 id="manual-attendance-title">Mark student present</h2>
+          </div>
+        </div>
+        <form class="data-form" id="manual-attendance-form">
+          <label for="attendanceWindowId">Session window</label>
+          <select id="attendanceWindowId" name="windowId" required></select>
+
+          <label for="attendanceStudentCode">Student code</label>
+          <input id="attendanceStudentCode" name="studentCode" placeholder="G400ED" required />
+
+          <button type="submit">Mark present</button>
+          <p class="form-message" id="manual-attendance-message"></p>
+        </form>
+      </section>
+
       <section class="records-panel" aria-labelledby="grading-title">
         <div class="records-header">
           <div>
@@ -40,6 +204,7 @@
             <span>2 correct</span>
           </div>
         </div>
+        <datalist id="feedback-template-list"></datalist>
         <div class="grading-list" id="grading-list"></div>
       </section>
     </main>

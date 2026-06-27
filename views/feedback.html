@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feedback | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/i18n.css" />
+    <script defer src="/js/feedback.js"></script>
+    <script defer src="/js/i18n.js"></script>
+    <script defer src="/js/theme.js"></script>
+  </head>
+  <body>
+    <main class="dashboard feedback-page">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Feedback portal</p>
+          <h1>Complaints and suggestions</h1>
+          <p class="page-intro">
+            Tell us what confused you, what broke, or what would make the system easier for you.
+          </p>
+        </div>
+        <div class="toolbar-actions">
+          <a class="secondary-link" href="/support">Support</a>
+          <a class="secondary-link" href="/dashboard">Dashboard</a>
+          <form action="/logout" method="post">
+            <button class="secondary-button" type="submit">Logout</button>
+          </form>
+        </div>
+      </header>
+
+      <section class="content-grid">
+        <article class="student-card">
+          <h2>Send feedback</h2>
+          <form class="login-form" id="feedback-form">
+            <label for="type">Type</label>
+            <select id="type" name="type">
+              <option>Suggestion</option>
+              <option>Complaint</option>
+              <option>Problem</option>
+              <option>Confusing page</option>
+            </select>
+
+            <label for="pageUrl">Where did it happen?</label>
+            <input id="pageUrl" name="pageUrl" />
+
+            <label for="title">Short title</label>
+            <input id="title" name="title" placeholder="Example: I could not find the payment button" required />
+
+            <label for="details">Details</label>
+            <textarea id="details" name="details" rows="5" required></textarea>
+
+            <button type="submit">Send feedback</button>
+            <p class="form-message" id="feedback-message"></p>
+          </form>
+        </article>
+
+        <article class="student-card">
+          <div class="student-main">
+            <div>
+              <span class="record-id">How this helps</span>
+              <h2>What can you write here?</h2>
+              <p class="student-note">
+                Use this for improvement ideas, repeated confusion, missing buttons, wrong wording, slow pages, or anything that made you call instead of using the system.
+              </p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="records-panel" aria-labelledby="feedback-archive-title">
+        <div class="records-header">
+          <div>
+            <p class="eyebrow">Archive</p>
+            <h2 id="feedback-archive-title">Feedback history</h2>
+          </div>
+        </div>
+        <div class="student-list" id="feedback-list"></div>
+      </section>
+    </main>
+  </body>
+</html>

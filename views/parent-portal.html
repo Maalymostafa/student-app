@@ -21,6 +21,8 @@
           </p>
         </div>
         <div class="toolbar-actions">
+          <a class="secondary-link" href="/notifications">Notifications</a>
+          <a class="secondary-link" href="/support">Support</a>
           <a class="secondary-link" href="/dashboard">Dashboard</a>
           <form action="/logout" method="post">
             <button class="secondary-button" type="submit">Logout</button>
@@ -43,8 +45,22 @@
         <div class="records-header">
           <div>
             <p class="eyebrow">Support</p>
-            <h2 id="parent-support-title">Send a message</h2>
+            <h2 id="parent-support-title">Support assistant</h2>
           </div>
+        </div>
+        <div class="student-card" id="support-wizard">
+          <div class="student-main">
+            <div>
+              <span class="record-id">Step by step</span>
+              <h3>What do you need help with?</h3>
+              <p class="student-note">Try the guided options first. If it does not solve the problem, send the case to the academy team.</p>
+            </div>
+          </div>
+          <label for="supportFlowSelect">Problem type</label>
+          <select id="supportFlowSelect"></select>
+          <div class="support-message-box" id="support-flow-step"></div>
+          <div class="toolbar-actions" id="support-flow-options"></div>
+          <p class="form-message" id="support-flow-result"></p>
         </div>
         <form class="data-form support-submit-form" id="parent-support-form">
           <label for="senderName">Your name</label>

@@ -5,10 +5,15 @@ const path = require("path");
 const attendanceRoutes = require("./routes/attendanceRoutes");
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const feedbackRoutes = require("./routes/feedbackRoutes");
 const gradingRoutes = require("./routes/gradingRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 const parentRoutes = require("./routes/parentRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 const quizRoutes = require("./routes/quizRoutes");
 const registrationRoutes = require("./routes/registrationRoutes");
+const reportRoutes = require("./routes/reportRoutes");
+const staffRoutes = require("./routes/staffRoutes");
 const studentRoutes = require("./routes/studentRoutes");
 const supportRoutes = require("./routes/supportRoutes");
 
@@ -53,10 +58,15 @@ app.use(
 app.use("/", attendanceRoutes);
 app.use("/", authRoutes);
 app.use("/", dashboardRoutes);
+app.use("/", feedbackRoutes);
 app.use("/", gradingRoutes);
+app.use("/", notificationRoutes);
 app.use("/", parentRoutes);
+app.use("/", paymentRoutes);
 app.use("/", quizRoutes);
 app.use("/", registrationRoutes);
+app.use("/", reportRoutes);
+app.use("/", staffRoutes);
 app.use("/", studentRoutes);
 app.use("/", supportRoutes);
 

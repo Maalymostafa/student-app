@@ -65,17 +65,15 @@ async function confirm(req, res) {
 async function createPublic(req, res) {
   const requiredFields = [
     "studentName",
-    "parentName",
-    "phone",
-    "email",
+    "parentWhatsapp",
+    "studentWhatsapp",
+    "prizePhone",
     "schoolGrade",
+    "accountPassword",
+    "confirmPassword",
   ];
   const windowStatus = await getRegistrationWindowStatus();
   const missingFields = requiredFields.filter((field) => !req.body[field]);
-
-  if (!windowStatus.isOpen && !req.body.refundPhone) {
-    missingFields.push("refundPhone");
-  }
 
   if (missingFields.length > 0) {
     return res.status(400).json({
@@ -85,7 +83,27 @@ async function createPublic(req, res) {
     });
   }
 
-  return res.status(201).json(await createPublicRegistration(req.body));
+  if (req.body.accountPassword.length < 6) {
+    return res.status(400).json({
+      message: "Password must be at least 6 characters",
+      windowStatus,
+    });
+  }
+
+  if (req.body.accountPassword !== req.body.confirmPassword) {
+    return res.status(400).json({
+      message: "Password confirmation does not match",
+      windowStatus,
+    });
+  }
+
+  const studentPhoto = req.files && req.files.studentPhoto ? req.files.studentPhoto[0] : null;
+
+  return res.status(201).json(await createPublicRegistration({
+    ...req.body,
+    studentPhoto: studentPhoto ? studentPhoto.originalname : "",
+    studentPhotoUrl: studentPhoto ? `/uploads/${studentPhoto.filename}` : "",
+  }));
 }
 
 async function reviewPayment(req, res) {

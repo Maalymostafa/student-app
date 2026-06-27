@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payments | Academy Management System</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/i18n.css" />
+    <script defer src="/js/payments.js"></script>
+    <script defer src="/js/i18n.js"></script>
+    <script defer src="/js/theme.js"></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Payments</p>
+          <h1>Student payment record</h1>
+        </div>
+        <nav class="topbar-actions">
+          <a href="/dashboard">Dashboard</a>
+          <form action="/logout" method="post">
+            <button type="submit">Logout</button>
+          </form>
+        </nav>
+      </header>
+
+      <section class="content-grid">
+        <article class="student-card">
+          <div class="student-main">
+            <div>
+              <span class="record-id" id="payment-status-code">Student account</span>
+              <h2 id="payment-status-title">Loading status</h2>
+              <p class="student-note" id="payment-status-message">Checking the current student account state.</p>
+            </div>
+            <span class="status-badge pending" id="payment-status-badge">Checking</span>
+          </div>
+          <dl class="record-details" id="payment-status-details"></dl>
+        </article>
+
+        <article class="student-card">
+          <div class="student-main">
+            <div>
+              <span class="record-id" id="payment-student-code">Student</span>
+              <h2>Balance</h2>
+            </div>
+          </div>
+          <dl class="record-details" id="payment-summary"></dl>
+        </article>
+
+        <article class="student-card">
+          <h2>Register a payment</h2>
+          <p class="student-note">
+            Payment photo must clearly show amount, receiver name/account, transaction date, transaction time, and sender number/account.
+          </p>
+          <form class="login-form" id="payment-form" enctype="multipart/form-data">
+            <div class="alert" id="payment-alert" hidden></div>
+            <div id="payment-student-picker" hidden>
+              <label for="studentCode">Paying for</label>
+              <select id="studentCode" name="studentCode"></select>
+            </div>
+
+            <label for="paymentType">Payment type</label>
+            <select id="paymentType" name="paymentType" required>
+              <option value="">Choose payment type</option>
+              <option>Term</option>
+              <option>Monthly</option>
+              <option>Revision session</option>
+              <option>Custom</option>
+            </select>
+
+            <label for="requiredAmount">Required amount</label>
+            <input id="requiredAmount" name="requiredAmount" type="number" min="0" step="0.01" value="0" />
+
+            <label for="paidAmount">Paid amount</label>
+            <input id="paidAmount" name="paidAmount" type="number" min="0" step="0.01" required />
+
+            <label for="transferDate">Transfer date</label>
+            <input id="transferDate" name="transferDate" type="date" required />
+
+            <label for="transferTime">Transfer time</label>
+            <input id="transferTime" name="transferTime" type="time" required />
+
+            <label for="transferPhone">Number payment was sent from</label>
+            <input id="transferPhone" name="transferPhone" required />
+
+            <label for="refundPhone">Refund phone</label>
+            <input id="refundPhone" name="refundPhone" required />
+
+            <label for="paymentProof">Transaction photo</label>
+            <input id="paymentProof" name="paymentProof" type="file" accept="image/*" required />
+
+            <button type="submit">Submit payment for review</button>
+            <p class="form-message" id="payment-message"></p>
+          </form>
+        </article>
+      </section>
+
+      <section class="module-section">
+        <div class="student-card payment-ocr-panel" id="payment-ocr-panel" hidden>
+          <div class="section-heading">
+            <p class="eyebrow">Payment OCR assistant</p>
+            <h2>Auto-check transaction photos</h2>
+            <p class="student-note">
+              Add the words, receiver account, and date range you want AMS to search for inside each payment photo.
+            </p>
+          </div>
+          <form class="login-form compact-form" id="payment-ocr-form">
+            <input id="ocr-rule-id" name="id" type="hidden" />
+            <input id="ocr-created-at" name="createdAt" type="hidden" />
+
+            <label for="ocr-title">Rule name</label>
+            <input id="ocr-title" name="title" placeholder="June 2026 monthly payment rules" required />
+
+            <label for="ocr-status">Rule status</label>
+            <select id="ocr-status" name="status">
+              <option value="Active">Active for current payments</option>
+              <option value="Archived">Archive only</option>
+            </select>
+
+            <label for="ocr-required-keywords">Required words or phrases</label>
+            <textarea id="ocr-required-keywords" name="requiredKeywords" rows="3" placeholder="Hoda Bahr&#10;InstaPay&#10;successful"></textarea>
+
+            <label for="ocr-receiver-terms">Receiver account/name</label>
+            <textarea id="ocr-receiver-terms" name="receiverTerms" rows="2" placeholder="hoda bahr&#10;hoda@instapay"></textarea>
+
+            <div class="form-row">
+              <div>
+                <label for="ocr-date-from">Date from</label>
+                <input id="ocr-date-from" name="dateFrom" type="date" />
+              </div>
+              <div>
+                <label for="ocr-date-to">Date to</label>
+                <input id="ocr-date-to" name="dateTo" type="date" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div>
+                <label for="ocr-expected-amount">Expected amount</label>
+                <input id="ocr-expected-amount" name="expectedAmount" type="number" min="0" step="0.01" placeholder="Optional" />
+              </div>
+              <div>
+                <label for="ocr-expected-sender">Expected sender number</label>
+                <input id="ocr-expected-sender" name="expectedSender" placeholder="Optional" />
+              </div>
+            </div>
+
+            <div class="toolbar-actions">
+              <button class="secondary-button" type="submit">Save month rules</button>
+              <button class="secondary-button" type="button" id="archive-ocr-rule">Archive selected</button>
+              <button class="secondary-button" type="button" id="new-ocr-rule">New month</button>
+            </div>
+            <p class="form-message" id="payment-ocr-message"></p>
+          </form>
+          <div class="student-list compact-list" id="payment-ocr-rules-list"></div>
+        </div>
+
+        <div class="section-heading">
+          <p class="eyebrow">History</p>
+          <h2>Payment submissions</h2>
+        </div>
+        <div class="student-list" id="payment-list"></div>
+      </section>
+    </main>
+  </body>
+</html>

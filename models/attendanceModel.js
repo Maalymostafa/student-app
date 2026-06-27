@@ -17,13 +17,13 @@ async function analyzeZoomChatAttendance({ schoolGrade, sessionTitle, chatText }
   const chatCodeSet = new Set(chatCodes);
   const students = selectedRoster.map((student) => ({
     ...student,
-    attendance: chatCodeSet.has(student.studentCode.toLowerCase()) ? "Present" : "Absent",
+    attendance: chatCodeSet.has(normalizeStudentCode(student.studentCode)) ? "Present" : "Absent",
   }));
   const otherGradeCodes = roster
     .filter(
       (student) =>
         student.schoolGrade !== schoolGrade &&
-        chatCodeSet.has(student.studentCode.toLowerCase())
+        chatCodeSet.has(normalizeStudentCode(student.studentCode))
     )
     .map((student) => ({
       studentName: student.studentName,
@@ -32,7 +32,7 @@ async function analyzeZoomChatAttendance({ schoolGrade, sessionTitle, chatText }
       note: "Ignored because this code belongs to another grade",
     }));
   const unknownCodes = chatCodes.filter(
-    (code) => !roster.some((student) => student.studentCode.toLowerCase() === code)
+    (code) => !roster.some((student) => normalizeStudentCode(student.studentCode) === code)
   );
   const run = {
     id: await getNextAttendanceId(),
@@ -51,8 +51,12 @@ async function analyzeZoomChatAttendance({ schoolGrade, sessionTitle, chatText }
 }
 
 function extractCodes(chatText) {
-  const matches = chatText.toLowerCase().match(/\b(?:g[456]|p[12])[0-9a-f]{4}h\b/g);
-  return matches || [];
+  const matches = chatText.match(/\b(?:G[456]|P[12])[0-9A-F]{4}H?\b/gi);
+  return (matches || []).map(normalizeStudentCode);
+}
+
+function normalizeStudentCode(code) {
+  return String(code || "").trim().toUpperCase().replace(/H$/, "");
 }
 
 async function getAttendanceRuns() {

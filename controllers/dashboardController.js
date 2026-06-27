@@ -18,8 +18,14 @@ const roleDashboards = {
     actions: [
       { label: "Register a student", href: "/students" },
       { label: "Review registrations", href: "/registrations" },
+      { label: "Review payments", href: "/payments" },
+      { label: "Notifications", href: "/notifications" },
+      { label: "Support assistant", href: "/support" },
+      { label: "Feedback", href: "/feedback" },
       { label: "Build session quiz", href: "/quizzes" },
       { label: "Review attendance", href: "/attendance" },
+      { label: "Staff accounts", href: "/staff" },
+      { label: "Reports", href: "/reports" },
     ],
   },
   Teacher: {
@@ -34,6 +40,9 @@ const roleDashboards = {
     actions: [
       { label: "Take attendance", href: "/attendance" },
       { label: "Set booking window", href: "/registrations" },
+      { label: "Notifications", href: "/notifications" },
+      { label: "Support assistant", href: "/support" },
+      { label: "Feedback", href: "/feedback" },
       { label: "Build session quiz", href: "/quizzes" },
       { label: "Enter grades", href: "/grading" },
       { label: "Review support notes", href: "/support-inbox" },
@@ -50,6 +59,10 @@ const roleDashboards = {
     ],
     actions: [
       { label: "Open parent portal", href: "/parent-portal" },
+      { label: "Payments", href: "/payments" },
+      { label: "Notifications", href: "/notifications" },
+      { label: "Support assistant", href: "/support" },
+      { label: "Feedback", href: "/feedback" },
       { label: "Review grades", href: "/my-results" },
       { label: "Take quiz", href: "/take-quiz" },
       { label: "Dashboard", href: "/dashboard" },
@@ -66,6 +79,10 @@ const roleDashboards = {
     ],
     actions: [
       { label: "Take quiz", href: "/take-quiz" },
+      { label: "Payments", href: "/payments" },
+      { label: "Notifications", href: "/notifications" },
+      { label: "Support assistant", href: "/support" },
+      { label: "Feedback", href: "/feedback" },
       { label: "Check grades", href: "/my-results" },
       { label: "Review attendance", href: "/my-results" },
       { label: "Dashboard", href: "/dashboard" },

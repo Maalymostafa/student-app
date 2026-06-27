@@ -1,5 +1,6 @@
 const path = require("path");
 const {
+  findParentAccessByStudentCredentials,
   findUserByCredentials,
   getPublicUser,
   getDemoAccounts,
@@ -16,8 +17,8 @@ function showLogin(req, res) {
 }
 
 async function login(req, res) {
-  const { email, password } = req.body;
-  const user = await findUserByCredentials(email, password);
+  const { email, password, loginRole } = req.body;
+  const user = await findUserForLogin(email, password, loginRole || "Staff");
 
   if (!user) {
     return res.redirect("/login?error=invalid");
@@ -25,7 +26,39 @@ async function login(req, res) {
 
   req.session.user = getPublicUser(user);
 
+  if (loginRole === "Parent") {
+    return res.redirect("/parent-portal");
+  }
+
   return res.redirect("/dashboard");
+}
+
+async function findUserForLogin(identifier, password, loginRole) {
+  if (loginRole === "Parent") {
+    const parentUser = await findUserByCredentials(identifier, password);
+
+    if (parentUser && parentUser.role === "Parent") {
+      return parentUser;
+    }
+
+    return findParentAccessByStudentCredentials(identifier, password);
+  }
+
+  const user = await findUserByCredentials(identifier, password);
+
+  if (!user) {
+    return null;
+  }
+
+  if (loginRole === "Student" && user.role !== "Student") {
+    return null;
+  }
+
+  if (loginRole === "Staff" && !["Administrator", "Teacher"].includes(user.role)) {
+    return null;
+  }
+
+  return user;
 }
 
 const showDashboard = [
